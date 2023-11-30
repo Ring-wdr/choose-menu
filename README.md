@@ -1,36 +1,43 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 메뉴 고르기 앱
 
-## Getting Started
+## 구현 고도화 단계
 
-First, run the development server:
+1. data i/o가 우선인 프로토타입 개발
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- 사용 예상 기술
+  - FE: next.js
+  - BE: x (using supabase)
+  - DB: x (using supabase)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. ui/ux를 개선한 클라이언트 단 고도화 과정
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- 사용 기술 미정
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+3. BE 및 DB 프레임워크로 변경
 
-## Learn More
+- 사용 예상 기술
+  - BD: spring boot
 
-To learn more about Next.js, take a look at the following resources:
+## 기능
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. 초기 진입 페이지
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+- 입장한 현재 사용자를 지정하는 페이지
+  - 로그인 대신 localstorage를 이용한 사용자 정보 캐싱
 
-## Deploy on Vercel
+2. 메뉴 선택 페이지
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- 크롤링을 통한 카페 메뉴 가져오기
+  - 서버 사이드를 이용한 메뉴 크롤링
+  - 관리자 페이지 개발 후 이동 예정
+- 메뉴 선택 목록
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+3. 메뉴 선택 완료 페이지
+
+- 메뉴 선택 이후 넘어가는 페이지
+- 뒤로가기를 통해 선택한 메뉴 수정 가능
+
+4. 관리자 페이지
+
+- 게시판 이용자가 선택한 메뉴를 볼 수 있는 페이지
+- 메뉴 조회 기능 추가 후 크롤링 기능 옮길 예정
