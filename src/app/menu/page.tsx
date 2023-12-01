@@ -1,42 +1,21 @@
-import { Cheerio, CheerioAPI, load } from "cheerio";
+import ClientSide from "./ClientSide";
+import { getMenu } from "./action";
 
-async function getMenu(url: string) {
-  const coffeeBeanPages = await fetch(url)
-    .then((res) => res.text())
-    .then(load)
-    .then(getHrefFromTags);
-
-  const menuList: string[] = [];
-  for (const page of coffeeBeanPages) {
-    const menu = await fetch(page)
-      .then((res) => res.text())
-      .then(load)
-      .then(getMenuFromPage);
-    menuList.push(menu);
+export default async function Menu({
+  searchParams,
+}: {
+  searchParams?: { [key: string]: string | string[] | undefined };
+}) {
+  try {
+    const userName = searchParams?.userName || "사용자";
+    const data = await getMenu("https://www.coffeebeankorea.com/menu/list.asp");
+    return (
+      <div>
+        <p>{userName}님, 메뉴를 고르세요</p>
+        <ClientSide data={data} userName={userName as string} />
+      </div>
+    );
+  } catch {
+    return <div>현재 메뉴를 불러올 수 없습니다.</div>;
   }
-
-  return [];
-}
-
-function getHrefFromTags($: CheerioAPI) {
-  const contents = $("#contents .lnb_wrap2 li:first-child a");
-  const contentToArray = Array.from(contents);
-  return contentToArray
-    .map((el) => $(el).attr("href") || "")
-    .filter((href) => href && href?.includes("category"));
-}
-
-function getMenuFromPage($: CheerioAPI) {
-  return "";
-}
-
-export default async function Menu() {
-  const data = await getMenu("https://www.coffeebeankorea.com/menu/list.asp");
-  return (
-    <ul>
-      {data?.map((item, idx) => (
-        <li key={idx}>{item}</li>
-      ))}
-    </ul>
-  );
 }
