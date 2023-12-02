@@ -1,0 +1,13 @@
+.button.large {
+  width: 10rem;
+  height: 10rem;
+}
+
+.button.small {
+  width: 3rem;
+  height: 3rem;
+}
+
+.button.w-full {
+  width: 100%;
+}
