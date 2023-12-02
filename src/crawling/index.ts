@@ -35,7 +35,7 @@ export type MenuProps = {
 export async function getMenu(url: string) {
   const urlObject = new URL(url);
   const protocolAndHostname = `${urlObject.protocol}//${urlObject.hostname}`;
-  const coffeeBeanPages = await fetch(url)
+  const coffeeBeanPages = await fetch(url, { cache: "no-store" })
     .then((res) => res.text())
     .then(load)
     .then(getHrefFromTags)
@@ -64,7 +64,7 @@ async function getMenuFromPages(page: string, protocolAndHostname: string) {
   let cnt = 1;
   while (cnt < 6) {
     await new Promise((res) => setTimeout(res, 500));
-    const data = await fetch(`${page}&page=${cnt++}`)
+    const data = await fetch(`${page}&page=${cnt++}`, { cache: "no-store" })
       .then((res) => res.text())
       .then(load)
       .then(getMenuFromPage(protocolAndHostname));
