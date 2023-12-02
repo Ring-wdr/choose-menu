@@ -1,5 +1,22 @@
+import { MenuContentsProps } from "@/crawling";
 import ClientSide from "./ClientSide";
-import { getMenu } from "./action";
+import client from "@/database";
+
+const dbname = "coffeebean";
+const collectionName = "menu";
+
+async function getSavedMenu() {
+  try {
+    await client.connect();
+    const db = client.db(dbname);
+    const menuCollection = db.collection<MenuContentsProps>(collectionName);
+    const menuList = await menuCollection.find().toArray();
+
+    return menuList.map((menu) => ({ ...menu, _id: menu._id.toString() }));
+  } finally {
+    client.close();
+  }
+}
 
 export default async function Menu({
   searchParams,
@@ -8,7 +25,7 @@ export default async function Menu({
 }) {
   try {
     const userName = searchParams?.userName || "사용자";
-    const data = await getMenu("https://www.coffeebeankorea.com/menu/list.asp");
+    const data = await getSavedMenu();
     return (
       <div>
         <p>{userName}님, 메뉴를 고르세요</p>
