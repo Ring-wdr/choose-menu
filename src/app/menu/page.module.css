@@ -13,6 +13,11 @@
   padding: 1rem;
 }
 
+.category button.active {
+  background-color: beige;
+  color: black;
+}
+
 .menu {
   margin: 3rem;
 }

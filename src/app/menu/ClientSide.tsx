@@ -1,39 +1,55 @@
 "use client";
 import { useState } from "react";
 import { MenuContentsProps, MenuProps } from "@/crawling";
+import { postSelectedMenu } from "./action";
 import Button from "@/component/Button";
 import styles from "./page.module.css";
-import { postSelectedMenu } from "./action";
 
 type Props = {
   data: MenuContentsProps[];
-  userName?: string;
 };
 
 type TableProps = {
   menuList: MenuProps[];
-  userName: string;
 };
 
-export default function ClientSide({ data, userName = "사용자" }: Props) {
-  const [category, setCategory] = useState(data[0].title || "신음료");
+const ALL_MENU = "전체";
+
+export default function ClientSide({ data }: React.PropsWithChildren<Props>) {
+  const [category, setCategory] = useState(data[0]?.title || "신음료");
   const currentCategoryMenu =
-    data.find(({ title }) => title === category)?.list || [];
+    category === ALL_MENU
+      ? data.reduce<MenuProps[]>(
+          (totalMenu, { list }) => [...totalMenu, ...list],
+          []
+        )
+      : data.find(({ title }) => title === category)?.list || [];
   return (
     <div>
       <ul className={styles.category}>
-        {data.map(({ title }, idx) => (
-          <button key={idx} onClick={() => setCategory(title)}>
-            {title}
-          </button>
-        ))}
+        <button
+          className={category === ALL_MENU ? styles.active : ""}
+          onClick={() => setCategory(ALL_MENU)}
+        >
+          {ALL_MENU}
+        </button>
+        {data.length > 0 &&
+          data.map(({ title }, idx) => (
+            <button
+              className={category === title ? styles.active : ""}
+              key={idx}
+              onClick={() => setCategory(title)}
+            >
+              {title}
+            </button>
+          ))}
       </ul>
-      <MenuTable menuList={currentCategoryMenu} userName={userName} />
+      <MenuTable menuList={currentCategoryMenu} />
     </div>
   );
 }
 
-function MenuTable({ menuList, userName }: TableProps) {
+function MenuTable({ menuList }: TableProps) {
   const isEmpty = menuList.length === 0;
   const [selected, setSelected] = useState("");
   const selectedMenu = menuList.find((item) => item.name.kor === selected);
@@ -58,15 +74,15 @@ function MenuTable({ menuList, userName }: TableProps) {
       </ul>
       <div className={styles.selected}>
         <form action={postSelectedMenu}>
-          <input type="text" name="userName" value={userName} hidden />
           <input
             type="text"
             name="menuName"
             value={selectedMenu?.name.kor}
             hidden
+            readOnly
           />
           [{selectedMenu?.name.kor}]<p>선택하시겠습니까?</p>
-          <Button>메뉴 선택</Button>
+          <Button fullWidth>메뉴 선택</Button>
         </form>
       </div>
     </div>
