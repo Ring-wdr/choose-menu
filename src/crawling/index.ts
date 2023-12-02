@@ -52,17 +52,18 @@ export async function getMenu(url: string) {
 }
 
 function getHrefFromTags($: CheerioAPI) {
-  const contents = $("#contents .lnb_wrap2 li:first-child a");
-  const contentToArray = Array.from(contents);
-  return contentToArray
+  const contents = $("#contents .lnb_wrap2 li:first-child a").toArray();
+  const categories = contents
     .map((el) => $(el).attr("href") || "")
     .filter((href) => href && href?.includes("category"));
+  return [...new Set(categories)];
 }
 
 async function getMenuFromPages(page: string, protocolAndHostname: string) {
   const result: MenuContentsProps = { title: "", list: [] };
   let cnt = 1;
   while (cnt < 6) {
+    await new Promise((res) => setTimeout(res, 500));
     const data = await fetch(`${page}&page=${cnt++}`)
       .then((res) => res.text())
       .then(load)
@@ -72,7 +73,6 @@ async function getMenuFromPages(page: string, protocolAndHostname: string) {
     }
     result.list = [...result.list, ...data.list];
     if (!data.hasNextPage) break;
-    await new Promise((res) => setTimeout(res, 500));
   }
   return result;
 }
@@ -83,16 +83,19 @@ function getMenuFromPage(protocolAndHostname: string) {
   ): MenuContentsProps & { hasNextPage: boolean } {
     const breadcrumb = $("#wrap .location li");
     const title = breadcrumb.last().text();
-    const contents = $("#contents .menu_list li");
-    const list = Array.from(contents).map((el) => {
+    const contents = $("#contents .menu_list li").toArray();
+    const list = contents.map((el) => {
       const $this = $(el);
       const photo = `${protocolAndHostname}${$this
         .find("figure img")
         .attr("src")}`;
-      const name = Array.from($this.find("dl.txt dt span")).reduce(
-        (obj, span) => ({ ...obj, [span.attribs.class]: $(span).text() }),
-        { kor: "", eng: "" }
-      );
+      const name = $this
+        .find("dl.txt dt span")
+        .toArray()
+        .reduce(
+          (obj, span) => ({ ...obj, [span.attribs.class]: $(span).text() }),
+          { kor: "", eng: "" }
+        );
       const description = $this.find("dl.txt dd").text();
       const infoDOM = $this.find(".info");
       const info = ingredientList.reduce(
@@ -110,10 +113,8 @@ function getMenuFromPage(protocolAndHostname: string) {
         info,
       };
     });
-    const pagination = $(".list_wrap .paging a");
-    const hasNextPage = Array.from(pagination).some(
-      (el) => el.attribs.class === "next"
-    );
+    const pagination = $(".list_wrap .paging a").toArray();
+    const hasNextPage = pagination.some((el) => el.attribs.class === "next");
 
     return {
       title,

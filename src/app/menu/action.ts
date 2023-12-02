@@ -1,20 +1,24 @@
 "use server";
 
 import client from "@/database";
+import { COFFEEBEAN } from "@/database/coffeebean";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-const dbname = "coffeebean";
-const orderCollection = "order";
-
 export async function postSelectedMenu(data: FormData) {
-  const form = Object.fromEntries(data);
+  const userName = cookies().get("userName")?.value;
+  const { menuName } = Object.fromEntries(data);
   try {
-    await client.connect();
-    const db = client.db(dbname);
-    const menuCollection = db.collection(orderCollection);
-    await menuCollection.insertOne(form);
+    const db = (await client).db(COFFEEBEAN.DB_NAME);
+    const orderCollection = db.collection(COFFEEBEAN.COLLECTION.ORDER);
+    const res = await orderCollection.updateOne(
+      { userName },
+      { $set: { menuName } },
+      { upsert: true }
+    );
+  } catch (e) {
+    console.log(e);
   } finally {
-    client.close();
     redirect("/result");
   }
 }
