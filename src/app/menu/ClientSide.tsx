@@ -3,6 +3,7 @@ import { useState } from "react";
 import { MenuContentsProps, MenuProps } from "@/crawling";
 import Button from "@/component/Button";
 import styles from "./page.module.css";
+import { postSelectedMenu } from "./action";
 
 type Props = {
   data: MenuContentsProps[];
@@ -56,8 +57,17 @@ function MenuTable({ menuList, userName }: TableProps) {
         )}
       </ul>
       <div className={styles.selected}>
-        [{selectedMenu?.name.kor}]<p>선택하시겠습니까?</p>
-        <Button>메뉴 선택</Button>
+        <form action={postSelectedMenu}>
+          <input type="text" name="userName" value={userName} hidden />
+          <input
+            type="text"
+            name="menuName"
+            value={selectedMenu?.name.kor}
+            hidden
+          />
+          [{selectedMenu?.name.kor}]<p>선택하시겠습니까?</p>
+          <Button>메뉴 선택</Button>
+        </form>
       </div>
     </div>
   );
