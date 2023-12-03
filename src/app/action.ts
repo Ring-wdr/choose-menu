@@ -1,16 +1,7 @@
 "use server";
 
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-
-function setUserName(userName: string) {
-  cookies().set({
-    name: "userName",
-    value: userName,
-    httpOnly: true,
-    path: "/",
-  });
-}
+import { setUserName } from "./util/server";
 
 export async function action(data: FormData) {
   const { userName } = Object.fromEntries(data);

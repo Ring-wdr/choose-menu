@@ -11,3 +11,7 @@
 .button.w-full {
   width: 100%;
 }
+
+.button.reset_style {
+  all: unset;
+}
