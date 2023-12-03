@@ -10,10 +10,10 @@ const ingredientList = [
   { name: "protain", className: "bg7" },
 ] as const;
 
-const initialIngredient = ingredientList.reduce(
-  (acc, ingredient) => ({ ...acc, [ingredient.name]: "" }),
+export const initialIngredient = ingredientList.reduce(
+  (acc, ingredient) => ({ ...acc, [ingredient.name]: 0 }),
   {}
-) as Record<IngredientKey, number>;
+) as Readonly<Record<IngredientKey, number>>;
 
 type IngredientKey = (typeof ingredientList)[number]["name"];
 
