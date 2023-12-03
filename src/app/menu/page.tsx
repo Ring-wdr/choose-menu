@@ -1,39 +1,46 @@
-import { cookies } from "next/headers";
 import { MongoServerClosedError } from "mongodb";
-import ClientSide from "./ClientSide";
-import { MenuContentsProps } from "@/crawling";
 import client from "@/database";
+import { ClientMenuSide, ClientNameSide } from "./ClientSide";
+import { MenuContentsProps } from "@/crawling";
 import { COFFEEBEAN } from "@/database/coffeebean";
+import { MOCK } from "@/crawling/mock";
+import { getUserName } from "../util/server";
+import { redirect } from "next/navigation";
 
 async function getSavedMenu() {
-  try {
-    const db = (await client).db(COFFEEBEAN.DB_NAME);
-    const menuCollection = db.collection<MenuContentsProps>(
-      COFFEEBEAN.COLLECTION.MENU
-    );
-    const menuList = await menuCollection.find().toArray();
-    return menuList.map((menu) => ({ ...menu, _id: menu._id.toString() }));
-  } catch (e) {
-    console.log(e);
-  }
+  // prevent call Database without purpose
+  if (process.env.NODE_ENV === "development") return MOCK.MENULIST;
+  const db = (await client).db(COFFEEBEAN.DB_NAME);
+  const menuCollection = db.collection<MenuContentsProps>(
+    COFFEEBEAN.COLLECTION.MENU
+  );
+  const menuList = await menuCollection.find().toArray();
+  return menuList.map((menu) => ({ ...menu, _id: menu._id.toString() }));
 }
 
 export default async function Menu() {
   try {
-    const userName = cookies().get("userName")?.value || "사용자";
+    const userName = getUserName();
+    if (!userName) {
+      throw new Error("redirect to main page");
+    }
     const data = await getSavedMenu();
     if (!data || data.length === 0) {
       return <div>현재 메뉴를 불러올 수 없습니다.</div>;
     }
     return (
       <div>
-        <p>{userName}님, 메뉴를 고르세요</p>
-        <ClientSide data={data} />
+        <ClientNameSide userName={userName.value} />
+        <ClientMenuSide data={data} />
       </div>
     );
   } catch (e) {
     if (e instanceof MongoServerClosedError)
-      return <div>현재 메뉴를 불러올 수 없습니다.</div>;
+      return <div>DB 내용을 불러올 수 없습니다.</div>;
+    if (e instanceof Error) {
+      console.log(e);
+      redirect("/");
+    }
     return <div>메뉴가 없습니다.</div>;
   }
 }

@@ -1,11 +1,11 @@
-import styles from "./page.module.css";
-import Button from "@/component/Button";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import Button from "@/component/Button";
 import { action } from "./action";
+import styles from "./page.module.css";
 
 export default function Home() {
-  if (cookies().get("userName")?.value) {
+  if (cookies().get("userName")) {
     redirect("/menu");
   }
   return (
