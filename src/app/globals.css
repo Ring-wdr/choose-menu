@@ -1,6 +1,10 @@
 :root {
   --header-height: 50px;
 }
+* {
+  box-sizing: border-box;
+}
+
 html {
   height: 100%;
 }
@@ -13,4 +17,11 @@ body {
 a {
   margin: 0;
   padding: 0;
+}
+
+.d-flex {
+  display: flex;
+}
+.justify-between {
+  justify-content: space-between;
 }
