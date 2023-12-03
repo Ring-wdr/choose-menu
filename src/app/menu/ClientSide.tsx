@@ -141,23 +141,26 @@ export function ClientMenuSide({ data }: MenuSideProps) {
   };
 
   return (
-    <div>
+    <div className={styles.menu_container}>
       <ul className={styles.category}>
-        <button
-          className={category === ALL_MENU ? styles.active : ""}
-          onClick={() => setCategory(ALL_MENU)}
-        >
-          {ALL_MENU}
-        </button>
+        <li>
+          <button
+            className={category === ALL_MENU ? styles.active : ""}
+            onClick={() => setCategory(ALL_MENU)}
+          >
+            {ALL_MENU}
+          </button>
+        </li>
         {data.length > 0 &&
           data.map(({ title }, idx) => (
-            <button
-              className={category === title ? styles.active : ""}
-              key={idx}
-              onClick={() => setCategory(title)}
-            >
-              {title}
-            </button>
+            <li key={idx}>
+              <button
+                className={category === title ? styles.active : ""}
+                onClick={() => setCategory(title)}
+              >
+                {title}
+              </button>
+            </li>
           ))}
       </ul>
       <MenuTable
@@ -193,31 +196,35 @@ function MenuTable({ menuList, dispatchSelected }: TableProps) {
   const [selected, setSelected] = useState("");
   const selectedMenu = menuList.find((item) => item.name.kor === selected);
   return (
-    <div className={styles.menu}>
-      <ul className={styles.list}>
-        {isEmpty ? (
-          <li>해당 메뉴가 없습니다.</li>
-        ) : (
-          menuList.map((item, idx) => (
-            <li
-              key={idx}
-              className={
-                selectedMenu?.name.kor === item.name.kor ? styles.active : ""
-              }
-            >
-              {item.name.kor}
-              <button onClick={() => setSelected(item.name.kor)}></button>
-            </li>
-          ))
-        )}
-      </ul>
-      <Button
-        fullWidth
-        onClick={dispatchSelected && dispatchSelected(selectedMenu)}
-      >
-        메뉴 선택
-      </Button>
-    </div>
+    <>
+      <div className={styles.menu}>
+        <ul className={styles.list}>
+          {isEmpty ? (
+            <li>해당 메뉴가 없습니다.</li>
+          ) : (
+            menuList.map((item, idx) => (
+              <li
+                key={idx}
+                className={
+                  selectedMenu?.name.kor === item.name.kor ? styles.active : ""
+                }
+              >
+                {item.name.kor}
+                <button onClick={() => setSelected(item.name.kor)}></button>
+              </li>
+            ))
+          )}
+        </ul>
+      </div>
+      <div className={styles.footer}>
+        <Button
+          fullWidth
+          onClick={dispatchSelected && dispatchSelected(selectedMenu)}
+        >
+          메뉴 선택
+        </Button>
+      </div>
+    </>
   );
 }
 

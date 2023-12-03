@@ -1,8 +1,15 @@
+.client {
+  height: calc(100% - var(--header-height, 50px));
+  --name-section-height: 85px;
+}
+
 /** name section */
 .name_section {
   display: flex;
   justify-content: space-between;
   padding: 1rem 2rem;
+  height: var(--name-section-height);
+  background-color: beige;
 }
 
 .modal_container {
@@ -53,9 +60,22 @@
   height: 2rem;
 }
 
+.menu_container {
+  height: calc(100% - var(--name-section-height));
+  overflow: scroll;
+  --category-height: 4.5rem;
+  --footer-height: 5rem;
+}
+
 .category {
   margin: 0;
   padding: 0;
+  display: flex;
+  list-style: none;
+  overflow: scroll;
+  overflow-y: hidden;
+  white-space: nowrap;
+  height: var(--category-height);
 }
 
 .category button {
@@ -74,7 +94,8 @@
 }
 
 .menu {
-  margin: 3rem;
+  min-height: calc(100% - var(--category-height) - var(--footer-height) - 4rem);
+  margin-bottom: 3rem;
 }
 
 .menu .list {
@@ -96,6 +117,7 @@
   border: 0;
   outline: 0;
   background: none;
+  left: 0;
 }
 
 .menu .list li:hover {
@@ -110,4 +132,18 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+.menu_container .footer {
+  position: sticky;
+  bottom: 0;
+  padding: 1rem;
+  height: var(--footer-height);
+}
+
+.menu_container .footer button {
+  background: rgb(105, 81, 157);
+  color: white;
+  outline: none;
+  border: 1px solid saddlebrown;
 }

@@ -23,6 +23,18 @@ const MENULIST: MenuContentsProps[] = [
         eng: "Lemonade",
       },
       {
+        kor: "캐모마일",
+        eng: "chamomile",
+      },
+      {
+        kor: "히비스커스",
+        eng: "Hibiscus",
+      },
+      {
+        kor: "녹차",
+        eng: "Green tea",
+      },
+      {
         kor: "아샷추",
         eng: "Icetea with shot",
       },

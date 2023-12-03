@@ -6,6 +6,7 @@ import { COFFEEBEAN } from "@/database/coffeebean";
 import { MOCK } from "@/crawling/mock";
 import { getUserName } from "../util/server";
 import { redirect } from "next/navigation";
+import styles from "./page.module.css";
 
 async function getSavedMenu() {
   // prevent call Database without purpose
@@ -29,7 +30,7 @@ export default async function Menu() {
       return <div>현재 메뉴를 불러올 수 없습니다.</div>;
     }
     return (
-      <div>
+      <div className={styles.client}>
         <ClientNameSide userName={userName.value} />
         <ClientMenuSide data={data} />
       </div>
