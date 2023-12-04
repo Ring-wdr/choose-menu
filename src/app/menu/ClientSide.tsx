@@ -1,14 +1,14 @@
 "use client";
 import React, {
+  useState,
+  useEffect,
+  useRef,
+  useId,
   createContext,
   useContext,
-  useEffect,
-  useId,
-  useRef,
-  useState,
 } from "react";
 import { useFormStatus } from "react-dom";
-import { MenuContentsProps, MenuProps } from "@/crawling";
+import { MenuContentsProps, MenuProps } from "@/type";
 import { changeUserName, postSelectedMenu } from "./action";
 import Button from "@/component/Button";
 import Modal from "@/component/Modal";

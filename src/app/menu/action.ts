@@ -1,22 +1,19 @@
 "use server";
 
-import client from "@/database";
-import { COFFEEBEAN } from "@/database/coffeebean";
 import { redirect } from "next/navigation";
-import { getUserName, setUserName } from "../util/server";
+import { getUserName, setUserName } from "../../util/server";
 import { revalidatePath } from "next/cache";
+import { postContentsOfSelectedMenu } from "@/database/coffeebean/post";
 
 export async function postSelectedMenu(data: FormData) {
-  const userName = getUserName()?.value;
-  const { menuName, size } = Object.fromEntries(data);
+  const userName = getUserName()?.value!;
+  const { menuName, size } = Object.fromEntries(data) as Record<string, string>;
   try {
-    const db = (await client).db(COFFEEBEAN.DB_NAME);
-    const orderCollection = db.collection(COFFEEBEAN.COLLECTION.ORDER);
-    const res = await orderCollection.updateOne(
-      { userName },
-      { $set: { menuName, size } },
-      { upsert: true }
-    );
+    await postContentsOfSelectedMenu({
+      userName,
+      menuName,
+      size,
+    });
   } catch (e) {
     console.log(e);
   } finally {
@@ -25,7 +22,7 @@ export async function postSelectedMenu(data: FormData) {
 }
 
 export async function changeUserName(data: FormData) {
-  const currentUserName = getUserName()?.value;
+  const currentUserName = (await getUserName())?.value;
   const { userName } = Object.fromEntries(data);
   if (currentUserName === userName) return;
   setUserName(userName as string);
