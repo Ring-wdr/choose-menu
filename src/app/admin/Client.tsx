@@ -9,7 +9,7 @@ function SubmitButton() {
   const status = useFormStatus();
   return (
     <Button fullWidth type="submit">
-      {status.pending ? "크롤링 중입니다." : "크롤링"}{" "}
+      {status.pending ? "크롤링 중입니다." : "크롤링"}
     </Button>
   );
 }

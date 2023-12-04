@@ -1,5 +1,8 @@
 import Client from "./Client";
-import { getOrderedList } from "./action";
+import { getOrderedList } from "@/database/coffeebean/get";
+
+export const revalidate = 0;
+export const dynamic = "force-dynamic";
 
 export default async function Admin() {
   const orderList = await getOrderedList();

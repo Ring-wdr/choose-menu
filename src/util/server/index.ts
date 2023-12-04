@@ -12,10 +12,7 @@ export function setUserName(userName: string) {
     path: "/",
   });
 }
-export function getUserName(callback?: () => void) {
+export function getUserName() {
   const userName = cookies().get("userName");
-  if (!userName && callback) {
-    callback();
-  }
   return userName;
 }

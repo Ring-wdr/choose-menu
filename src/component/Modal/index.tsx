@@ -28,7 +28,7 @@ export default function Modal({ onClose, children }: ModalProps) {
     }
     return () => {
       if (hasTarget(container)) {
-        document.body.removeChild(container);
+        document.body?.removeChild(container);
       }
       if (onClose) {
         container.addEventListener("click", onCloseByBackdropClick);

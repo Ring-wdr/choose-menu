@@ -1,4 +1,4 @@
-import { MenuContentsProps, initialIngredient } from ".";
+import { MenuContentsProps, initialIngredient } from "../type";
 
 const MENULIST: MenuContentsProps[] = [
   {
