@@ -1,12 +1,40 @@
-import { useEffect, useRef } from "react";
-import { createPortal } from "react-dom";
+import React, {
+  useEffect,
+  useRef,
+  createContext,
+  useContext,
+  useState,
+} from "react";
+import { createPortal, useFormStatus } from "react-dom";
 import styles from "./index.module.css";
+import Button from "../Button";
 
 type ModalProps = {
-  onClose?: () => void;
+  onToggle?: (input: boolean) => void;
 } & React.PropsWithChildren;
 
-export default function Modal({ onClose, children }: ModalProps) {
+type ModalCtxProps = {
+  onOpen?: () => void;
+  onClose?: () => void;
+};
+export const ModalContext = createContext<ModalCtxProps>({});
+const useModalContext = () => useContext(ModalContext);
+
+function ModalMain({ children, onToggle }: ModalProps) {
+  const [{ onOpen, onClose }] = useState(() => ({
+    onOpen: () => onToggle && onToggle(true),
+    onClose: () => onToggle && onToggle(false),
+  }));
+  return (
+    <ModalContext.Provider value={{ onOpen, onClose }}>
+      {children}
+    </ModalContext.Provider>
+  );
+}
+
+function ModalPortal({ children }: React.PropsWithChildren) {
+  const { onClose } = useModalContext();
+
   const portalRef = useRef(document.createElement("div"));
   useEffect(() => {
     const container = portalRef.current;
@@ -42,7 +70,53 @@ export default function Modal({ onClose, children }: ModalProps) {
     : null;
 }
 
-function hasTarget(container: HTMLDivElement) {
+function ModalCloseButton({
+  children,
+  ...props
+}: Omit<React.ComponentProps<typeof Button>, "onClick">) {
+  const { onClose } = useModalContext();
+  return (
+    <Button onClick={onClose} {...props}>
+      {children}
+    </Button>
+  );
+}
+
+type ModalSubmitButtonProps = Omit<
+  React.ComponentProps<typeof Button>,
+  "onClick" | "disabled"
+> & {
+  closeOnSubmit?: boolean;
+  childrenOnPending?: React.ReactNode;
+};
+
+function ModalSubmitButton({
+  children,
+  childrenOnPending,
+  closeOnSubmit,
+  ...props
+}: ModalSubmitButtonProps) {
+  const { onClose } = useModalContext();
+  const { pending } = useFormStatus();
+  if (closeOnSubmit && pending && onClose) {
+    onClose();
+  }
+  return (
+    <Button disabled={pending} {...props}>
+      {pending ? childrenOnPending : children}
+    </Button>
+  );
+}
+
+const Modal = Object.assign(ModalMain, {
+  Portal: ModalPortal,
+  Close: ModalCloseButton,
+  Submit: ModalSubmitButton,
+});
+
+export function hasTarget(container: HTMLDivElement) {
   if (container === null) return false;
   return document.body.contains(container);
 }
+
+export default Modal;
