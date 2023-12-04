@@ -2,7 +2,6 @@
 
 import { redirect } from "next/navigation";
 import { getUserName, setUserName } from "../../util/server";
-import { revalidatePath } from "next/cache";
 import { postContentsOfSelectedMenu } from "@/database/coffeebean/post";
 
 export async function postSelectedMenu(data: FormData) {
@@ -22,9 +21,8 @@ export async function postSelectedMenu(data: FormData) {
 }
 
 export async function changeUserName(data: FormData) {
-  const currentUserName = (await getUserName())?.value;
+  const currentUserName = getUserName()?.value;
   const { userName } = Object.fromEntries(data);
   if (currentUserName === userName) return;
   setUserName(userName as string);
-  revalidatePath("/menu");
 }

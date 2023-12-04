@@ -1,13 +1,5 @@
 "use client";
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  useId,
-  createContext,
-  useContext,
-} from "react";
-import { useFormStatus } from "react-dom";
+import React, { useState, useId, createContext, useContext } from "react";
 import { MenuContentsProps, MenuProps } from "@/type";
 import { changeUserName, postSelectedMenu } from "./action";
 import Button from "@/component/Button";
@@ -19,97 +11,49 @@ type NameSideProps = {
   userName: string;
 };
 
-type ModalCxtType<T> = T & {
-  onClose?: () => void;
-};
-
-const NameModalContext = createContext<ModalCxtType<NameSideProps>>({
-  userName: "",
-});
-const useNameModalContext = () => useContext(NameModalContext);
-
 export function ClientNameSide({ userName }: NameSideProps) {
   // modal state
   const [nameChangeOpen, setNameChangeModal] = useState(false);
   const modalOpen = () => setNameChangeModal(true);
-  const modalClose = () => setNameChangeModal(false);
   return (
     <div className={styles.name_section}>
       <p>{userName}님, 메뉴를 고르세요</p>
       <Button onClick={modalOpen}>이름 변경</Button>
       {nameChangeOpen ? (
-        <Modal onClose={modalClose}>
-          <NameModalContext.Provider value={{ userName, onClose: modalClose }}>
-            <ModalContent />
-          </NameModalContext.Provider>
+        <Modal onToggle={setNameChangeModal}>
+          <Modal.Portal>
+            <div className={styles.modal_container}>
+              <Modal.Close resetStyle className={styles.close}>
+                X
+              </Modal.Close>
+              <p>이름을 변경하세요.</p>
+              <form action={changeUserName}>
+                <input
+                  type="text"
+                  name="userName"
+                  placeholder={userName}
+                  required
+                  title="같은 이름은 입력할 수 없습니다."
+                  pattern={`^(?:(?!${userName}).)*$`}
+                  maxLength={4}
+                />
+                <Modal.Submit fullWidth closeOnSubmit>
+                  변경
+                </Modal.Submit>
+              </form>
+            </div>
+          </Modal.Portal>
         </Modal>
       ) : null}
     </div>
   );
 }
 
-function ModalContent() {
-  const { userName, onClose } = useNameModalContext();
-  const inputRef = useRef<HTMLInputElement>(null);
-  useEffect(() => {
-    if (!inputRef.current) return;
-    inputRef.current.setCustomValidity("같은 이름은 입력할 수 없습니다.");
-  }, [inputRef]);
-  return (
-    <div className={styles.modal_container}>
-      <Button resetStyle className={styles.close} onClick={onClose}>
-        X
-      </Button>
-      <p>이름을 변경하세요.</p>
-      <form action={changeUserName}>
-        <input
-          ref={inputRef}
-          type="text"
-          name="userName"
-          placeholder={userName}
-          required
-          pattern={`^(?:(?!${userName}).)`}
-          maxLength={4}
-        />
-        <NameChageForm />
-      </form>
-    </div>
-  );
-}
-
-function NameChageForm() {
-  const { onClose } = useNameModalContext();
-  const { pending } = useFormStatus();
-  if (pending) {
-    onClose && onClose();
-  }
-  return (
-    <>
-      <button type="submit" disabled={pending}>
-        {pending ? "변경 중..." : "변경"}
-      </button>
-    </>
-  );
-}
-
 // menu part
-
 const ALL_MENU = "전체";
 type MenuSideProps = {
   data: MenuContentsProps[];
 } & React.PropsWithChildren;
-
-type SelectedMenuModalProps = {
-  isOpen: boolean;
-  selectedMenu?: MenuProps;
-};
-
-const MenuModalContext = createContext<
-  ModalCxtType<{
-    selectedMenu?: MenuProps;
-  }>
->({});
-const useMenuModalContext = () => useContext(MenuModalContext);
 
 export function ClientMenuSide({ data }: MenuSideProps) {
   // category state
@@ -121,24 +65,6 @@ export function ClientMenuSide({ data }: MenuSideProps) {
           []
         )
       : data.find(({ title }) => title === category)?.list || [];
-  // selected Menu state
-  const [menuModalState, setMenuModal] = useState<SelectedMenuModalProps>({
-    isOpen: false,
-  });
-
-  const menuModalClose = () =>
-    setMenuModal((prev) => ({
-      isOpen: false,
-      selectedMenu: prev.selectedMenu,
-    }));
-
-  const dispatchSelected = (menu?: MenuProps) => () => {
-    if (!menu) return;
-    setMenuModal({
-      isOpen: true,
-      selectedMenu: menu,
-    });
-  };
 
   return (
     <div className={styles.menu_container}>
@@ -163,110 +89,108 @@ export function ClientMenuSide({ data }: MenuSideProps) {
             </li>
           ))}
       </ul>
-      <MenuTable
-        menuList={currentCategoryMenu}
-        dispatchSelected={dispatchSelected}
-      />
-      {menuModalState.isOpen ? (
-        <Modal onClose={menuModalClose}>
-          <MenuModalContext.Provider
-            value={{
-              selectedMenu: menuModalState.selectedMenu,
-              onClose: menuModalClose,
-            }}
-          >
-            <MenuModalContent />
-          </MenuModalContext.Provider>
-        </Modal>
-      ) : null}
+      <MenuController menuList={currentCategoryMenu} />
     </div>
   );
 }
 
-type TableProps = {
+type MenuControllerProps = {
   menuList: MenuProps[];
-  dispatchSelected?: (menu?: MenuProps) => () => void;
 };
 
-/**
- * 메뉴를 보여주는 테이블
- */
-function MenuTable({ menuList, dispatchSelected }: TableProps) {
-  const isEmpty = menuList.length === 0;
-  const [selected, setSelected] = useState("");
-  const selectedMenu = menuList.find((item) => item.name.kor === selected);
+const coffeeSize = ["L", "M", "S"] as const;
+
+function MenuController({ menuList }: MenuControllerProps) {
+  // selected Menu state
+  const [isModalOpen, setModal] = useState(false);
+  const [selectedMenu, setMenu] = useState<MenuProps | null>(null);
+  const dispatchSelected = (menu: MenuProps) => () => setMenu(menu);
+  const menuNameId = useId();
+  const sizeId = useId();
+
   return (
     <>
-      <div className={styles.menu}>
-        <ul className={styles.list}>
-          {isEmpty ? (
-            <li>해당 메뉴가 없습니다.</li>
-          ) : (
-            menuList.map((item, idx) => (
-              <li
-                key={idx}
-                className={
-                  selectedMenu?.name.kor === item.name.kor ? styles.active : ""
-                }
-              >
-                {item.name.kor}
-                <button onClick={() => setSelected(item.name.kor)}></button>
-              </li>
-            ))
-          )}
-        </ul>
-      </div>
+      <MenuTable
+        menuList={menuList}
+        selectedMenu={selectedMenu}
+        dispatchSelected={dispatchSelected}
+      />
       <div className={styles.footer}>
-        <Button
-          fullWidth
-          onClick={dispatchSelected && dispatchSelected(selectedMenu)}
-        >
+        <Button fullWidth onClick={() => setModal(true)}>
           메뉴 선택
         </Button>
+        {isModalOpen ? (
+          <Modal onToggle={setModal}>
+            <Modal.Portal>
+              <div className={styles.modal_container}>
+                <Modal.Close resetStyle className={styles.close}>
+                  X
+                </Modal.Close>
+                <form action={postSelectedMenu}>
+                  <input
+                    id={menuNameId}
+                    type="text"
+                    name="menuName"
+                    value={selectedMenu?.name.kor}
+                    hidden
+                    readOnly
+                  />
+                  <div className={styles["menu-column"]}>
+                    <label htmlFor={menuNameId}>메뉴이름</label>
+                    <span>[{selectedMenu?.name.kor}]</span>
+                  </div>
+                  <div className={styles["menu-column"]}>
+                    <label htmlFor={sizeId}>사이즈</label>
+                    <select id={sizeId} name="size">
+                      {coffeeSize.map((size) => (
+                        <option key={size} value={size}>
+                          {size}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <p>선택하시겠습니까?</p>
+                  <Button fullWidth>확인</Button>
+                </form>
+              </div>
+            </Modal.Portal>
+          </Modal>
+        ) : null}
       </div>
     </>
   );
 }
 
-const coffeeSize = ["L", "M", "S"] as const;
+type TableProps = {
+  menuList: MenuProps[];
+  selectedMenu?: MenuProps | null;
+  dispatchSelected: (menu: MenuProps) => () => void;
+};
+
 /**
- * 메뉴페이지에서 선택된 메뉴를 전송하는 폼
+ * 메뉴를 보여주는 테이블
  */
-function MenuModalContent() {
-  const { onClose, selectedMenu } = useMenuModalContext();
-  const menuNameId = useId();
-  const sizeId = useId();
+function MenuTable({ menuList, selectedMenu, dispatchSelected }: TableProps) {
+  const isEmpty = menuList.length === 0;
   return (
-    <div className={styles.modal_container}>
-      <Button resetStyle className={styles.close} onClick={onClose}>
-        X
-      </Button>
-      <form action={postSelectedMenu}>
-        <input
-          id={menuNameId}
-          type="text"
-          name="menuName"
-          value={selectedMenu?.name.kor}
-          hidden
-          readOnly
-        />
-        <div className={styles["menu-column"]}>
-          <label htmlFor={menuNameId}>메뉴이름</label>
-          <span>[{selectedMenu?.name.kor}]</span>
-        </div>
-        <div className={styles["menu-column"]}>
-          <label htmlFor={sizeId}>사이즈</label>
-          <select id={sizeId} name="size">
-            {coffeeSize.map((size) => (
-              <option key={size} value={size}>
-                {size}
-              </option>
-            ))}
-          </select>
-        </div>
-        <p>선택하시겠습니까?</p>
-        <Button fullWidth>확인</Button>
-      </form>
+    <div className={styles.menu}>
+      <ul className={styles.list}>
+        {isEmpty ? (
+          <li>해당 메뉴가 없습니다.</li>
+        ) : (
+          menuList.map((item, idx) => (
+            <li
+              key={idx}
+              className={
+                selectedMenu?.name.kor === item.name.kor ? styles.active : ""
+              }
+            >
+              {item.name.kor}
+              <button onClick={dispatchSelected(item)}></button>
+            </li>
+          ))
+        )}
+      </ul>
     </div>
   );
 }
