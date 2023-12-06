@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useId, createContext, useContext } from "react";
+import React, { useState, useId } from "react";
 import { MenuContentsProps, MenuProps } from "@/type";
 import { changeUserName, postSelectedMenu } from "./action";
 import Button from "@/component/Button";
@@ -20,12 +20,9 @@ export function ClientNameSide({ userName }: NameSideProps) {
       <p>{userName}님, 메뉴를 고르세요</p>
       <Button onClick={modalOpen}>이름 변경</Button>
       {nameChangeOpen ? (
-        <Modal onToggle={setNameChangeModal}>
-          <Modal.Portal>
+        <Modal onToggle={setNameChangeModal} isOpen={nameChangeOpen}>
+          <Modal.BottomSheet>
             <div className={styles.modal_container}>
-              <Modal.Close resetStyle className={styles.close}>
-                X
-              </Modal.Close>
               <p>이름을 변경하세요.</p>
               <form action={changeUserName}>
                 <input
@@ -37,12 +34,10 @@ export function ClientNameSide({ userName }: NameSideProps) {
                   pattern={`^(?:(?!${userName}).)*$`}
                   maxLength={4}
                 />
-                <Modal.Submit fullWidth closeOnSubmit>
-                  변경
-                </Modal.Submit>
+                <Button fullWidth>변경</Button>
               </form>
             </div>
-          </Modal.Portal>
+          </Modal.BottomSheet>
         </Modal>
       ) : null}
     </div>
@@ -116,16 +111,13 @@ function MenuController({ menuList }: MenuControllerProps) {
         dispatchSelected={dispatchSelected}
       />
       <div className={styles.footer}>
-        <Button fullWidth onClick={() => setModal(true)}>
+        <Button fullWidth onClick={() => selectedMenu && setModal(true)}>
           메뉴 선택
         </Button>
         {isModalOpen ? (
-          <Modal onToggle={setModal}>
-            <Modal.Portal>
+          <Modal onToggle={setModal} isOpen={isModalOpen}>
+            <Modal.BottomSheet initPosition={100}>
               <div className={styles.modal_container}>
-                <Modal.Close resetStyle className={styles.close}>
-                  X
-                </Modal.Close>
                 <form action={postSelectedMenu}>
                   <input
                     id={menuNameId}
@@ -153,7 +145,7 @@ function MenuController({ menuList }: MenuControllerProps) {
                   <Button fullWidth>확인</Button>
                 </form>
               </div>
-            </Modal.Portal>
+            </Modal.BottomSheet>
           </Modal>
         ) : null}
       </div>
