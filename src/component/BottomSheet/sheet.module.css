@@ -13,7 +13,7 @@
   top: 0;
   left: 50%;
   translate: -50% 120%;
-  max-width: 60rem;
+  max-width: 30rem;
   width: 90vw;
   min-height: 100%;
   background: #fff;
@@ -27,7 +27,7 @@
   -ms-overflow-style: none; /* 인터넷 익스플로러 */
   scrollbar-width: none; /* 파이어폭스 */
 }
-.bottomSheet.dragging {
+.bottomSheet[data-drag="true"] {
   transition: none;
 }
 
@@ -59,13 +59,9 @@
   border: 3px solid gray;
   border-radius: 3px;
 }
-.bottomSheet .handle:active span,
-.bottomSheet .handle:hover span {
-  border-color: #388cff;
-  box-shadow: 0 0 10px 5px rgba(56, 140, 255, 0.1);
-}
 
 .bottomSheet .children {
   overflow-y: auto;
+  overscroll-behavior: contain;
   height: 100%;
 }

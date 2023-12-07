@@ -8,7 +8,7 @@ export default async function Admin() {
   const orderList = await getOrderedList();
   return (
     <div>
-      <Client />
+      {process.env.NODE_ENV === "development" ? <Client /> : null}
       <p>직원들이 주문한 메뉴</p>
       <ul>
         {orderList.map((order, idx) => (

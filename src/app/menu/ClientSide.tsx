@@ -3,7 +3,7 @@ import React, { useState, useId } from "react";
 import { MenuContentsProps, MenuProps } from "@/type";
 import { changeUserName, postSelectedMenu } from "./action";
 import Button from "@/component/Button";
-import Modal from "@/component/Modal";
+import BS from "@/component/BottomSheet";
 import styles from "./page.module.css";
 
 // name part
@@ -20,8 +20,8 @@ export function ClientNameSide({ userName }: NameSideProps) {
       <p>{userName}님, 메뉴를 고르세요</p>
       <Button onClick={modalOpen}>이름 변경</Button>
       {nameChangeOpen ? (
-        <Modal onToggle={setNameChangeModal} isOpen={nameChangeOpen}>
-          <Modal.BottomSheet>
+        <BS onToggle={setNameChangeModal} isOpen={nameChangeOpen}>
+          <BS.BottomSheet>
             <div className={styles.modal_container}>
               <p>이름을 변경하세요.</p>
               <form action={changeUserName}>
@@ -37,8 +37,8 @@ export function ClientNameSide({ userName }: NameSideProps) {
                 <Button fullWidth>변경</Button>
               </form>
             </div>
-          </Modal.BottomSheet>
-        </Modal>
+          </BS.BottomSheet>
+        </BS>
       ) : null}
     </div>
   );
@@ -115,8 +115,13 @@ function MenuController({ menuList }: MenuControllerProps) {
           메뉴 선택
         </Button>
         {isModalOpen ? (
-          <Modal onToggle={setModal} isOpen={isModalOpen}>
-            <Modal.BottomSheet initPosition={100}>
+          <BS onToggle={setModal} isOpen={isModalOpen}>
+            <BS.BottomSheet
+              initPosition={100}
+              closePosition="60%"
+              breakPosition={["30%", "40%"]}
+              closeWhenBackdropClick={false}
+            >
               <div className={styles.modal_container}>
                 <form action={postSelectedMenu}>
                   <input
@@ -145,8 +150,8 @@ function MenuController({ menuList }: MenuControllerProps) {
                   <Button fullWidth>확인</Button>
                 </form>
               </div>
-            </Modal.BottomSheet>
-          </Modal>
+            </BS.BottomSheet>
+          </BS>
         ) : null}
       </div>
     </>
