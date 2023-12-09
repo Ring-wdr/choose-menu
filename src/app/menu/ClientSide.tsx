@@ -1,26 +1,33 @@
 "use client";
-import React, { useState, useId } from "react";
+import React, { useState, useEffect, useId } from "react";
+import { useFormState } from "react-dom";
 import { MenuContentsProps, MenuProps } from "@/type";
-import { changeUserName, postSelectedMenu } from "./action";
+import { getUserNameFromSession, postSelectedMenu } from "./action";
 import Button from "@/component/Button";
 import BS from "@/component/BottomSheet";
 import styles from "./page.module.css";
 import BSStyles from "./menu_bottomsheet.module.css";
 import clsx from "clsx";
 
-// name part
-type NameSideProps = {
-  userName: string;
-};
-
-export function ClientNameSide({ userName }: NameSideProps) {
+export function ClientNameSide() {
+  const [userName, formAction] = useFormState(getUserNameFromSession, "");
   // modal state
   const [isBSOpen, setBSOpen] = useState(false);
   const bsOpen = () => setBSOpen(true);
   const bsClose = () => setBSOpen(false);
+
+  useEffect(() => {
+    if (!userName) formAction(new FormData());
+  }, [userName, formAction]);
+
   return (
     <div className={styles.name_section}>
-      <p>{userName}님, 메뉴를 고르세요</p>
+      <form action={formAction} hidden />
+      <p>
+        {userName
+          ? `${userName}님, 메뉴를 고르세요`
+          : "사용자 정보를 불러오는 중입니다."}
+      </p>
       <Button onClick={bsOpen}>이름 변경</Button>
       {isBSOpen ? (
         <BS isOpen={isBSOpen} onClose={bsClose}>
@@ -29,7 +36,7 @@ export function ClientNameSide({ userName }: NameSideProps) {
               <BS.Handle className={clsx(BSStyles.handle)} />
               <div className={styles.modal_container}>
                 <p>이름을 변경하세요.</p>
-                <form action={changeUserName}>
+                <form action={formAction}>
                   <input
                     type="text"
                     name="userName"
@@ -39,9 +46,7 @@ export function ClientNameSide({ userName }: NameSideProps) {
                     pattern={`^(?:(?!${userName}).)*$`}
                     maxLength={4}
                   />
-                  <BS.Submit fullWidth closeOnSubmit>
-                    변경
-                  </BS.Submit>
+                  <BS.Submit fullWidth>변경</BS.Submit>
                 </form>
               </div>
             </div>

@@ -20,9 +20,14 @@ export async function postSelectedMenu(data: FormData) {
   }
 }
 
-export async function changeUserName(data: FormData) {
-  const currentUserName = getUserName()?.value;
-  const { userName } = Object.fromEntries(data);
-  if (currentUserName === userName) return;
-  setUserName(userName as string);
+export async function getUserNameFromSession(_: string, data: FormData) {
+  const userName = data.get("userName") as string;
+  if (userName) {
+    setUserName(userName);
+  }
+  const currentUserName = getUserName();
+  if (!currentUserName) {
+    redirect("/");
+  }
+  return currentUserName.value;
 }
