@@ -17,6 +17,8 @@ body {
 a {
   margin: 0;
   padding: 0;
+  color: inherit;
+  text-decoration: none;
 }
 
 .d-flex {
