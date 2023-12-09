@@ -40,4 +40,6 @@ export type OrderItem = {
   userName: string;
   menuName: string;
   size: string;
+  temperature: string;
+  description: string;
 };

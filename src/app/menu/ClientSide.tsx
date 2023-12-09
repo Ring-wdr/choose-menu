@@ -1,140 +1,45 @@
 "use client";
-import React, { useState, useEffect, useId } from "react";
-import { useFormState } from "react-dom";
-import { MenuContentsProps, MenuProps } from "@/type";
-import { getUserNameFromSession, postSelectedMenu } from "./action";
+import React, { useState, useId, useCallback } from "react";
+import Link from "next/link";
+import { usePathname, useSearchParams } from "next/navigation";
+import { MenuProps } from "@/type";
+import { postSelectedMenu } from "./action";
 import Button from "@/component/Button";
 import BS from "@/component/BottomSheet";
+import clsx from "clsx";
 import styles from "./page.module.css";
 import BSStyles from "./menu_bottomsheet.module.css";
-import clsx from "clsx";
-
-export function ClientNameSide() {
-  const [userName, formAction] = useFormState(getUserNameFromSession, "");
-  // modal state
-  const [isBSOpen, setBSOpen] = useState(false);
-  const bsOpen = () => setBSOpen(true);
-  const bsClose = () => setBSOpen(false);
-
-  useEffect(() => {
-    if (!userName) formAction(new FormData());
-  }, [userName, formAction]);
-
-  return (
-    <div className={styles.name_section}>
-      <form action={formAction} hidden />
-      <p>
-        {userName
-          ? `${userName}님, 메뉴를 고르세요`
-          : "사용자 정보를 불러오는 중입니다."}
-      </p>
-      <Button onClick={bsOpen}>이름 변경</Button>
-      {isBSOpen ? (
-        <BS isOpen={isBSOpen} onClose={bsClose}>
-          <BS.BottomSheet>
-            <div className={clsx(BSStyles.bottomSheet)}>
-              <BS.Handle className={clsx(BSStyles.handle)} />
-              <div className={styles.modal_container}>
-                <p>이름을 변경하세요.</p>
-                <form action={formAction}>
-                  <input
-                    type="text"
-                    name="userName"
-                    placeholder={userName}
-                    required
-                    title="같은 이름은 입력할 수 없습니다."
-                    pattern={`^(?:(?!${userName}).)*$`}
-                    maxLength={4}
-                  />
-                  <BS.Submit fullWidth>변경</BS.Submit>
-                </form>
-              </div>
-            </div>
-          </BS.BottomSheet>
-        </BS>
-      ) : null}
-    </div>
-  );
-}
-
-// menu part
-const ALL_MENU = "전체";
-type MenuSideProps = {
-  data: MenuContentsProps[];
-} & React.PropsWithChildren;
-
-export function ClientMenuSide({ data }: MenuSideProps) {
-  // category state
-  const [category, setCategory] = useState(data[0]?.title || "신음료");
-  const currentCategoryMenu =
-    category === ALL_MENU
-      ? data.reduce<MenuProps[]>(
-          (totalMenu, { list }) => [...totalMenu, ...list],
-          []
-        )
-      : data.find(({ title }) => title === category)?.list || [];
-
-  return (
-    <div className={styles.menu_container}>
-      <ul className={styles.category}>
-        <li>
-          <button
-            className={category === ALL_MENU ? styles.active : ""}
-            onClick={() => setCategory(ALL_MENU)}
-          >
-            {ALL_MENU}
-          </button>
-        </li>
-        {data.length > 0 &&
-          data.map(({ title }, idx) => (
-            <li key={idx}>
-              <button
-                className={category === title ? styles.active : ""}
-                onClick={() => setCategory(title)}
-              >
-                {title}
-              </button>
-            </li>
-          ))}
-      </ul>
-      <MenuController menuList={currentCategoryMenu} />
-    </div>
-  );
-}
 
 type MenuControllerProps = {
-  menuList: MenuProps[];
+  data: MenuProps[];
 };
 
 const coffeeSize = ["L", "M", "S"] as const;
+const hotOrIce = ["hot", "ice"] as const;
 
-function MenuController({ menuList }: MenuControllerProps) {
+export function ClientMenuSide({ data }: MenuControllerProps) {
   // selected Menu state
   const [isBSOpen, setModal] = useState(false);
-  const [selectedMenu, setMenu] = useState<MenuProps | null>(null);
-  const dispatchSelected = (menu: MenuProps) => () => setMenu(menu);
+  const searchParams = useSearchParams();
+  const menuName = searchParams.get("menuName") as string;
+  const isMenuNameInData = data.find((item) => item.name.eng === menuName);
   const menuNameId = useId();
   const sizeId = useId();
+  const temperatureId = useId();
 
   return (
     <>
-      <MenuTable
-        menuList={menuList}
-        selectedMenu={selectedMenu}
-        dispatchSelected={dispatchSelected}
-      />
+      <MenuTable menuList={data} />
       <div className={styles.footer}>
-        <Button fullWidth onClick={() => selectedMenu && setModal(true)}>
+        <Button fullWidth onClick={() => isMenuNameInData && setModal(true)}>
           메뉴 선택
         </Button>
-        {isBSOpen ? (
+        {isMenuNameInData && isBSOpen ? (
           <BS
             onClose={() => setModal(false)}
             isOpen={isBSOpen}
             initPosition={100}
             closePosition="60%"
-            breakPosition={["20%", "30%", "40%"]}
-            closeWhenBackdropClick={false}
           >
             <BS.BottomSheet>
               <div className={clsx(BSStyles.bottomSheet)}>
@@ -145,13 +50,13 @@ function MenuController({ menuList }: MenuControllerProps) {
                       id={menuNameId}
                       type="text"
                       name="menuName"
-                      value={selectedMenu?.name.kor}
+                      value={isMenuNameInData.name.kor}
                       hidden
                       readOnly
                     />
                     <div className={styles["menu-column"]}>
                       <label htmlFor={menuNameId}>메뉴이름</label>
-                      <span>[{selectedMenu?.name.kor}]</span>
+                      <span>[{isMenuNameInData.name.kor}]</span>
                     </div>
                     <div className={styles["menu-column"]}>
                       <label htmlFor={sizeId}>사이즈</label>
@@ -163,7 +68,25 @@ function MenuController({ menuList }: MenuControllerProps) {
                         ))}
                       </select>
                     </div>
-                    <p>선택하시겠습니까?</p>
+                    <div className={styles["menu-column"]}>
+                      <label htmlFor={temperatureId}>온도</label>
+                      <select id={temperatureId} name="temperature">
+                        {hotOrIce.map((temperature) => (
+                          <option key={temperature} value={temperature}>
+                            {temperature.toUpperCase()}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className={styles["menu-column"]}>
+                      <label>기타 요구사항</label>
+                      <textarea
+                        name="description"
+                        placeholder={"기타 요구하실 내용을 적어주세요"}
+                        rows={3}
+                      />
+                      <p>선택하시겠습니까?</p>
+                    </div>
                     <Button fullWidth>확인</Button>
                   </form>
                 </div>
@@ -178,15 +101,16 @@ function MenuController({ menuList }: MenuControllerProps) {
 
 type TableProps = {
   menuList: MenuProps[];
-  selectedMenu?: MenuProps | null;
-  dispatchSelected: (menu: MenuProps) => () => void;
 };
 
 /**
  * 메뉴를 보여주는 테이블
  */
-function MenuTable({ menuList, selectedMenu, dispatchSelected }: TableProps) {
+function MenuTable({ menuList }: TableProps) {
   const isEmpty = menuList.length === 0;
+  const pathname = usePathname();
+  const searchParams = useSearchParams()!;
+
   return (
     <div className={styles.menu}>
       <ul className={styles.list}>
@@ -194,15 +118,25 @@ function MenuTable({ menuList, selectedMenu, dispatchSelected }: TableProps) {
           <li>해당 메뉴가 없습니다.</li>
         ) : (
           menuList.map((item, idx) => (
-            <li
+            <Link
+              href={{
+                pathname,
+                query: {
+                  menuName: item.name.eng,
+                },
+              }}
               key={idx}
-              className={
-                selectedMenu?.name.kor === item.name.kor ? styles.active : ""
-              }
+              replace
             >
-              {item.name.kor}
-              <button onClick={dispatchSelected(item)}></button>
-            </li>
+              <li
+                className={clsx({
+                  [styles.active]:
+                    searchParams.get("menuName") === item.name.eng,
+                })}
+              >
+                {item.name.kor}
+              </li>
+            </Link>
           ))
         )}
       </ul>

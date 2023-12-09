@@ -42,12 +42,14 @@ export async function postContentsOfSelectedMenu({
   userName,
   menuName,
   size,
+  temperature,
+  description,
 }: OrderItem) {
   const db = (await clientPromise).db(COFFEEBEAN.DB_NAME);
   const orderCollection = db.collection(COFFEEBEAN.COLLECTION.ORDER);
   return orderCollection.updateOne(
     { userName },
-    { $set: { menuName, size } },
+    { $set: { menuName, size, temperature, description } },
     { upsert: true }
   );
 }

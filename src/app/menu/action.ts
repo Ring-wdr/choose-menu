@@ -6,12 +6,16 @@ import { postContentsOfSelectedMenu } from "@/database/coffeebean/post";
 
 export async function postSelectedMenu(data: FormData) {
   const userName = getUserName()?.value!;
-  const { menuName, size } = Object.fromEntries(data) as Record<string, string>;
+  const { menuName, size, temperature, description } = Object.fromEntries(
+    data
+  ) as Record<string, string>;
   try {
     await postContentsOfSelectedMenu({
       userName,
       menuName,
       size,
+      temperature,
+      description,
     });
   } catch (e) {
     console.log(e);
