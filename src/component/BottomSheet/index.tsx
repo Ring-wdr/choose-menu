@@ -57,6 +57,20 @@ function getPosition(pos: number | `${number}%`, height: number) {
     : ~~((Number(pos.slice(0, -1)) * height) / 100);
 }
 
+function getBSPosition(bsRef: React.RefObject<HTMLDivElement>) {
+  return (
+    bsRef.current?.style
+      .getPropertyValue("--current-bs-position")
+      .slice(0, -2) || "0"
+  );
+}
+function setBSPosition(
+  bsRef: React.RefObject<HTMLDivElement>,
+  position: string
+) {
+  bsRef.current?.style.setProperty("--current-bs-position", position);
+}
+
 export type BottomSheetPortalProps = {
   /** 퍼센트(%, '20%') 입력시 비율, 숫자 입력시 고정 픽셀(px)
    * ```
@@ -96,28 +110,28 @@ export const BottomSheet = ({
   };
   const topPosition = getPosition(initPosition, bodyHeight);
 
-  const elementDrag = (e: ReactTouchEvent<HTMLDivElement>) => {
-    if (divRef.current === null) return;
-    const { clientY } = e.touches[0];
-    divRef.current.style.setProperty(
-      "translate",
-      `-50% ${clientY < topPosition ? (topPosition + clientY) / 2 : clientY}px`
-    );
-  };
+  const elementDrag = (e: ReactTouchEvent<HTMLDivElement>) =>
+    requestAnimationFrame(() => {
+      if (divRef.current === null) return;
+      const { clientY } = e.touches[0];
+      setBSPosition(
+        divRef,
+        `${clientY < topPosition ? (topPosition + clientY) / 2 : clientY}px`
+      );
+    });
 
-  const elementMouseDrag = (e: ReactMouseEvent) => {
-    e.preventDefault();
-    if (divRef.current === null || divRef.current.dataset.drag === "false")
-      return;
-
-    divRef.current.style.setProperty(
-      "translate",
-      `-50% ${
-        e.clientY < topPosition ? (topPosition + e.clientY) / 2 : e.clientY
-      }px`
-    );
-  };
-
+  const elementMouseDrag = (e: ReactMouseEvent) =>
+    requestAnimationFrame(() => {
+      e.preventDefault();
+      if (divRef.current === null || divRef.current.dataset.drag === "false")
+        return;
+      setBSPosition(
+        divRef,
+        `${
+          e.clientY < topPosition ? (topPosition + e.clientY) / 2 : e.clientY
+        }px`
+      );
+    });
   const closeDragElement = () => {
     if (divRef.current === null) return;
     dragStateOff();
@@ -130,9 +144,7 @@ export const BottomSheet = ({
      */
     const dividePercentage = Number(closePosition.slice(0, -1)) / 100;
     /** 현재 위치 */
-    const currentTopPosition = Number(
-      divRef.current.style.translate.split(" ")[1].slice(0, -2)
-    );
+    const currentTopPosition = Number(getBSPosition(divRef));
     /** 바텀 시트가 닫히는 기준 위치 */
     const standardClosePosition =
       bodyHeight * dividePercentage + topPosition * (1 - dividePercentage);
@@ -155,7 +167,7 @@ export const BottomSheet = ({
           diff: Number.MAX_SAFE_INTEGER,
         }
       );
-      divRef.current.style.setProperty("translate", `-50% ${calcPosition}px`);
+      setBSPosition(divRef, `${calcPosition}px`);
     } else {
       onCloseAction();
     }
@@ -165,16 +177,11 @@ export const BottomSheet = ({
     (e?: ReactMouseEvent<HTMLDivElement>) => {
       if (e && e.target !== e.currentTarget) return;
       /** 현재 위치 */
-      const currentTopPosition = Number(
-        divRef.current?.style.translate.split(" ")[1].slice(0, -2) || "0"
-      );
+      const currentTopPosition = Number(getBSPosition(divRef));
       document.body.style.removeProperty("overflow");
       executeAnimate(
         currentTopPosition,
-        (position) => (
-          divRef.current?.style.setProperty("translate", `-50% ${position}px`),
-          position + 30
-        ),
+        (position) => (setBSPosition(divRef, `${position}px`), position + 30),
         (position) => position < document.body.clientHeight
       );
       onClose && setTimeout(onClose, 300);
@@ -188,12 +195,12 @@ export const BottomSheet = ({
     if (isOpen) {
       setTimeout(() => {
         document.body.style.setProperty("overflow", "hidden");
-        divRef.current?.style.setProperty("translate", `-50% ${topPosition}px`);
+        setBSPosition(divRef, `${topPosition}px`);
       }, 100);
     } else {
       document.body.style.removeProperty("overflow");
       setTimeout(() => {
-        divRef.current?.style.removeProperty("translate");
+        divRef.current?.style.removeProperty("--current-bs-position");
       }, 100);
     }
   }, [isOpen, topPosition]);

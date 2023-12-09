@@ -119,7 +119,7 @@ function MenuController({ menuList }: MenuControllerProps) {
             <BS.BottomSheet
               initPosition={100}
               closePosition="60%"
-              breakPosition={["30%", "40%"]}
+              breakPosition={["20%", "30%", "40%"]}
               closeWhenBackdropClick={false}
             >
               <div className={styles.modal_container}>
