@@ -1,0 +1,65 @@
+.bottomSheet {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  --current-bs-position: 120%;
+  translate: -50% var(--current-bs-position);
+  max-width: 30rem;
+  width: 90vw;
+  min-height: 100%;
+  background: #fff;
+  bottom: 0;
+  transition: 150ms ease-out;
+  z-index: 100;
+  border-top-left-radius: 30px;
+  border-top-right-radius: 30px;
+  border: 1px solid black;
+  overflow-y: auto;
+  -ms-overflow-style: none; /* 인터넷 익스플로러 */
+  scrollbar-width: none; /* 파이어폭스 */
+}
+.bottomSheet[data-drag="true"] {
+  transition: none;
+}
+
+.bottomSheet::-webkit-scrollbar {
+  display: none;
+}
+
+.bottomSheet .handle {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  z-index: 5;
+  width: 100%;
+  height: var(--handle-height);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 1) 50%,
+    #ffffff4d 75%,
+    rgba(0, 212, 255, 0) 100%
+  );
+  touch-action: none;
+  cursor: pointer;
+}
+.bottomSheet .handle span {
+  height: 1px;
+  width: 5rem;
+  border: 3px solid gray;
+  border-radius: 3px;
+}
+
+.bottomSheet .children {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  height: calc(100vh - var(--current-bs-position));
+}
+
+.bottomSheet .handle + .children {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  height: calc(100vh - var(--handle-height) - var(--current-bs-position));
+}
