@@ -5,6 +5,8 @@ import { changeUserName, postSelectedMenu } from "./action";
 import Button from "@/component/Button";
 import BS from "@/component/BottomSheet";
 import styles from "./page.module.css";
+import BSStyles from "./menu_bottomsheet.module.css";
+import clsx from "clsx";
 
 // name part
 type NameSideProps = {
@@ -13,29 +15,35 @@ type NameSideProps = {
 
 export function ClientNameSide({ userName }: NameSideProps) {
   // modal state
-  const [nameChangeOpen, setNameChangeModal] = useState(false);
-  const modalOpen = () => setNameChangeModal(true);
+  const [isBSOpen, setBSOpen] = useState(false);
+  const bsOpen = () => setBSOpen(true);
+  const bsClose = () => setBSOpen(false);
   return (
     <div className={styles.name_section}>
       <p>{userName}님, 메뉴를 고르세요</p>
-      <Button onClick={modalOpen}>이름 변경</Button>
-      {nameChangeOpen ? (
-        <BS onToggle={setNameChangeModal} isOpen={nameChangeOpen}>
+      <Button onClick={bsOpen}>이름 변경</Button>
+      {isBSOpen ? (
+        <BS isOpen={isBSOpen} onClose={bsClose}>
           <BS.BottomSheet>
-            <div className={styles.modal_container}>
-              <p>이름을 변경하세요.</p>
-              <form action={changeUserName}>
-                <input
-                  type="text"
-                  name="userName"
-                  placeholder={userName}
-                  required
-                  title="같은 이름은 입력할 수 없습니다."
-                  pattern={`^(?:(?!${userName}).)*$`}
-                  maxLength={4}
-                />
-                <Button fullWidth>변경</Button>
-              </form>
+            <div className={clsx(BSStyles.bottomSheet)}>
+              <BS.Handle className={clsx(BSStyles.handle)} />
+              <div className={styles.modal_container}>
+                <p>이름을 변경하세요.</p>
+                <form action={changeUserName}>
+                  <input
+                    type="text"
+                    name="userName"
+                    placeholder={userName}
+                    required
+                    title="같은 이름은 입력할 수 없습니다."
+                    pattern={`^(?:(?!${userName}).)*$`}
+                    maxLength={4}
+                  />
+                  <BS.Submit fullWidth closeOnSubmit>
+                    변경
+                  </BS.Submit>
+                </form>
+              </div>
             </div>
           </BS.BottomSheet>
         </BS>
@@ -97,7 +105,7 @@ const coffeeSize = ["L", "M", "S"] as const;
 
 function MenuController({ menuList }: MenuControllerProps) {
   // selected Menu state
-  const [isModalOpen, setModal] = useState(false);
+  const [isBSOpen, setModal] = useState(false);
   const [selectedMenu, setMenu] = useState<MenuProps | null>(null);
   const dispatchSelected = (menu: MenuProps) => () => setMenu(menu);
   const menuNameId = useId();
@@ -114,41 +122,46 @@ function MenuController({ menuList }: MenuControllerProps) {
         <Button fullWidth onClick={() => selectedMenu && setModal(true)}>
           메뉴 선택
         </Button>
-        {isModalOpen ? (
-          <BS onToggle={setModal} isOpen={isModalOpen}>
-            <BS.BottomSheet
-              initPosition={100}
-              closePosition="60%"
-              breakPosition={["30%", "40%"]}
-              closeWhenBackdropClick={false}
-            >
-              <div className={styles.modal_container}>
-                <form action={postSelectedMenu}>
-                  <input
-                    id={menuNameId}
-                    type="text"
-                    name="menuName"
-                    value={selectedMenu?.name.kor}
-                    hidden
-                    readOnly
-                  />
-                  <div className={styles["menu-column"]}>
-                    <label htmlFor={menuNameId}>메뉴이름</label>
-                    <span>[{selectedMenu?.name.kor}]</span>
-                  </div>
-                  <div className={styles["menu-column"]}>
-                    <label htmlFor={sizeId}>사이즈</label>
-                    <select id={sizeId} name="size">
-                      {coffeeSize.map((size) => (
-                        <option key={size} value={size}>
-                          {size}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <p>선택하시겠습니까?</p>
-                  <Button fullWidth>확인</Button>
-                </form>
+        {isBSOpen ? (
+          <BS
+            onClose={() => setModal(false)}
+            isOpen={isBSOpen}
+            initPosition={100}
+            closePosition="60%"
+            breakPosition={["20%", "30%", "40%"]}
+            closeWhenBackdropClick={false}
+          >
+            <BS.BottomSheet>
+              <div className={clsx(BSStyles.bottomSheet)}>
+                <BS.Handle className={clsx(BSStyles.handle)} />
+                <div className={styles.modal_container}>
+                  <form action={postSelectedMenu}>
+                    <input
+                      id={menuNameId}
+                      type="text"
+                      name="menuName"
+                      value={selectedMenu?.name.kor}
+                      hidden
+                      readOnly
+                    />
+                    <div className={styles["menu-column"]}>
+                      <label htmlFor={menuNameId}>메뉴이름</label>
+                      <span>[{selectedMenu?.name.kor}]</span>
+                    </div>
+                    <div className={styles["menu-column"]}>
+                      <label htmlFor={sizeId}>사이즈</label>
+                      <select id={sizeId} name="size">
+                        {coffeeSize.map((size) => (
+                          <option key={size} value={size}>
+                            {size}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <p>선택하시겠습니까?</p>
+                    <Button fullWidth>확인</Button>
+                  </form>
+                </div>
               </div>
             </BS.BottomSheet>
           </BS>
