@@ -1,26 +1,12 @@
 "use server";
 
-import {
-  crawlAndSaveCategory,
-  crawlAndSaveMenu,
-} from "@/database/coffeebean/post";
+import { crawlAndSaveMenu } from "@/database/coffeebean/post";
 
-type CategoryCrawlType =
-  | Awaited<ReturnType<typeof crawlAndSaveCategory>>["categoryList"]
-  | string;
-
-export const crawlCategoriesFromExternal = async (
-  _: CategoryCrawlType,
-  data: FormData
-): Promise<CategoryCrawlType> => {
+export const crawlDataFromExternal = async (_: string[], data: FormData) => {
   const { masterKey } = Object.fromEntries(data);
   if (masterKey !== process.env.ADMIN_PASSWORD)
-    return "크롤링 권한이 없습니다.";
-  const res = await crawlAndSaveCategory();
-  return res.categoryList;
-};
+    return ["크롤링 권한이 없습니다."];
 
-export const crawlMenuFromExternal = async () => {
   const res = await crawlAndSaveMenu();
-  return res.menuList;
+  return Object.entries(res.insertedIds).map(([_, value]) => value.toString());
 };

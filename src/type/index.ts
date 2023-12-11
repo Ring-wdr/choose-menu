@@ -16,17 +16,11 @@ export const initialIngredient = ingredientList.reduce(
 ) as Readonly<Record<IngredientKey, number>>;
 
 export type MenuContentsProps = {
-  category: string;
+  title: string;
   list: MenuProps[];
 };
 
-export type Category = {
-  title: string;
-  category: string;
-};
-
 export type MenuProps = {
-  category: string;
   photo: string;
   name: {
     kor: string;
