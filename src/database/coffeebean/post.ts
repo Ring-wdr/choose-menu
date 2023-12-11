@@ -3,6 +3,7 @@ import { getCategories, getMenuFromPages } from "@/crawling";
 import { COFFEEBEAN } from ".";
 import { MenuProps, OrderItem } from "@/type";
 import { getCategoryList } from "./get";
+import { revalidatePath } from "next/cache";
 
 export async function crawlAndSaveCategory() {
   const db = (await clientPromise).db(COFFEEBEAN.DB_NAME);
@@ -32,6 +33,7 @@ export async function crawlAndSaveMenu() {
     menuList.push(...menu);
   }
   const response = menuCollection.insertMany(menuList);
+  revalidatePath("/menu", "page");
   return {
     menuList,
     response,
