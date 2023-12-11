@@ -1,4 +1,4 @@
-import Button from "@/component/Button";
+import LoadingButton from "./Component/LoadingButton";
 import { action } from "./action";
 import styles from "./page.module.css";
 
@@ -8,7 +8,7 @@ export default function Home() {
       <form action={action} className={styles.description}>
         <h3>이름을 입력하세요</h3>
         <input type="text" name="userName" required />
-        <Button fullWidth>선택</Button>
+        <LoadingButton />
       </form>
     </main>
   );
