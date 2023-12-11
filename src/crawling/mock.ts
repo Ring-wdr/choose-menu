@@ -18,7 +18,8 @@ const MENULIST = [
     { kor: "카페모카", eng: "Cafe Moca" },
     { kor: "콜드브루", eng: "Cold Brew" },
   ].map((name) => ({
-    photo: "none",
+    photo:
+      "https://www.coffeebeankorea.com/data/menu/에스프레소-피넛-초콜릿-라떼_1.jpg",
     name,
     description: name.kor,
     info: initialIngredient,
@@ -46,7 +47,8 @@ const MENULIST = [
       eng: "Icetea with shot",
     },
   ].map((name) => ({
-    photo: "none",
+    photo:
+      "https://www.coffeebeankorea.com/data/menu/에스프레소-피넛-초콜릿-라떼_1.jpg",
     name,
     description: name.kor,
     info: initialIngredient,
