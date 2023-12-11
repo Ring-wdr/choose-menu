@@ -8,6 +8,7 @@ import { postSelectedMenu } from "../action";
 import clsx from "clsx";
 import styles from "../page.module.css";
 import BSStyles from "./bottomsheet.module.css";
+import Image from "next/image";
 
 // menu part
 const ALL_MENU = "전체";
@@ -106,6 +107,9 @@ type TableProps = {
   dispatchSelected: (menu: MenuProps) => () => void;
 };
 
+const imgPlaceholder =
+  "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFklEQVR42mN8//HLfwYiAOOoQvoqBABbWyZJf74GZgAAAABJRU5ErkJggg==";
+
 /**
  * 메뉴를 보여주는 테이블
  */
@@ -117,15 +121,27 @@ function MenuTable({ menuList, selectedMenu, dispatchSelected }: TableProps) {
         {isEmpty ? (
           <li>해당 메뉴가 없습니다.</li>
         ) : (
-          menuList.map((item, idx) => (
+          menuList.map((item) => (
             <li
-              key={idx}
+              key={item.name.kor}
               className={
                 selectedMenu?.name.kor === item.name.kor ? styles.active : ""
               }
             >
-              {item.name.kor}
-              <button onClick={dispatchSelected(item)}></button>
+              <button onClick={dispatchSelected(item)}>
+                <div className={styles["img-container"]}>
+                  <Image
+                    src={item.photo}
+                    alt={item.name.eng || "coffee"}
+                    fill
+                    placeholder={imgPlaceholder}
+                  />
+                </div>
+                <div className={styles["txt-container"]}>
+                  <span>{item.name.kor}</span>
+                  <span>{item.name.eng}</span>
+                </div>
+              </button>
             </li>
           ))
         )}
