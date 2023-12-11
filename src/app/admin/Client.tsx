@@ -2,7 +2,7 @@
 
 import Button from "@/component/Button";
 import { useFormState, useFormStatus } from "react-dom";
-import { crawlDataFromExternal } from "./action";
+import { crawlCategoriesFromExternal, crawlMenuFromExternal } from "./action";
 import { useId } from "react";
 
 function SubmitButton() {
@@ -15,21 +15,32 @@ function SubmitButton() {
 }
 
 export default function Client() {
-  const [sendState, formAction] = useFormState(crawlDataFromExternal, []);
+  const [sendState, formAction] = useFormState(crawlCategoriesFromExternal, "");
+  const [sendMenu, menuAction] = useFormState(crawlMenuFromExternal, []);
   const masterKey = useId();
   return (
     <div>
       <form action={formAction}>
-        <label htmlFor={masterKey}>크롤링 권한 비밀번호</label>
+        <label htmlFor={masterKey}>(크롤링) 메뉴 업데이트</label>
         <input type="text" id={masterKey} name="masterKey" />
         <SubmitButton />
       </form>
       <p>실행 결과</p>
       <ul>
-        {sendState.map((str, idx) => (
-          <li key={idx}>{str}</li>
-        ))}
+        {typeof sendState === "string" ? (
+          <li>{sendState || "크롤링 대기 중"}</li>
+        ) : null}
+        {Array.isArray(sendState)
+          ? sendState.map(({ title, category }, idx) => (
+              <li key={idx}>
+                {title}: {category}
+              </li>
+            ))
+          : null}
       </ul>
+      <form action={menuAction}>
+        <button> 메뉴 크롤링...</button>
+      </form>
     </div>
   );
 }
