@@ -1,7 +1,7 @@
 import { cache } from "react";
-import { COFFEEBEAN } from ".";
 import { Category, MenuProps, OrderItem } from "@/type";
-import clientPromise from "..";
+import clientPromise from "@/database";
+import { COFFEEBEAN } from ".";
 import { MOCK } from "@/crawling/mock";
 
 export const getOrderedList = async () => {
@@ -19,6 +19,13 @@ export const getCategoryList = async () => {
   return categoryCollection.find().toArray();
 };
 
+/** cached method */
+export const cachedGetCategoryList = cache(async () => {
+  if (process.env.NODE_ENV === "development") return MOCK.CATEGORY_LIST;
+  const categoryList = await getCategoryList();
+  return categoryList.map((menu) => ({ ...menu, _id: menu._id.toString() }));
+});
+
 export const getMenuList = async (): Promise<MenuProps[]> => {
   if (process.env.NODE_ENV === "development") return MOCK.MENULIST;
   const db = (await clientPromise).db(COFFEEBEAN.DB_NAME);
@@ -34,10 +41,10 @@ export const cachedGetMenuList = cache(getMenuList);
 export const getMenuListById = async (
   category: string
 ): Promise<MenuProps[]> => {
-  // if (process.env.NODE_ENV === "development") {
-  //   const menuById = MOCK.MENULIST.filter((menu) => menu.category === category);
-  //   return menuById;
-  // }
+  if (process.env.NODE_ENV === "development") {
+    const menuById = MOCK.MENULIST.filter((menu) => menu.category === category);
+    return menuById;
+  }
 
   const db = (await clientPromise).db(COFFEEBEAN.DB_NAME);
   const menuCollection = db.collection<MenuProps>(COFFEEBEAN.COLLECTION.MENU);
@@ -46,10 +53,3 @@ export const getMenuListById = async (
     _id: item._id.toString(),
   }));
 };
-
-/** cached method */
-export const cachedGetCategoryList = cache(async () => {
-  // if (process.env.NODE_ENV === "development") return MOCK.CATEGORY_LIST;
-  const categoryList = await getCategoryList();
-  return categoryList.map((menu) => ({ ...menu, _id: menu._id.toString() }));
-});
