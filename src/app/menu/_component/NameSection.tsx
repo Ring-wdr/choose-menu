@@ -6,7 +6,7 @@ import { getUserNameFromSession } from "../action";
 import Button from "@/component/Button";
 import BS from "@/component/BottomSheet";
 import { NameChangeForm } from "./Form";
-import styles from "../page.module.css";
+import styles from "../layout.module.css";
 import BSStyles from "./bottomsheet.module.css";
 
 export default function NameSection() {

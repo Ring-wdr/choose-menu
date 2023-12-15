@@ -1,5 +1,7 @@
 :root {
   --header-height: 50px;
+  --name-section-height: 85px;
+  --category-height: 4.5rem;
 }
 * {
   box-sizing: border-box;

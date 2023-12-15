@@ -1,20 +1,9 @@
 .client {
-  height: calc(100% - var(--header-height, 50px));
-  --name-section-height: 85px;
-  --category-height: 4.5rem;
-}
-
-/** name section */
-.name_section {
-  display: flex;
-  justify-content: space-between;
-  padding: 1rem 2rem;
-  height: var(--name-section-height);
-  background-color: beige;
+  height: calc(100% - var(--name-section-height) - var(--header-height, 50px));
 }
 
 .menu_container {
-  height: calc(100% - var(--name-section-height) - var(--category-height));
+  height: calc(100% - var(--category-height));
   overflow: scroll;
   --footer-height: 5rem;
 }

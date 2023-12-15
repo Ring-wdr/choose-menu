@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { Category, MenuProps } from "@/type";
+import Image from "next/image";
 import Button from "@/component/Button";
 import BS from "@/component/BottomSheet";
 import { MenuSubmitForm } from "./Form";
@@ -8,7 +9,6 @@ import { postSelectedMenu } from "../action";
 import clsx from "clsx";
 import styles from "../page.module.css";
 import BSStyles from "./bottomsheet.module.css";
-import Image from "next/image";
 
 // menu part
 const ALL_MENU = "전체";
