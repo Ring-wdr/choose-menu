@@ -2,7 +2,7 @@ import {
   cachedGetCategoryList,
   cachedGetMenuList,
 } from "@/database/coffeebean/get";
-import MenuContents from "./Component/Menu";
+import MenuContents from "./_component/Menu";
 
 export default async function Menu() {
   const categories = await cachedGetCategoryList();

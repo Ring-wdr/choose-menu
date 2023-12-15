@@ -41,3 +41,7 @@ export type OrderItem = {
   menuName: string;
   size: string;
 };
+
+export type OrderBlock = {
+  status: boolean;
+};

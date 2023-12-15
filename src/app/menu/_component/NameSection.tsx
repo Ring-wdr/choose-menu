@@ -22,7 +22,6 @@ export default function NameSection() {
 
   return (
     <div className={styles.name_section}>
-      <form action={formAction} hidden />
       <p>
         {userName
           ? `${userName}님, 메뉴를 고르세요`
