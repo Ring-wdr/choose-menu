@@ -1,5 +1,8 @@
 :root {
   --header-height: 50px;
+  --name-section-height: 85px;
+  --category-height: 4.5rem;
+  --button-color-main: rgb(105, 81, 157);
 }
 * {
   box-sizing: border-box;
@@ -12,6 +15,10 @@ html {
 body {
   margin: 0;
   height: 100%;
+}
+
+button {
+  cursor: pointer;
 }
 
 a {

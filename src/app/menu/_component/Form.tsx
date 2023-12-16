@@ -35,10 +35,12 @@ type MenuSubmitProps = {
 };
 
 const coffeeSize = ["L", "M", "S"] as const;
+const temperatures = ["HOT", "ICE"] as const;
 
 export function MenuSubmitForm({ selectedMenu, formAction }: MenuSubmitProps) {
   const menuNameId = useId();
   const sizeId = useId();
+  const tId = useId();
   return (
     <div className={styles.modal_container}>
       <form action={formAction}>
@@ -60,6 +62,16 @@ export function MenuSubmitForm({ selectedMenu, formAction }: MenuSubmitProps) {
             {coffeeSize.map((size) => (
               <option key={size} value={size}>
                 {size}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className={styles["menu-column"]}>
+          <label htmlFor={tId}>온도</label>
+          <select id={tId} name="temperature">
+            {temperatures.map((temp) => (
+              <option key={temp} value={temp}>
+                {temp}
               </option>
             ))}
           </select>

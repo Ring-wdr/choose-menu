@@ -1,11 +1,14 @@
-import NameSection from "./Component/NameSection";
-import styles from "./page.module.css";
+import NameSection from "./_component/NameSection";
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+export default async function Layout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <div className={styles.client}>
+    <>
       <NameSection />
       {children}
-    </div>
+    </>
   );
 }

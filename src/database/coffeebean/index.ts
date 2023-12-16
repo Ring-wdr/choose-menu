@@ -3,6 +3,7 @@ export const COFFEEBEAN = {
   COLLECTION: {
     CATEGORY: "category",
     ORDER: "order",
+    ORDER_BLOCK: "orderBlock",
     MENU: "menu",
   },
 } as const;

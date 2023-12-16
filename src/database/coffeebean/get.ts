@@ -1,5 +1,5 @@
 import { cache } from "react";
-import { Category, MenuProps, OrderItem } from "@/type";
+import { Category, MenuProps, OrderBlock, OrderItem } from "@/type";
 import clientPromise from "@/database";
 import { COFFEEBEAN } from ".";
 import { MOCK } from "@/crawling/mock";
@@ -52,4 +52,12 @@ export const getMenuListById = async (
     ...item,
     _id: item._id.toString(),
   }));
+};
+
+export const getOrderBlock = async () => {
+  const db = (await clientPromise).db(COFFEEBEAN.DB_NAME);
+  const orderBlock = db.collection<OrderBlock>(
+    COFFEEBEAN.COLLECTION.ORDER_BLOCK
+  );
+  return orderBlock.findOne();
 };

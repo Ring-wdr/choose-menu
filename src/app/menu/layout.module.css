@@ -1,0 +1,14 @@
+/** name section */
+.name_section {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+  height: var(--name-section-height);
+  background-color: beige;
+}
+
+.name_section button {
+  background-color: var(--button-color-main);
+  border: 1px solid saddlebrown;
+  color: #fff;
+}

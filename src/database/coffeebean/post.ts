@@ -1,9 +1,9 @@
+import { revalidatePath } from "next/cache";
 import clientPromise from "..";
-import { getCategories, getMenuFromPages } from "@/crawling";
 import { COFFEEBEAN } from ".";
+import { getCategories, getMenuFromPages } from "@/crawling";
 import { MenuProps, OrderItem } from "@/type";
 import { getCategoryList } from "./get";
-import { revalidatePath } from "next/cache";
 
 export async function crawlAndSaveCategory() {
   const db = (await clientPromise).db(COFFEEBEAN.DB_NAME);
@@ -44,12 +44,17 @@ export async function postContentsOfSelectedMenu({
   userName,
   menuName,
   size,
+  temperature,
 }: OrderItem) {
   const db = (await clientPromise).db(COFFEEBEAN.DB_NAME);
   const orderCollection = db.collection(COFFEEBEAN.COLLECTION.ORDER);
   return orderCollection.updateOne(
     { userName },
-    { $set: { menuName, size } },
-    { upsert: true }
+    {
+      $set: { menuName, size, temperature },
+      $currentDate: {
+        orderDate: { $type: "date" },
+      },
+    }
   );
 }

@@ -2,7 +2,9 @@ import {
   cachedGetCategoryList,
   cachedGetMenuList,
 } from "@/database/coffeebean/get";
-import MenuContents from "./Component/Menu";
+import MenuContents from "./_component/Menu";
+import BlockPage from "../_component/BlockPage";
+import styles from "./page.module.css";
 
 export default async function Menu() {
   const categories = await cachedGetCategoryList();
@@ -10,5 +12,10 @@ export default async function Menu() {
   if (!menuList || menuList.length === 0) {
     return <div>현재 메뉴를 불러올 수 없습니다.</div>;
   }
-  return <MenuContents categories={categories} menuList={menuList} />;
+  return (
+    <div className={styles.client}>
+      <MenuContents categories={categories} menuList={menuList} />
+      <BlockPage />
+    </div>
+  );
 }

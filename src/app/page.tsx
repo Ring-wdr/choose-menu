@@ -1,4 +1,4 @@
-import LoadingButton from "./Component/LoadingButton";
+import LoadingButton from "./_component/LoadingButton";
 import { action } from "./action";
 import styles from "./page.module.css";
 
