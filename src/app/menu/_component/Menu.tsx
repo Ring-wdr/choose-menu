@@ -1,14 +1,14 @@
 "use client";
 import { useState } from "react";
-import { Category, MenuProps } from "@/type";
 import Image from "next/image";
 import Button from "@/component/Button";
-import BS from "@/component/BottomSheet";
+import { startSafeViewTransition } from "@/hooks/startSafeViewTransition";
+import { Category, MenuProps } from "@/type";
+import MenuCard from "./MenuCard";
 import { MenuSubmitForm } from "./Form";
 import { postSelectedMenu } from "../action";
-import clsx from "clsx";
 import styles from "../page.module.css";
-import BSStyles from "./bottomsheet.module.css";
+import MenuBottomSheet from "./MenuBottomSheet";
 
 // menu part
 const ALL_MENU = "전체";
@@ -63,7 +63,12 @@ function MenuController({ menuList }: MenuControllerProps) {
   // selected Menu state
   const [isBSOpen, setModal] = useState(false);
   const [selectedMenu, setMenu] = useState<MenuProps | null>(null);
-  const dispatchSelected = (menu: MenuProps) => () => setMenu(menu);
+  const dispatchSelected = (menu: MenuProps) => () => {
+    const isWidthWideEnough =
+      window.innerWidth / window.innerHeight >= 8 / 5 ||
+      window.innerHeight >= 768;
+    startSafeViewTransition(() => setMenu(menu), isWidthWideEnough);
+  };
 
   return (
     <>
@@ -73,28 +78,26 @@ function MenuController({ menuList }: MenuControllerProps) {
         dispatchSelected={dispatchSelected}
       />
       <div className={styles.footer}>
-        <Button fullWidth onClick={() => selectedMenu && setModal(true)}>
+        <Button
+          fullWidth
+          onClick={() =>
+            selectedMenu ? setModal(true) : alert("메뉴를 선택해주세요.")
+          }
+        >
           메뉴 선택
         </Button>
         {selectedMenu && isBSOpen ? (
-          <BS
+          <MenuBottomSheet
             onClose={() => setModal(false)}
             isOpen={isBSOpen}
             initPosition={100}
             closePosition="50%"
           >
-            <BS.BottomSheet>
-              <div className={clsx(BSStyles.bottomSheet)}>
-                <BS.Handle className={clsx(BSStyles.handle)} />
-                <div className={BSStyles.children}>
-                  <MenuSubmitForm
-                    selectedMenu={selectedMenu}
-                    formAction={postSelectedMenu}
-                  />
-                </div>
-              </div>
-            </BS.BottomSheet>
-          </BS>
+            <MenuSubmitForm
+              selectedMenu={selectedMenu}
+              formAction={postSelectedMenu}
+            />
+          </MenuBottomSheet>
         ) : null}
       </div>
     </>
@@ -117,6 +120,7 @@ function MenuTable({ menuList, selectedMenu, dispatchSelected }: TableProps) {
   const isEmpty = menuList.length === 0;
   return (
     <div className={styles.menu}>
+      <MenuCard className={styles.card} selectedMenu={selectedMenu} />
       <ul className={styles.list}>
         {isEmpty ? (
           <li>해당 메뉴가 없습니다.</li>
