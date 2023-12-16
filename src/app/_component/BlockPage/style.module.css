@@ -3,10 +3,13 @@
   height: 100%;
   background-color: rgba(0, 0, 0, 0.2);
   color: aliceblue;
-  font-size: 4rem;
+  font-size: 2rem;
   position: absolute;
   top: 0;
   display: flex;
   justify-content: center;
   align-items: center;
+  text-shadow: -1px -1px 0 var(--button-color-main),
+    1px -1px 0 var(--button-color-main), -1px 1px 0 var(--button-color-main),
+    1px 1px 0 var(--button-color-main);
 }

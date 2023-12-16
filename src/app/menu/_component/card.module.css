@@ -1,0 +1,29 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.container .item {
+  width: 80%;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.container .fallback {
+  width: 200px;
+  height: 200px;
+  background: #aaaaaa;
+}
+.container p {
+  margin: 0.5rem;
+  text-align: center;
+}
+.container pre {
+  height: 100px;
+  padding: 1rem;
+  width: 80%;
+  text-align: center;
+  word-break: keep-all;
+  white-space: normal;
+}

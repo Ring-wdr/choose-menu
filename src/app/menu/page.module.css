@@ -1,9 +1,11 @@
 .client {
-  height: calc(100% - var(--name-section-height) - var(--header-height, 50px));
+  --upper-client: calc(var(--name-section-height) + var(--header-height, 50px));
+  height: calc(100% - var(--upper-client));
 }
 
 .menu_container {
-  height: calc(100% - var(--category-height));
+  --container-height: calc(100% - var(--category-height));
+  height: var(--container-height);
   overflow: scroll;
   --footer-height: 5rem;
 }
@@ -20,7 +22,7 @@
 }
 
 .category button {
-  background: rgb(105, 81, 157);
+  background: var(--button-color-main);
   color: white;
   outline: none;
   border: 1px solid saddlebrown;
@@ -36,11 +38,17 @@
 
 .menu {
   min-height: calc(100% - var(--footer-height) - 4rem);
-  margin-bottom: 3rem;
+  width: 100%;
+}
+
+.menu .card {
+  display: none;
 }
 
 .menu .list {
+  width: 100%;
   padding: 0;
+  margin-bottom: var(--footer-height);
 }
 .menu .list li {
   position: relative;
@@ -97,10 +105,10 @@
 }
 
 .menu_container .footer {
-  position: sticky;
-  bottom: 0;
+  position: absolute;
   padding: 1rem;
-  height: var(--footer-height);
+  width: 100%;
+  top: calc(100% - var(--footer-height));
 }
 
 .menu_container .footer button {
@@ -108,4 +116,25 @@
   color: white;
   outline: none;
   border: 1px solid saddlebrown;
+  cursor: pointer;
+}
+
+@media (min-aspect-ratio: 8/5) and (min-height: 768px) {
+  .menu {
+    display: flex;
+  }
+  .menu_container .menu .card {
+    display: flex;
+    width: 50%;
+    height: calc(
+      100vh - var(--upper-client) - var(--category-height) -
+        var(--footer-height)
+    );
+    position: sticky;
+    top: 0;
+  }
+  .menu_container .menu .card + .list {
+    width: 50%;
+    max-width: 50%;
+  }
 }

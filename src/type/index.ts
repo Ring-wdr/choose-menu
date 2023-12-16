@@ -40,6 +40,7 @@ export type OrderItem = {
   userName: string;
   menuName: string;
   size: string;
+  temperature: string;
 };
 
 export type OrderBlock = {

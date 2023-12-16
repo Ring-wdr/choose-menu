@@ -77,7 +77,7 @@ function BottomSheetlMain({
     if (dragRef.current) dragRef.current.dataset.drag = "false";
   };
   /** 페이지의 크기 */
-  const bodyHeight = useScreenSize();
+  const { height: bodyHeight } = useScreenSize();
   const topPosition = getPosition(initPosition, bodyHeight);
   const onCloseAction = useCallback(
     (e?: ReactMouseEvent<HTMLElement>) => {
