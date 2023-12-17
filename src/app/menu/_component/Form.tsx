@@ -1,10 +1,10 @@
 import { useId } from "react";
 import { MenuProps } from "@/type";
-import Button from "@/component/Button";
 import Radio from "@/component/Radio";
 import BS from "@/component/BottomSheet";
-import styles from "./modal.module.css";
 import Toggle from "@/component/Toggle";
+import LoadingButton from "@/component/Loading/Button";
+import styles from "./modal.module.css";
 
 type NameChangeProps = {
   userName: string;
@@ -90,7 +90,7 @@ export function MenuSubmitForm({ selectedMenu, formAction }: MenuSubmitProps) {
           <Toggle name="decaf" />
         </div>
         <p>선택하시겠습니까?</p>
-        <Button fullWidth>확인</Button>
+        <LoadingButton />
       </form>
     </div>
   );
