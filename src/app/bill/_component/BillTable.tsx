@@ -1,14 +1,15 @@
 "use client";
 import {
-  DragEvent,
-  Fragment,
-  TouchEvent,
+  useState,
   useEffect,
   useRef,
-  useState,
+  Fragment,
+  DragEvent,
+  TouchEvent,
 } from "react";
-import styles from "../page.module.css";
 import { AggTableProps } from "../page";
+import styles from "../page.module.css";
+import Button from "@/component/Button";
 
 type BillTableProps = {
   data: AggTableProps[];
@@ -17,7 +18,14 @@ type BillTableProps = {
 const onDragOver = (e: DragEvent<HTMLTableRowElement>) => e.preventDefault();
 
 export default function BillTable({ data }: BillTableProps) {
+  // order state
   const [orders, setOrders] = useState(data);
+  const updateOrder = () => {
+    fetch("/api/bill")
+      .then((res) => res.json())
+      .then((data) => setOrders(data));
+  };
+
   const currentIndexRef = useRef<AggTableProps | null>(null);
   const targetIndexRef = useRef<AggTableProps | null>(null);
   const currnentY = useRef(0);
@@ -119,39 +127,44 @@ export default function BillTable({ data }: BillTableProps) {
   }, []);
 
   return (
-    <table className={styles.table} onMouseLeave={onMouseLeave}>
-      <thead>
-        <tr>
-          <th>상품명</th>
-          <th>수량</th>
-        </tr>
-      </thead>
-      <tbody>
-        {orders.map((order) => (
-          <Fragment key={order.id}>
-            <tr
-              draggable
-              data-index={order.id}
-              onDragStart={onDragStart(order)}
-              onDragEnter={onDragEnter(order)}
-              onDragEnd={onDragEnd}
-              onDragOver={onDragOver}
-              onTouchStart={onTouchStart}
-              onTouchMove={onTouchMove}
-              onTouchEnd={onTouchEnd}
-            >
-              <td>{order.title}</td>
-              <td>{order.count}</td>
-            </tr>
-            {order.decaf && (
-              <tr>
-                <td>ㄴ DECAF</td>
-                <td></td>
+    <div className={styles.container}>
+      <Button variant="large" onClick={updateOrder}>
+        계산서 재요청
+      </Button>
+      <table className={styles.table} onMouseLeave={onMouseLeave}>
+        <thead>
+          <tr>
+            <th>상품명</th>
+            <th>수량</th>
+          </tr>
+        </thead>
+        <tbody>
+          {orders.map((order) => (
+            <Fragment key={order.id}>
+              <tr
+                draggable
+                data-index={order.id}
+                onDragStart={onDragStart(order)}
+                onDragEnter={onDragEnter(order)}
+                onDragEnd={onDragEnd}
+                onDragOver={onDragOver}
+                onTouchStart={onTouchStart}
+                onTouchMove={onTouchMove}
+                onTouchEnd={onTouchEnd}
+              >
+                <td>{order.title}</td>
+                <td>{order.count}</td>
               </tr>
-            )}
-          </Fragment>
-        ))}
-      </tbody>
-    </table>
+              {order.decaf && (
+                <tr>
+                  <td>ㄴ DECAF</td>
+                  <td></td>
+                </tr>
+              )}
+            </Fragment>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 }
