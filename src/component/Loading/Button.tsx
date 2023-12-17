@@ -9,7 +9,7 @@ export default function LoadingButton() {
   const { pending } = useFormStatus();
   return (
     <>
-      <Button fullWidth>선택</Button>
+      <Button fullWidth>{pending ? "요청 중..." : "선택"}</Button>
       {pending && (
         <Modal isOpen={pending}>
           <Modal.Portal>
