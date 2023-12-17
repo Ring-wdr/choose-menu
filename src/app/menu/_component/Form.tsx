@@ -1,8 +1,10 @@
 import { useId } from "react";
 import { MenuProps } from "@/type";
-import BS from "@/component/BottomSheet";
 import Button from "@/component/Button";
+import Radio from "@/component/Radio";
+import BS from "@/component/BottomSheet";
 import styles from "./modal.module.css";
+import Toggle from "@/component/Toggle";
 
 type NameChangeProps = {
   userName: string;
@@ -39,8 +41,8 @@ const temperatures = ["HOT", "ICE"] as const;
 
 export function MenuSubmitForm({ selectedMenu, formAction }: MenuSubmitProps) {
   const menuNameId = useId();
-  const sizeId = useId();
-  const tId = useId();
+  const decafId = useId();
+
   return (
     <div className={styles.modal_container}>
       <form action={formAction}>
@@ -53,28 +55,39 @@ export function MenuSubmitForm({ selectedMenu, formAction }: MenuSubmitProps) {
           readOnly
         />
         <div className={styles["menu-column"]}>
-          <label htmlFor={menuNameId}>메뉴이름</label>
           <span>[{selectedMenu?.name.kor}]</span>
         </div>
         <div className={styles["menu-column"]}>
-          <label htmlFor={sizeId}>사이즈</label>
-          <select id={sizeId} name="size">
-            {coffeeSize.map((size) => (
-              <option key={size} value={size}>
-                {size}
-              </option>
+          <label>사이즈</label>
+          <div className={styles.radio}>
+            {coffeeSize.map((size, idx) => (
+              <Radio
+                key={size}
+                name="size"
+                value={size}
+                label={size}
+                defaultChecked={idx === 0}
+              />
             ))}
-          </select>
+          </div>
         </div>
         <div className={styles["menu-column"]}>
-          <label htmlFor={tId}>온도</label>
-          <select id={tId} name="temperature">
-            {temperatures.map((temp) => (
-              <option key={temp} value={temp}>
-                {temp}
-              </option>
+          <label>온도</label>
+          <div className={styles.radio}>
+            {temperatures.map((temperature, idx) => (
+              <Radio
+                key={temperature}
+                name="temperature"
+                value={temperature}
+                label={temperature}
+                defaultChecked={idx === 0}
+              />
             ))}
-          </select>
+          </div>
+        </div>
+        <div className={styles["menu-column"]}>
+          <label htmlFor={decafId}>디카페인</label>
+          <Toggle name="decaf" />
         </div>
         <p>선택하시겠습니까?</p>
         <Button fullWidth>확인</Button>

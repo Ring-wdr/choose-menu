@@ -40,21 +40,8 @@ export async function crawlAndSaveMenu() {
   };
 }
 
-export async function postContentsOfSelectedMenu({
-  userName,
-  menuName,
-  size,
-  temperature,
-}: OrderItem) {
+export async function postContentsOfSelectedMenu(props: OrderItem) {
   const db = (await clientPromise).db(COFFEEBEAN.DB_NAME);
   const orderCollection = db.collection(COFFEEBEAN.COLLECTION.ORDER);
-  return orderCollection.updateOne(
-    { userName },
-    {
-      $set: { menuName, size, temperature },
-      $currentDate: {
-        orderDate: { $type: "date" },
-      },
-    }
-  );
+  return orderCollection.insertOne(props);
 }
