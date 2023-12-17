@@ -8,7 +8,64 @@ export const getOrderedList = async () => {
   const db = (await clientPromise).db(COFFEEBEAN.DB_NAME);
   const orderCollection = db.collection<OrderItem>(COFFEEBEAN.COLLECTION.ORDER);
   const orders = await orderCollection.find().toArray();
-  return orders.map((order) => ({ ...order, _id: order._id.toString() }));
+  return orders.map((order) => ({
+    ...order,
+    _id: order._id.toString(),
+    timestamp: order._id.getTimestamp(),
+  }));
+};
+
+const groupStage = {
+  $group: {
+    _id: "$userName",
+    latestOrder: { $last: "$$ROOT" },
+  },
+};
+const sortStage = {
+  $sort: {
+    _id: -1,
+  },
+};
+const projState = {
+  $project: {
+    _id: 0,
+    userName: "$_id",
+    menuName: "$latestOrder.menuName",
+    size: "$latestOrder.size",
+    temperature: "$latestOrder.temperature",
+    decaf: "$latestOrder.decaf",
+  },
+};
+
+type OrderOmitUserName = Omit<OrderItem, "userName">;
+export type BillType = OrderOmitUserName & { count: number };
+
+export const getOrderListGroupByUserName = async () => {
+  const db = (await clientPromise).db(COFFEEBEAN.DB_NAME);
+  const orderCollection = db.collection<OrderItem>(COFFEEBEAN.COLLECTION.ORDER);
+  const orders = (await orderCollection
+    .aggregate([groupStage, sortStage, projState])
+    .toArray()) as OrderItem[];
+  return orders;
+};
+
+export const getOrderListGroupByNameSizeTemp = async () => {
+  const orders = await getOrderListGroupByUserName();
+  const result = orders.reduce<BillType[]>((res, lastOrder) => {
+    const existGroup = res.find(
+      (order) =>
+        order.menuName === lastOrder.menuName &&
+        order.size === lastOrder.size &&
+        order.temperature === lastOrder.temperature &&
+        !!order.decaf === !!lastOrder.decaf
+    );
+    if (existGroup) {
+      existGroup.count++;
+      return res;
+    }
+    return [...res, { ...lastOrder, count: 1 }];
+  }, []);
+  return result;
 };
 
 export const getCategoryList = async () => {
