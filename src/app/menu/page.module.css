@@ -119,7 +119,7 @@
   cursor: pointer;
 }
 
-@media (min-aspect-ratio: 8/5) and (min-height: 768px) {
+@media (min-aspect-ratio: 6/5) and (min-height: 768px) {
   .menu {
     display: flex;
   }
