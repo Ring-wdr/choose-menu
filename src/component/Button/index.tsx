@@ -2,7 +2,7 @@ import { ButtonHTMLAttributes } from "react";
 import styles from "./index.module.css";
 
 type ButtonProps = {
-  variant?: "large" | "small";
+  variant?: "large" | "medium" | "small";
   fullWidth?: boolean;
   resetStyle?: boolean;
 } & ButtonHTMLAttributes<HTMLButtonElement>;
