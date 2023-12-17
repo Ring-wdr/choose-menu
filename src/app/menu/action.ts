@@ -11,16 +11,16 @@ export async function postSelectedMenu(data: FormData) {
     redirect("/orderblock");
   }
   const userName = getUserName()?.value!;
-  const { menuName, size, temperature } = Object.fromEntries(data) as Record<
-    string,
-    string
-  >;
+  const { menuName, size, temperature, decaf } = Object.fromEntries(
+    data
+  ) as Record<string, string>;
   try {
     await postContentsOfSelectedMenu({
       userName,
       menuName,
       size,
       temperature,
+      decaf,
     });
   } catch (e) {
     console.log(e);

@@ -6,7 +6,7 @@ import {
   crawlCategoriesFromExternal,
   crawlMenuFromExternal,
   toggleOrderState,
-} from "./action";
+} from "../action";
 import Button from "@/component/Button";
 
 function SubmitButton() {
@@ -21,9 +21,6 @@ function SubmitButton() {
 export default function Client() {
   const [sendState, formAction] = useFormState(crawlCategoriesFromExternal, "");
   const [sendMenu, menuAction] = useFormState(crawlMenuFromExternal, []);
-  const [orderState, orderAction] = useFormState(toggleOrderState, {
-    message: "",
-  });
   const masterKey = useId();
   return (
     <div>
@@ -48,10 +45,6 @@ export default function Client() {
       <form action={menuAction}>
         <button> 메뉴 크롤링...</button>
       </form>
-      <form action={orderAction}>
-        <button> 서버 상태 변경</button>
-      </form>
-      <p>{typeof orderState.status == "boolean" && orderState.message}</p>
     </div>
   );
 }

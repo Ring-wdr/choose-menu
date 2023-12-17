@@ -1,0 +1,22 @@
+input[type="radio"].radio {
+  display: none;
+}
+input[type="radio"].radio + label {
+  display: inline-block;
+  cursor: pointer;
+  height: 24px;
+  width: 90px;
+  border: 1px solid #333;
+  line-height: 24px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 13px;
+}
+input[type="radio"].radio + label {
+  background-color: #fff;
+  color: #333;
+}
+input[type="radio"]:checked.radio + label {
+  background-color: #333;
+  color: #fff;
+}

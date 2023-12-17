@@ -84,6 +84,7 @@ function BottomSheetlMain({
       if (!dragRef || (e && e.target !== e.currentTarget)) return;
       /** 현재 위치 */
       const currentTopPosition = Number(getBSPosition(dragRef));
+      if (dragRef.current) dragRef.current.style.transition = "none";
       document.body.style.removeProperty("overflow");
       executeAnimate(
         currentTopPosition,
@@ -140,7 +141,7 @@ function BottomSheetlMain({
       document.body.style.removeProperty("overflow");
       setTimeout(() => {
         dragRef.current?.style.removeProperty("--current-bs-position");
-      }, 100);
+      }, 1000);
     }
   }, [isOpen, topPosition]);
 

@@ -3,7 +3,7 @@ export const startSafeViewTransition = (
   condition: boolean = true
 ) => {
   if (condition && !!document.startViewTransition) {
-    document.startViewTransition(callback);
+    return document.startViewTransition(callback);
   } else {
     callback();
   }

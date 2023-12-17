@@ -2,13 +2,13 @@
 import { useState } from "react";
 import Image from "next/image";
 import Button from "@/component/Button";
-import { startSafeViewTransition } from "@/hooks/startSafeViewTransition";
 import { Category, MenuProps } from "@/type";
 import MenuCard from "./MenuCard";
 import { MenuSubmitForm } from "./Form";
-import { postSelectedMenu } from "../action";
-import styles from "../page.module.css";
 import MenuBottomSheet from "./MenuBottomSheet";
+import { postSelectedMenu } from "../action";
+import { startSafeViewTransition } from "@/hooks/startSafeViewTransition";
+import styles from "../page.module.css";
 
 // menu part
 const ALL_MENU = "전체";
@@ -24,6 +24,8 @@ export default function MenuContents({ categories, menuList }: MenuSideProps) {
     category === ALL_MENU
       ? menuList
       : menuList.filter((item) => item.category === category);
+  const changeCategory = (_category: string) => () =>
+    startSafeViewTransition(() => setCategory(_category));
 
   return (
     <>
@@ -31,7 +33,7 @@ export default function MenuContents({ categories, menuList }: MenuSideProps) {
         <li>
           <button
             className={category === ALL_MENU ? styles.active : ""}
-            onClick={() => setCategory(ALL_MENU)}
+            onClick={changeCategory(ALL_MENU)}
           >
             {ALL_MENU}
           </button>
@@ -41,7 +43,7 @@ export default function MenuContents({ categories, menuList }: MenuSideProps) {
             <li key={idx}>
               <button
                 className={item.category === category ? styles.active : ""}
-                onClick={() => setCategory(item.category)}
+                onClick={changeCategory(item.category)}
               >
                 {item.title}
               </button>
@@ -65,7 +67,7 @@ function MenuController({ menuList }: MenuControllerProps) {
   const [selectedMenu, setMenu] = useState<MenuProps | null>(null);
   const dispatchSelected = (menu: MenuProps) => () => {
     const isWidthWideEnough =
-      window.innerWidth / window.innerHeight >= 8 / 5 ||
+      window.innerWidth / window.innerHeight >= 6 / 5 &&
       window.innerHeight >= 768;
     startSafeViewTransition(() => setMenu(menu), isWidthWideEnough);
   };
