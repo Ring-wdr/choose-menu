@@ -126,9 +126,19 @@ export const getRecentMenuByUserName = async (
   }
 
   const db = (await clientPromise).db(COFFEEBEAN.DB_NAME);
+  const orderCollection = db.collection<OrderItem>(COFFEEBEAN.COLLECTION.ORDER);
+  const orderByUserName = await orderCollection.findOne(
+    { userName },
+    { sort: { _id: -1 } }
+  );
   const menuCollection = db.collection<MenuProps>(COFFEEBEAN.COLLECTION.MENU);
-  const menuByUserName = await menuCollection.findOne({ userName });
-  return menuByUserName;
+  if (!orderByUserName) return null;
+  const menuByOrder = await menuCollection.findOne({
+    "name.kor": orderByUserName.menuName,
+  });
+  if (!menuByOrder) return null;
+  const { _id, ...result } = menuByOrder;
+  return result;
 };
 
 export const getOrderBlock = async () => {
