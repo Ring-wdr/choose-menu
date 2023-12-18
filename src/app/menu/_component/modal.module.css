@@ -24,9 +24,11 @@
 .modal_container form input {
   width: 100%;
 }
+.modal_container form input[type="text"] {
+  height: 3rem;
+}
 .modal_container form button {
   margin-top: 1rem;
-  height: 2rem;
 }
 /** 메뉴 선택 모달 */
 .modal_container .menu-column {

@@ -1,13 +1,17 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Button from "@/component/Button";
-import { Category, MenuProps } from "@/type";
-import MenuCard from "./MenuCard";
+import LoadingImage from "@/component/Loading";
+import LoadingButton from "@/component/Loading/Button";
 import { MenuSubmitForm } from "./Form";
-import MenuBottomSheet from "./MenuBottomSheet";
-import { postSelectedMenu } from "../action";
 import { startSafeViewTransition } from "@/hooks/startSafeViewTransition";
+import useServerAction from "@/hooks/useServerAction";
+import { Category, MenuProps } from "@/type";
+import { getSelectedMenuByCookies, postSelectedMenu } from "../action";
+import MenuCard from "./MenuCard";
+import MenuBottomSheet from "./MenuBottomSheet";
+import clsx from "clsx";
 import styles from "../page.module.css";
 
 // menu part
@@ -65,20 +69,53 @@ function MenuController({ menuList }: MenuControllerProps) {
   // selected Menu state
   const [isBSOpen, setModal] = useState(false);
   const [selectedMenu, setMenu] = useState<MenuProps | null>(null);
+  const { state, loading, error, refetch } = useServerAction(
+    getSelectedMenuByCookies
+  );
   const dispatchSelected = (menu: MenuProps) => () => {
     const isWidthWideEnough =
       window.innerWidth / window.innerHeight >= 6 / 5 &&
       window.innerHeight >= 768;
     startSafeViewTransition(() => setMenu(menu), isWidthWideEnough);
   };
+  /** 서버에서 에러가 나서 선택된 메뉴를 못 불러오고 아직 메뉴를 선택하지 않은 상태 */
+  const isShowErrorMessage = error && !selectedMenu;
+  /** 사용자가 이전에 메뉴를 선택한적이 없고 아직 메뉴를 선택하지 않은 상태 */
+  const previousNoSelected =
+    state.status === "success" && !state.data && !selectedMenu;
+
+  useEffect(() => {
+    if (state.status === "success" && state.data) {
+      setMenu((prev) => (!prev && state.data ? state.data : prev));
+    }
+  }, [state, setMenu]);
 
   return (
     <>
-      <MenuTable
-        menuList={menuList}
-        selectedMenu={selectedMenu}
-        dispatchSelected={dispatchSelected}
-      />
+      <div className={styles.menu}>
+        <div
+          className={clsx(styles.card, {
+            [styles.fallback]: isShowErrorMessage || previousNoSelected,
+          })}
+        >
+          {loading && <LoadingImage />}
+          {!loading && <MenuCard selectedMenu={selectedMenu} />}
+          {previousNoSelected && <p>기존에 선택하신 메뉴가 없습니다.</p>}
+          {isShowErrorMessage && (
+            <>
+              <p>기존 주문 메뉴를 불러오지 못했습니다.</p>
+              <form action={refetch}>
+                <LoadingButton label="새로고침" labelOnPending="새로고침 중" />
+              </form>
+            </>
+          )}
+        </div>
+        <MenuTable
+          menuList={menuList}
+          selectedMenu={selectedMenu}
+          dispatchSelected={dispatchSelected}
+        />
+      </div>
       <div className={styles.footer}>
         <Button
           fullWidth
@@ -121,37 +158,34 @@ const imgPlaceholder =
 function MenuTable({ menuList, selectedMenu, dispatchSelected }: TableProps) {
   const isEmpty = menuList.length === 0;
   return (
-    <div className={styles.menu}>
-      <MenuCard className={styles.card} selectedMenu={selectedMenu} />
-      <ul className={styles.list}>
-        {isEmpty ? (
-          <li>해당 메뉴가 없습니다.</li>
-        ) : (
-          menuList.map((item) => (
-            <li
-              key={item.name.kor}
-              className={
-                selectedMenu?.name.kor === item.name.kor ? styles.active : ""
-              }
-            >
-              <button onClick={dispatchSelected(item)}>
-                <div className={styles["img-container"]}>
-                  <Image
-                    src={item.photo}
-                    alt={item.name.eng || "coffee"}
-                    fill
-                    placeholder={imgPlaceholder}
-                  />
-                </div>
-                <div className={styles["txt-container"]}>
-                  <span>{item.name.kor}</span>
-                  <span>{item.name.eng}</span>
-                </div>
-              </button>
-            </li>
-          ))
-        )}
-      </ul>
-    </div>
+    <ul className={styles.list}>
+      {isEmpty ? (
+        <li>해당 메뉴가 없습니다.</li>
+      ) : (
+        menuList.map((item) => (
+          <li
+            key={item.name.kor}
+            className={
+              selectedMenu?.name.kor === item.name.kor ? styles.active : ""
+            }
+          >
+            <button onClick={dispatchSelected(item)}>
+              <div className={styles["img-container"]}>
+                <Image
+                  src={item.photo}
+                  alt={item.name.eng || "coffee"}
+                  fill
+                  placeholder={imgPlaceholder}
+                />
+              </div>
+              <div className={styles["txt-container"]}>
+                <span>{item.name.kor}</span>
+                <span>{item.name.eng}</span>
+              </div>
+            </button>
+          </li>
+        ))
+      )}
+    </ul>
   );
 }
