@@ -1,9 +1,14 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { getUserName, setUserName } from "../../util/server";
+import { getUserName, setUserName } from "@/util/server";
 import { postContentsOfSelectedMenu } from "@/database/coffeebean/post";
-import { getOrderBlock } from "@/database/coffeebean/get";
+import {
+  getOrderBlock,
+  getRecentMenuByUserName,
+} from "@/database/coffeebean/get";
+import { MenuProps } from "@/type";
+import { ServerActionState } from "@/hooks/useServerAction";
 
 export async function postSelectedMenu(data: FormData) {
   const isOrderBlock = await getOrderBlock();
@@ -39,4 +44,29 @@ export async function getUserNameFromSession(_: string, data: FormData) {
     redirect("/");
   }
   return currentUserName.value;
+}
+
+export type SelectedMenuState = {
+  status: boolean;
+  message?: string;
+  data?: MenuProps | null;
+};
+
+export async function getSelectedMenuByCookies(
+  _: ServerActionState<MenuProps>
+): Promise<ServerActionState<MenuProps>> {
+  const userName = getUserName();
+  if (!userName || !userName.value) redirect("/");
+  try {
+    const selectedMenu = await getRecentMenuByUserName(userName.value);
+    if (!selectedMenu)
+      return { status: "success", message: "선택한 메뉴가 없습니다." };
+    return {
+      status: "success",
+      message: "성공적으로 불러왔습니다.",
+      data: selectedMenu,
+    };
+  } catch {
+    return { status: "error", message: "메뉴를 불러올 수 없습니다." };
+  }
 }

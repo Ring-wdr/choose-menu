@@ -5,7 +5,7 @@ import clsx from "clsx";
 
 type MenuCardProps = {
   selectedMenu?: MenuProps | null;
-  className: string;
+  className?: string;
 };
 
 export default function MenuCard({ selectedMenu, className }: MenuCardProps) {

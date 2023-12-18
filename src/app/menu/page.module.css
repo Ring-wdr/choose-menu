@@ -71,6 +71,7 @@
   outline: 0;
   background: none;
   cursor: pointer;
+  color: #000000;
 }
 
 .menu .list li > button .img-container {
@@ -132,6 +133,14 @@
     );
     position: sticky;
     top: 0;
+    justify-content: center;
+    align-items: center;
+  }
+  .menu_container .menu .card.fallback {
+    flex-direction: column;
+  }
+  .menu_container .menu .card form {
+    width: 50%;
   }
   .menu_container .menu .card + .list {
     width: 50%;

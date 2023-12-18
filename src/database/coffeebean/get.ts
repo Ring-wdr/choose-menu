@@ -111,6 +111,36 @@ export const getMenuListById = async (
   }));
 };
 
+export const getRecentMenuByUserName = async (
+  userName: string
+): Promise<MenuProps | null> => {
+  if (process.env.NODE_ENV === "development") {
+    const dice = Math.random();
+    if (dice < 0.3) {
+      throw new Error("server error");
+    }
+    if (dice > 0.6) {
+      return null;
+    }
+    return MOCK.MENULIST[Math.floor(Math.random() * MOCK.MENULIST.length)];
+  }
+
+  const db = (await clientPromise).db(COFFEEBEAN.DB_NAME);
+  const orderCollection = db.collection<OrderItem>(COFFEEBEAN.COLLECTION.ORDER);
+  const orderByUserName = await orderCollection.findOne(
+    { userName },
+    { sort: { _id: -1 } }
+  );
+  const menuCollection = db.collection<MenuProps>(COFFEEBEAN.COLLECTION.MENU);
+  if (!orderByUserName) return null;
+  const menuByOrder = await menuCollection.findOne({
+    "name.kor": orderByUserName.menuName,
+  });
+  if (!menuByOrder) return null;
+  const { _id, ...result } = menuByOrder;
+  return result;
+};
+
 export const getOrderBlock = async () => {
   const db = (await clientPromise).db(COFFEEBEAN.DB_NAME);
   const orderBlock = db.collection<OrderBlock>(
