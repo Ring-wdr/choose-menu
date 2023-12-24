@@ -1,6 +1,7 @@
 "use client";
 
 import React, {
+  useState,
   useEffect,
   useRef,
   useCallback,
@@ -34,12 +35,12 @@ type BottomSheetProps = {
 };
 
 type BottomSheetCtxProps = {
-  onCloseAction?: (e?: ReactMouseEvent<HTMLElement>) => void;
+  onCloseAction: (e?: ReactMouseEvent<HTMLElement>) => void;
   portalRef?: React.MutableRefObject<HTMLDivElement>;
   dragRef?: React.RefObject<HTMLDivElement>;
-  dragStateOn?: () => void;
-  dragStateOff?: () => void;
-  closeDragElement?: () => void;
+  dragStateOn: () => void;
+  dragStateOff: () => void;
+  closeDragElement: () => void;
   topPosition: number;
   bodyHeight: number;
 } & Required<Omit<BottomSheetProps, "onClose">>;
@@ -52,6 +53,10 @@ const bottomSheetInitValue = {
   bodyHeight: 0,
   breakPosition: [],
   closeWhenBackdropClick: true,
+  onCloseAction() {},
+  dragStateOn() {},
+  dragStateOff() {},
+  closeDragElement() {},
 } satisfies BottomSheetCtxProps;
 
 export const BottomSheetContext =
@@ -64,7 +69,7 @@ function BottomSheetlMain({
   children,
   initPosition = "20%",
   closePosition = "50%",
-  breakPosition = [],
+  breakPosition = ["0%"],
   closeWhenBackdropClick = true,
 }: React.PropsWithChildren<BottomSheetProps>) {
   const portalRef = useRef(document.createElement("div"));
@@ -125,7 +130,7 @@ function BottomSheetlMain({
       );
       setBSPosition(dragRef, `${calcPosition}px`);
     } else {
-      onCloseAction && onCloseAction();
+      onCloseAction();
     }
   };
 
@@ -244,7 +249,7 @@ export const BottomSheet = ({ children }: { children: React.ReactElement }) => {
       document.body.appendChild(portalRef.current);
     }
     const onCloseByEsc = (e: KeyboardEvent) => {
-      e.key === "Escape" && onCloseAction && onCloseAction();
+      e.key === "Escape" && onCloseAction();
     };
     window.addEventListener("keyup", onCloseByEsc);
     return () => {
@@ -261,9 +266,7 @@ export const BottomSheet = ({ children }: { children: React.ReactElement }) => {
           className={bsStyles.backdrop}
           onMouseUp={closeDragElement}
           onMouseMove={elementMouseDrag}
-          onClick={(e) =>
-            closeWhenBackdropClick && onCloseAction && onCloseAction(e)
-          }
+          onClick={(e) => closeWhenBackdropClick && onCloseAction(e)}
           onMouseLeave={closeDragElement}
         >
           {React.cloneElement(children, { ...children.props, ref: dragRef })}
@@ -334,9 +337,14 @@ function BottomSheetSubmitButton({
 }: BottomSheetSubmitButtonProps) {
   const { onCloseAction } = useBottomSheetContext();
   const { pending } = useFormStatus();
-  if (closeOnSubmit && pending && onCloseAction) {
-    onCloseAction();
-  }
+  const [sended, setSend] = useState(false);
+
+  if (closeOnSubmit && pending && !sended) setSend(true);
+
+  useEffect(() => {
+    if (closeOnSubmit && !pending && sended) onCloseAction();
+  }, [closeOnSubmit, pending, sended, onCloseAction]);
+
   return (
     <Button disabled={pending} {...props}>
       {pending ? childrenOnPending : children}

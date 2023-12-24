@@ -25,7 +25,9 @@ export function NameChangeForm({ userName, formAction }: NameChangeProps) {
           pattern={`^(?:(?!${userName}).)*$`}
           maxLength={4}
         />
-        <BS.Submit fullWidth>변경</BS.Submit>
+        <BS.Submit fullWidth closeOnSubmit childrenOnPending="변경 중...">
+          변경
+        </BS.Submit>
       </form>
     </div>
   );
