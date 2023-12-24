@@ -3,7 +3,7 @@ import styles from "./bottomsheet.module.css";
 
 type MenuBottomSheetProps = React.ComponentProps<typeof BS>;
 
-export default function MenuBottomSheet({
+export default function CustomBottomSheet({
   children,
   ...props
 }: MenuBottomSheetProps) {

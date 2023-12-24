@@ -4,10 +4,10 @@ import { useEffect, useState } from "react";
 import { useFormState } from "react-dom";
 import Link from "next/link";
 import { useMenuContext } from "./MenuContext";
-import MenuBottomSheet from "./MenuBottomSheet";
-import Button from "@/component/Button";
 import { NameChangeForm } from "./Form";
 import { getUserNameFromSession } from "../action";
+import CustomBottomSheet from "@/component/BottomSheet/Custom";
+import Button from "@/component/Button";
 import styles from "../layout.module.css";
 
 export default function NameSection() {
@@ -45,9 +45,9 @@ export default function NameSection() {
         </Link>
       </div>
       {isBSOpen ? (
-        <MenuBottomSheet isOpen={isBSOpen} onClose={bsClose}>
+        <CustomBottomSheet isOpen={isBSOpen} onClose={bsClose}>
           <NameChangeForm userName={userName} formAction={formAction} />
-        </MenuBottomSheet>
+        </CustomBottomSheet>
       ) : null}
     </div>
   );

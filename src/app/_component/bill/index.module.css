@@ -15,7 +15,6 @@
   max-width: 1000px;
   position: relative;
   border: 1px solid;
-  box-shadow: 0 0 10px;
 }
 .sticky_wrap::before {
   content: "";
