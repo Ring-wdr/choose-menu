@@ -4,13 +4,13 @@ import Image from "next/image";
 import Button from "@/component/Button";
 import LoadingImage from "@/component/Loading";
 import LoadingButton from "@/component/Loading/Button";
+import CustomBottomSheet from "@/component/BottomSheet/Custom";
 import { useMenuContext } from "./MenuContext";
 import { startSafeViewTransition } from "@/hooks/startSafeViewTransition";
 import { Category, MenuProps } from "@/type";
 import { MenuSubmitForm } from "./Form";
 import { postSelectedMenu } from "../action";
 import MenuCard from "./MenuCard";
-import MenuBottomSheet from "./MenuBottomSheet";
 import clsx from "clsx";
 import styles from "../page.module.css";
 
@@ -87,6 +87,9 @@ function MenuController({ menuList }: MenuControllerProps) {
         if (prev === null && menu.photo) return menu;
         return prev;
       });
+      document
+        .getElementById(menu.name.kor)
+        ?.scrollIntoView({ behavior: "smooth", block: "center" });
     }
   }, [menu]);
 
@@ -128,7 +131,7 @@ function MenuController({ menuList }: MenuControllerProps) {
           메뉴 선택
         </Button>
         {selectedMenu && isBSOpen ? (
-          <MenuBottomSheet
+          <CustomBottomSheet
             onClose={() => setModal(false)}
             isOpen={isBSOpen}
             initPosition={100}
@@ -138,7 +141,7 @@ function MenuController({ menuList }: MenuControllerProps) {
               selectedMenu={selectedMenu}
               formAction={postSelectedMenu}
             />
-          </MenuBottomSheet>
+          </CustomBottomSheet>
         ) : null}
       </div>
     </>
@@ -167,6 +170,7 @@ function MenuTable({ menuList, selectedMenu, dispatchSelected }: TableProps) {
         menuList.map((item) => (
           <li
             key={item.name.kor}
+            id={item.name.kor}
             className={
               selectedMenu?.name.kor === item.name.kor ? styles.active : ""
             }
