@@ -7,17 +7,27 @@ import {
   DragEvent,
   TouchEvent,
 } from "react";
-import { AggTableProps } from "../page";
-import styles from "../page.module.css";
+import { getOrderListGroupByNameSizeTemp } from "@/database/coffeebean/get";
 import Button from "@/component/Button";
+import styles from "./index.module.css";
+
+type AggTableProps = Awaited<
+  ReturnType<typeof getOrderListGroupByNameSizeTemp>
+>[number];
 
 type BillTableProps = {
   data: AggTableProps[];
+  draggable?: boolean;
+  reset?: boolean;
 };
 
 const onDragOver = (e: DragEvent<HTMLTableRowElement>) => e.preventDefault();
 
-export default function BillTable({ data }: BillTableProps) {
+export default function BillTable({
+  data,
+  draggable = true,
+  reset = true,
+}: BillTableProps) {
   // order state
   const [orders, setOrders] = useState(data);
   const updateOrder = () => {
@@ -60,6 +70,7 @@ export default function BillTable({ data }: BillTableProps) {
 
   // Todo: drag motion visible without any interruption
   const onTouchStart = (e: TouchEvent<HTMLTableRowElement>) => {
+    if (!draggable) return;
     const { currentTarget } = e;
     const { top } = currentTarget.getBoundingClientRect();
     currnentY.current = top;
@@ -67,6 +78,7 @@ export default function BillTable({ data }: BillTableProps) {
 
   const onTouchMove = (e: TouchEvent<HTMLTableRowElement>) => {
     e.preventDefault();
+    if (!draggable) return;
     const { touches } = e;
     const { clientY } = touches[0];
     const y = clientY - currnentY.current;
@@ -74,6 +86,7 @@ export default function BillTable({ data }: BillTableProps) {
   };
 
   const onTouchEnd = (e: TouchEvent<HTMLTableRowElement>) => {
+    if (!draggable) return;
     const { currentTarget, changedTouches } = e;
     const { clientX, clientY } = changedTouches[0];
     const { index } = currentTarget.dataset;
@@ -128,43 +141,51 @@ export default function BillTable({ data }: BillTableProps) {
 
   return (
     <div className={styles.container}>
-      <Button variant="large" onClick={updateOrder}>
-        계산서 재요청
-      </Button>
-      <table className={styles.table} onMouseLeave={onMouseLeave}>
-        <thead>
-          <tr>
-            <th>상품명</th>
-            <th>수량</th>
-          </tr>
-        </thead>
-        <tbody>
-          {orders.map((order) => (
-            <Fragment key={order.id}>
-              <tr
-                draggable
-                data-index={order.id}
-                onDragStart={onDragStart(order)}
-                onDragEnter={onDragEnter(order)}
-                onDragEnd={onDragEnd}
-                onDragOver={onDragOver}
-                onTouchStart={onTouchStart}
-                onTouchMove={onTouchMove}
-                onTouchEnd={onTouchEnd}
-              >
-                <td>{order.title}</td>
-                <td>{order.count}</td>
-              </tr>
-              {order.decaf && (
+      {reset && (
+        <Button variant="large" onClick={updateOrder} className={styles.reset}>
+          계산서 재요청
+        </Button>
+      )}
+      <div className={styles.sticky_wrap}>
+        <div className={styles.sticky_box}>
+          <div className={styles.height_fix}>
+            <table className={styles.table} onMouseLeave={onMouseLeave}>
+              <thead>
                 <tr>
-                  <td>ㄴ DECAF</td>
-                  <td></td>
+                  <th>상품명</th>
+                  <th>수량</th>
                 </tr>
-              )}
-            </Fragment>
-          ))}
-        </tbody>
-      </table>
+              </thead>
+              <tbody>
+                {orders.map((order) => (
+                  <Fragment key={order.id}>
+                    <tr
+                      draggable={draggable}
+                      data-index={order.id}
+                      onDragStart={onDragStart(order)}
+                      onDragEnter={onDragEnter(order)}
+                      onDragEnd={onDragEnd}
+                      onDragOver={onDragOver}
+                      onTouchStart={onTouchStart}
+                      onTouchMove={onTouchMove}
+                      onTouchEnd={onTouchEnd}
+                    >
+                      <td>{order.title}</td>
+                      <td>{order.count}</td>
+                    </tr>
+                    {order.decaf && (
+                      <tr>
+                        <td>ㄴ DECAF</td>
+                        <td></td>
+                      </tr>
+                    )}
+                  </Fragment>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

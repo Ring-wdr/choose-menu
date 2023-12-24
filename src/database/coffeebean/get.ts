@@ -49,9 +49,9 @@ export const getOrderListGroupByUserName = async () => {
   return orders;
 };
 
-export const getOrderListGroupByNameSizeTemp = async () => {
+export const getOrderListGroupByNameSizeTemp = cache(async () => {
   const orders = await getOrderListGroupByUserName();
-  const result = orders.reduce<BillType[]>((res, lastOrder) => {
+  const orderList = orders.reduce<BillType[]>((res, lastOrder) => {
     const existGroup = res.find(
       (order) =>
         order.menuName === lastOrder.menuName &&
@@ -65,8 +65,16 @@ export const getOrderListGroupByNameSizeTemp = async () => {
     }
     return [...res, { ...lastOrder, count: 1 }];
   }, []);
+  const result = orderList.map((lastOrder, idx) => ({
+    id: idx,
+    title: `(${lastOrder.size || "S"})${lastOrder.temperature || ""} ${
+      lastOrder.menuName
+    }`,
+    decaf: lastOrder.decaf,
+    count: lastOrder.count,
+  }));
   return result;
-};
+});
 
 export const getCategoryList = async () => {
   const db = (await clientPromise).db(COFFEEBEAN.DB_NAME);
