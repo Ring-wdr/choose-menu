@@ -4,11 +4,11 @@ import Image from "next/image";
 import Button from "@/component/Button";
 import LoadingImage from "@/component/Loading";
 import LoadingButton from "@/component/Loading/Button";
-import { MenuSubmitForm } from "./Form";
+import { useMenuContext } from "./MenuContext";
 import { startSafeViewTransition } from "@/hooks/startSafeViewTransition";
-import useServerAction from "@/hooks/useServerAction";
 import { Category, MenuProps } from "@/type";
-import { getSelectedMenuByCookies, postSelectedMenu } from "../action";
+import { MenuSubmitForm } from "./Form";
+import { postSelectedMenu } from "../action";
 import MenuCard from "./MenuCard";
 import MenuBottomSheet from "./MenuBottomSheet";
 import clsx from "clsx";
@@ -67,11 +67,9 @@ type MenuControllerProps = {
 
 function MenuController({ menuList }: MenuControllerProps) {
   // selected Menu state
+  const { menu, menuState, menuRefetch } = useMenuContext();
   const [isBSOpen, setModal] = useState(false);
   const [selectedMenu, setMenu] = useState<MenuProps | null>(null);
-  const { state, loading, error, refetch } = useServerAction(
-    getSelectedMenuByCookies
-  );
   const dispatchSelected = (menu: MenuProps) => () => {
     const isWidthWideEnough =
       window.innerWidth / window.innerHeight >= 6 / 5 &&
@@ -79,16 +77,18 @@ function MenuController({ menuList }: MenuControllerProps) {
     startSafeViewTransition(() => setMenu(menu), isWidthWideEnough);
   };
   /** 서버에서 에러가 나서 선택된 메뉴를 못 불러오고 아직 메뉴를 선택하지 않은 상태 */
-  const isShowErrorMessage = error && !selectedMenu;
+  const isShowErrorMessage = menuState.status === "error" && !selectedMenu;
   /** 사용자가 이전에 메뉴를 선택한적이 없고 아직 메뉴를 선택하지 않은 상태 */
-  const previousNoSelected =
-    state.status === "success" && !state.data && !selectedMenu;
+  const previousNoSelected = menuState.status === "success" && !selectedMenu;
 
   useEffect(() => {
-    if (state.status === "success" && state.data) {
-      setMenu((prev) => (!prev && state.data ? state.data : prev));
+    if (menu) {
+      setMenu((prev) => {
+        if (prev === null && menu.photo) return menu;
+        return prev;
+      });
     }
-  }, [state, setMenu]);
+  }, [menu]);
 
   return (
     <>
@@ -98,13 +98,15 @@ function MenuController({ menuList }: MenuControllerProps) {
             [styles.fallback]: isShowErrorMessage || previousNoSelected,
           })}
         >
-          {loading && <LoadingImage />}
-          {!loading && <MenuCard selectedMenu={selectedMenu} />}
+          {menuState.status === "pending" && <LoadingImage />}
+          {menuState.status !== "pending" && (
+            <MenuCard selectedMenu={selectedMenu} />
+          )}
           {previousNoSelected && <p>기존에 선택하신 메뉴가 없습니다.</p>}
           {isShowErrorMessage && (
             <>
               <p>기존 주문 메뉴를 불러오지 못했습니다.</p>
-              <form action={refetch}>
+              <form action={menuRefetch}>
                 <LoadingButton label="새로고침" labelOnPending="새로고침 중" />
               </form>
             </>

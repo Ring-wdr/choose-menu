@@ -2,14 +2,20 @@
 
 import { useEffect, useState } from "react";
 import { useFormState } from "react-dom";
-import { getUserNameFromSession } from "../action";
+import Link from "next/link";
+import { useMenuContext } from "./MenuContext";
+import MenuBottomSheet from "./MenuBottomSheet";
 import Button from "@/component/Button";
 import { NameChangeForm } from "./Form";
+import { getUserNameFromSession } from "../action";
 import styles from "../layout.module.css";
-import MenuBottomSheet from "./MenuBottomSheet";
 
 export default function NameSection() {
+  // user state
   const [userName, formAction] = useFormState(getUserNameFromSession, "");
+  const { menu } = useMenuContext();
+  const parsedMenu = menu && `현재 메뉴는 ${menu.name.kor} 입니다.`;
+
   // modal state
   const [isBSOpen, setBSOpen] = useState(false);
   const bsOpen = () => setBSOpen(true);
@@ -22,11 +28,22 @@ export default function NameSection() {
   return (
     <div className={styles.name_section}>
       <p>
-        {userName
-          ? `${userName}님, 메뉴를 고르세요`
-          : "사용자 정보를 불러오는 중입니다."}
+        {userName ? (
+          <>
+            <Button resetStyle onClick={bsOpen} className={styles.name}>
+              {userName} ✎
+            </Button>
+            님, {parsedMenu || "메뉴를 고르세요"}
+          </>
+        ) : (
+          "사용자 정보를 불러오는 중입니다."
+        )}
       </p>
-      <Button onClick={bsOpen}>이름 변경</Button>
+      <div>
+        <Link href={"/menu/bill"}>
+          <Button variant="medium">청구서</Button>
+        </Link>
+      </div>
       {isBSOpen ? (
         <MenuBottomSheet isOpen={isBSOpen} onClose={bsClose}>
           <NameChangeForm userName={userName} formAction={formAction} />
