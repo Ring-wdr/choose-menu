@@ -4,7 +4,11 @@ import { useRouter } from "next/navigation";
 import { startSafeViewTransition } from "@/hooks/startSafeViewTransition";
 import styles from "./index.module.css";
 
-export default function Modal({ children }: { children: React.ReactNode }) {
+export default function ParallelModal({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const overlay = useRef(null);
   const router = useRouter();
 
@@ -24,7 +28,7 @@ export default function Modal({ children }: { children: React.ReactNode }) {
   }, [router]);
 
   return (
-    <div ref={overlay} className={styles["custom-portal"]} onClick={onClick}>
+    <div ref={overlay} className={styles["modal-overlay"]} onClick={onClick}>
       <div className={styles["modal-wrapper"]}>{children}</div>
     </div>
   );
