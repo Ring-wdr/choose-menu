@@ -1,5 +1,5 @@
 import { useId } from "react";
-import { MenuProps } from "@/type";
+import { MenuProps, OrderItem } from "@/type";
 import Radio from "@/component/Radio";
 import BS from "@/component/BottomSheet";
 import Toggle from "@/component/Toggle";
@@ -34,6 +34,7 @@ export function NameChangeForm({ userName, formAction }: NameChangeProps) {
 }
 
 type MenuSubmitProps = {
+  previousMenu?: OrderItem;
   selectedMenu: MenuProps;
   formAction: (payload: FormData) => void;
 };
@@ -41,9 +42,15 @@ type MenuSubmitProps = {
 const coffeeSize = ["L", "M", "S"] as const;
 const temperatures = ["HOT", "ICE"] as const;
 
-export function MenuSubmitForm({ selectedMenu, formAction }: MenuSubmitProps) {
+export function MenuSubmitForm({
+  previousMenu,
+  selectedMenu,
+  formAction,
+}: MenuSubmitProps) {
   const menuNameId = useId();
   const decafId = useId();
+  /** 기존 선택 메뉴와 현재 선택 메뉴가 같을 경우 체크 */
+  const prevEqualSelected = previousMenu?.menuName === selectedMenu.name.kor;
 
   return (
     <div className={styles.modal_container}>
@@ -68,7 +75,9 @@ export function MenuSubmitForm({ selectedMenu, formAction }: MenuSubmitProps) {
                 name="size"
                 value={size}
                 label={size}
-                defaultChecked={idx === 0}
+                defaultChecked={
+                  prevEqualSelected ? previousMenu.size === size : idx === 0
+                }
               />
             ))}
           </div>
@@ -82,14 +91,21 @@ export function MenuSubmitForm({ selectedMenu, formAction }: MenuSubmitProps) {
                 name="temperature"
                 value={temperature}
                 label={temperature}
-                defaultChecked={idx === 0}
+                defaultChecked={
+                  prevEqualSelected
+                    ? previousMenu.temperature === temperature
+                    : idx === 0
+                }
               />
             ))}
           </div>
         </div>
         <div className={styles["menu-column"]}>
           <label htmlFor={decafId}>디카페인</label>
-          <Toggle name="decaf" />
+          <Toggle
+            name="decaf"
+            defaultChecked={prevEqualSelected ? !!previousMenu.decaf : false}
+          />
         </div>
         <p>선택하시겠습니까?</p>
         <LoadingButton />
