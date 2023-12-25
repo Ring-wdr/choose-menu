@@ -41,7 +41,7 @@ export type OrderItem = {
   menuName: string;
   size: string;
   temperature: string;
-  decaf: string;
+  decaf?: "on" | null;
 };
 
 export type OrderBlock = {

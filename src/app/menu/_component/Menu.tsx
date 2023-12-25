@@ -67,7 +67,7 @@ type MenuControllerProps = {
 
 function MenuController({ menuList }: MenuControllerProps) {
   // selected Menu state
-  const { menu, menuState, menuRefetch } = useMenuContext();
+  const { menu: previousMenu, menuState, menuRefetch } = useMenuContext();
   const [isBSOpen, setModal] = useState(false);
   const [selectedMenu, setMenu] = useState<MenuProps | null>(null);
   const dispatchSelected = (menu: MenuProps) => () => {
@@ -82,16 +82,21 @@ function MenuController({ menuList }: MenuControllerProps) {
   const previousNoSelected = menuState.status === "success" && !selectedMenu;
 
   useEffect(() => {
-    if (menu) {
+    if (previousMenu) {
       setMenu((prev) => {
-        if (prev === null && menu.photo) return menu;
+        if (prev === null && previousMenu.menuName) {
+          const findMenuByName = menuList.find(
+            (item) => item.name.kor === previousMenu.menuName
+          );
+          if (findMenuByName) return findMenuByName;
+        }
         return prev;
       });
       document
-        .getElementById(menu.name.kor)
+        .getElementById(previousMenu.menuName)
         ?.scrollIntoView({ behavior: "smooth", block: "center" });
     }
-  }, [menu]);
+  }, [previousMenu, menuList]);
 
   return (
     <>
@@ -138,6 +143,7 @@ function MenuController({ menuList }: MenuControllerProps) {
             closePosition="50%"
           >
             <MenuSubmitForm
+              previousMenu={previousMenu}
               selectedMenu={selectedMenu}
               formAction={postSelectedMenu}
             />

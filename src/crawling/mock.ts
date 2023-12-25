@@ -1,4 +1,4 @@
-import { Category, initialIngredient } from "../type";
+import { Category, initialIngredient, OrderItem } from "../type";
 
 const CATEGORY_LIST: Array<Category> = [
   {
@@ -55,7 +55,16 @@ const MENULIST = [
   })),
 ];
 
+const ORDER = {
+  userName: "김만중",
+  menuName: "아메리카노",
+  decaf: null,
+  size: "S",
+  temperature: "HOT",
+} satisfies OrderItem;
+
 export const MOCK = {
   CATEGORY_LIST,
   MENULIST,
+  ORDER,
 } as const;

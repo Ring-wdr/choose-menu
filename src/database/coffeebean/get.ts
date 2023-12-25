@@ -121,16 +121,24 @@ export const getMenuListById = async (
 
 export const getRecentMenuByUserName = async (
   userName: string
-): Promise<MenuProps | null> => {
+): Promise<OrderItem | null> => {
   if (process.env.NODE_ENV === "development") {
     const dice = Math.random();
     if (dice < 0.3) {
       throw new Error("server error");
     }
-    if (dice > 0.6) {
+    if (dice > 0.7) {
       return null;
     }
-    return MOCK.MENULIST[Math.floor(Math.random() * MOCK.MENULIST.length)];
+    const randomMenu =
+      MOCK.MENULIST[Math.floor(Math.random() * MOCK.MENULIST.length)];
+    return {
+      ...MOCK.ORDER,
+      menuName: randomMenu.name.kor,
+      decaf: dice > 0.5 ? null : "on",
+      size: dice > 0.5 ? "L" : "S",
+      temperature: dice > 0.5 ? "ICE" : "HOT",
+    };
   }
 
   const db = (await clientPromise).db(COFFEEBEAN.DB_NAME);
@@ -139,13 +147,8 @@ export const getRecentMenuByUserName = async (
     { userName },
     { sort: { _id: -1 } }
   );
-  const menuCollection = db.collection<MenuProps>(COFFEEBEAN.COLLECTION.MENU);
   if (!orderByUserName) return null;
-  const menuByOrder = await menuCollection.findOne({
-    "name.kor": orderByUserName.menuName,
-  });
-  if (!menuByOrder) return null;
-  const { _id, ...result } = menuByOrder;
+  const { _id, ...result } = orderByUserName;
   return result;
 };
 

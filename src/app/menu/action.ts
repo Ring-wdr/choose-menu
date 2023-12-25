@@ -7,7 +7,7 @@ import {
   getOrderBlock,
   getRecentMenuByUserName,
 } from "@/database/coffeebean/get";
-import { MenuProps } from "@/type";
+import { OrderItem } from "@/type";
 import { ServerActionState } from "@/hooks/useServerAction";
 
 export async function postSelectedMenu(data: FormData) {
@@ -25,7 +25,7 @@ export async function postSelectedMenu(data: FormData) {
       menuName,
       size,
       temperature,
-      decaf,
+      decaf: decaf as unknown as any,
     });
   } catch (e) {
     console.log(e);
@@ -46,15 +46,9 @@ export async function getUserNameFromSession(_: string, data: FormData) {
   return currentUserName.value;
 }
 
-export type SelectedMenuState = {
-  status: boolean;
-  message?: string;
-  data?: MenuProps | null;
-};
-
 export async function getSelectedMenuByCookies(
-  _: ServerActionState<MenuProps>
-): Promise<ServerActionState<MenuProps>> {
+  _: ServerActionState<OrderItem>
+): Promise<ServerActionState<OrderItem>> {
   const userName = getUserName();
   if (!userName || !userName.value) redirect("/");
   try {
