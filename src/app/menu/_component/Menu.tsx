@@ -1,5 +1,12 @@
 "use client";
-import { useEffect, useState } from "react";
+import {
+  useState,
+  useEffect,
+  useRef,
+  useDeferredValue,
+  ChangeEventHandler,
+  KeyboardEventHandler,
+} from "react";
 import Image from "next/image";
 import Button from "@/component/Button";
 import LoadingImage from "@/component/Loading";
@@ -8,6 +15,7 @@ import CustomBottomSheet from "@/component/BottomSheet/Custom";
 import { useMenuContext } from "./MenuContext";
 import { startSafeViewTransition } from "@/hooks/startSafeViewTransition";
 import { Category, MenuProps } from "@/type";
+import { hangulIncludes } from "@toss/hangul";
 import { MenuSubmitForm } from "./Form";
 import { postSelectedMenu } from "../action";
 import MenuCard from "./MenuCard";
@@ -22,18 +30,36 @@ type MenuSideProps = {
 } & React.PropsWithChildren;
 
 export default function MenuContents({ categories, menuList }: MenuSideProps) {
+  // search state
+  const [keyword, setKeyword] = useState("");
+  const changeKeyword: ChangeEventHandler<HTMLInputElement> = (e) => {
+    setKeyword(e.target.value);
+  };
+  const deferedKeyword = useDeferredValue(keyword);
+  const MenuListFilteredByKeyword = keyword
+    ? menuList.filter(
+        (menu) =>
+          hangulIncludes(menu.name.kor, deferedKeyword) ||
+          menu.name.eng
+            .replace(/ /g, "")
+            .toLowerCase()
+            .includes(deferedKeyword.replace(/ /g, "").toLowerCase())
+      )
+    : menuList;
+
   // category state
   const [category, setCategory] = useState(ALL_MENU);
   const currentCategoryMenu =
     category === ALL_MENU
-      ? menuList
-      : menuList.filter((item) => item.category === category);
+      ? MenuListFilteredByKeyword
+      : MenuListFilteredByKeyword.filter((item) => item.category === category);
   const changeCategory = (_category: string) => () =>
     startSafeViewTransition(() => setCategory(_category));
 
   return (
     <>
       <ul className={styles.category}>
+        <SearchContainer keyword={keyword} changeKeyword={changeKeyword} />
         <li>
           <button
             className={category === ALL_MENU ? styles.active : ""}
@@ -58,6 +84,61 @@ export default function MenuContents({ categories, menuList }: MenuSideProps) {
         <MenuController menuList={currentCategoryMenu} />
       </div>
     </>
+  );
+}
+
+type SearchContainerProps = {
+  keyword: string;
+  changeKeyword: ChangeEventHandler<HTMLInputElement>;
+};
+
+function SearchContainer({ keyword, changeKeyword }: SearchContainerProps) {
+  const chkRef = useRef<HTMLInputElement>(null);
+  const uncheck = () => {
+    if (chkRef.current) {
+      chkRef.current.checked = false;
+    }
+  };
+  const onKeyDown: KeyboardEventHandler<HTMLInputElement> = (e) => {
+    switch (e.key) {
+      case "Escape":
+      case "Enter":
+        uncheck();
+        break;
+    }
+  };
+  useEffect(() => {
+    const uncheckOnEffect = (e: MouseEvent) => {
+      const clickedElement = e.target as HTMLElement;
+      if (
+        chkRef.current &&
+        chkRef.current.checked &&
+        typeof clickedElement.closest === "function" &&
+        clickedElement.closest(`.${styles["search-container"]}`) !==
+          chkRef.current.parentElement
+      ) {
+        chkRef.current.checked = false;
+      }
+    };
+    document.addEventListener("pointerdown", uncheckOnEffect);
+    return () => document.removeEventListener("pointerdown", uncheckOnEffect);
+  }, []);
+
+  return (
+    <div className={styles["search-container"]}>
+      <label htmlFor={styles["menu-search"]}>
+        검색 <span>⌕</span>
+      </label>
+      <input id={styles["menu-search"]} ref={chkRef} type="checkbox" hidden />
+      <input
+        type="text"
+        placeholder="메뉴 이름을 입력하세요."
+        value={keyword}
+        onChange={changeKeyword}
+        onBlur={uncheck}
+        onKeyDown={onKeyDown}
+      />
+    </div>
   );
 }
 
