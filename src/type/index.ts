@@ -47,3 +47,9 @@ export type OrderItem = {
 export type OrderBlock = {
   status: boolean;
 };
+
+export type ActionByState<T> = NonNullable<
+  { [K in keyof T]: { type: K; payload: T[K] } }[keyof T]
+>;
+
+export type ReducerByState<T> = (state: T, action: ActionByState<T>) => T;
