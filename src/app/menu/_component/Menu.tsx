@@ -59,9 +59,7 @@ export default function MenuContents({ categories, menuList }: MenuSideProps) {
   return (
     <>
       <ul className={styles.category}>
-        <li>
-          <SearchContainer keyword={keyword} changeKeyword={changeKeyword} />
-        </li>
+        <SearchContainer keyword={keyword} changeKeyword={changeKeyword} />
         <li>
           <button
             className={category === ALL_MENU ? styles.active : ""}
