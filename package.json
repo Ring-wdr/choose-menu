@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@toss/hangul": "^1.6.1",
     "cheerio": "^1.0.0-rc.12",
     "clsx": "^2.0.0",
     "mongodb": "^6.3.0",
