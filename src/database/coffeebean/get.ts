@@ -57,8 +57,9 @@ export const getOrderListGroupByNameSizeTemp = cache(async () => {
     getOrderListGroupByUserName(),
     getAbsenceList(),
   ]);
-  const filteredOrders = orders.filter((order) =>
-    absenceList.find((absence) => absence.userName !== order.userName)
+  const filteredOrders = orders.filter(
+    (order) =>
+      !absenceList.find((absence) => absence.userName === order.userName)
   );
 
   const orderList = filteredOrders.reduce<BillType[]>((res, lastOrder) => {
