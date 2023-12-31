@@ -1,5 +1,5 @@
 import { cache } from "react";
-import { Category, MenuProps, OrderBlock, OrderItem } from "@/type";
+import { Absence, Category, MenuProps, OrderBlock, OrderItem } from "@/type";
 import clientPromise from "@/database";
 import { COFFEEBEAN } from ".";
 import { MOCK } from "@/crawling/mock";
@@ -41,6 +41,9 @@ type OrderOmitUserName = Omit<OrderItem, "userName">;
 export type BillType = OrderOmitUserName & { count: number };
 
 export const getOrderListGroupByUserName = async () => {
+  if (process.env.NODE_ENV === "development") {
+    return MOCK.ORDER_LIST;
+  }
   const db = (await clientPromise).db(COFFEEBEAN.DB_NAME);
   const orderCollection = db.collection<OrderItem>(COFFEEBEAN.COLLECTION.ORDER);
   const orders = (await orderCollection
@@ -50,8 +53,15 @@ export const getOrderListGroupByUserName = async () => {
 };
 
 export const getOrderListGroupByNameSizeTemp = cache(async () => {
-  const orders = await getOrderListGroupByUserName();
-  const orderList = orders.reduce<BillType[]>((res, lastOrder) => {
+  const [orders, absenceList] = await Promise.all([
+    getOrderListGroupByUserName(),
+    getAbsenceList(),
+  ]);
+  const filteredOrders = orders.filter((order) =>
+    absenceList.find((absence) => absence.userName !== order.userName)
+  );
+
+  const orderList = filteredOrders.reduce<BillType[]>((res, lastOrder) => {
     const existGroup = res.find(
       (order) =>
         order.menuName === lastOrder.menuName &&
@@ -158,4 +168,13 @@ export const getOrderBlock = async () => {
     COFFEEBEAN.COLLECTION.ORDER_BLOCK
   );
   return orderBlock.findOne();
+};
+
+export const getAbsenceList = async () => {
+  const db = (await clientPromise).db(COFFEEBEAN.DB_NAME);
+  const absenceList = db.collection<Absence>(COFFEEBEAN.COLLECTION.ABSENCE);
+  return (await absenceList.find({ absence: true }).toArray()).map((item) => ({
+    ...item,
+    _id: item._id.toString(),
+  }));
 };
