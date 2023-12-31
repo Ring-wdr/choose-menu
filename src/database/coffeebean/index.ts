@@ -5,5 +5,6 @@ export const COFFEEBEAN = {
     ORDER: "order",
     ORDER_BLOCK: "orderBlock",
     MENU: "menu",
+    ABSENCE: "absence",
   },
 } as const;

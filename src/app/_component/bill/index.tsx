@@ -146,6 +146,7 @@ export default function BillTable({
           계산서 재요청
         </Button>
       )}
+      현재 인원: {orders.length || 0}명
       <div className={styles.sticky_wrap}>
         <div className={styles.sticky_box}>
           <div className={styles.height_fix}>

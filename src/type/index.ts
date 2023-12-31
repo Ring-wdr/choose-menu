@@ -53,3 +53,12 @@ export type ActionByState<T> = NonNullable<
 >;
 
 export type ReducerByState<T> = (state: T, action: ActionByState<T>) => T;
+
+export type Absence = {
+  userName: string;
+  absence: boolean;
+};
+
+export type AwaitedReturn<T> = T extends (...args: any) => Promise<any>
+  ? Awaited<ReturnType<T>>
+  : never;

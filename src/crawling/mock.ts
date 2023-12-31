@@ -63,8 +63,22 @@ const ORDER = {
   temperature: "HOT",
 } satisfies OrderItem;
 
+const randUserName = ["윤선비", "김윤아", "이유리", "박연주", "클로이"];
+
+const ORDER_LIST = Array.from(
+  { length: Math.floor(Math.random() * 10) + 5 },
+  (_, idx) => ({
+    userName: randUserName[idx % 5] + (Math.floor(idx / 5) + 1),
+    menuName: MENULIST[Math.floor(Math.random() * MENULIST.length)].name.kor,
+    size: Math.random() > 0.5 ? "S" : "L",
+    temperature: Math.random() > 0.5 ? "HOT" : "ICE",
+    decaf: Math.random() > 0.5 ? "on" : null,
+  })
+) satisfies OrderItem[];
+
 export const MOCK = {
   CATEGORY_LIST,
   MENULIST,
+  ORDER_LIST,
   ORDER,
 } as const;
