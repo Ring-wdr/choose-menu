@@ -2,7 +2,7 @@
   --header-height: 50px;
   --name-section-height: 85px;
   --category-height: 4.5rem;
-  --button-color-main: rgb(105, 81, 157);
+  --button-color-main: #69519d;
 }
 * {
   box-sizing: border-box;

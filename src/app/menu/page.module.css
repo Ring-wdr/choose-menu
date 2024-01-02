@@ -20,6 +20,7 @@
   white-space: nowrap;
   height: var(--category-height);
   position: relative;
+  --search-label-width: 5rem;
 }
 
 .category li {
@@ -68,8 +69,9 @@
   padding: 1rem;
   font-size: 1rem;
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  width: 5rem;
+  width: var(--search-label-width);
   cursor: pointer;
   user-select: none;
 }
@@ -81,10 +83,10 @@
 
 .category input#menu-search + input[type="text"] {
   position: absolute;
-  width: calc(100vw - 7rem);
+  width: calc(100vw - var(--search-label-width) - 2.5rem);
   height: 3rem;
   top: 50%;
-  left: 6.5rem;
+  left: calc(var(--search-label-width) + 1.5rem);
   outline: none;
   translate: 0 -50%;
   transition-property: width, background-color;
@@ -92,7 +94,7 @@
 }
 .category input#menu-search:not(:checked) + input[type="text"] {
   width: 0px;
-  left: 6rem;
+  left: calc(var(--search-label-width) + 1rem);
   padding: 0;
   border: 0;
   background-color: transparent;
@@ -108,7 +110,6 @@ input#menu-search:not(:checked)
 input#menu-search:not(:checked) + input[type="text"]::-ms-input-placeholder {
   color: transparent;
 }
-
 .menu {
   min-height: calc(100% - var(--footer-height) - 4rem);
   width: 100%;
@@ -194,6 +195,44 @@ input#menu-search:not(:checked) + input[type="text"]::-ms-input-placeholder {
 }
 
 @media (min-aspect-ratio: 6/5) and (min-height: 768px) {
+  .client {
+    display: flex;
+    --category-width: 15rem;
+  }
+  .category {
+    height: 100%;
+    width: var(--category-width);
+    display: flex;
+    flex-direction: column;
+    overflow-y: initial;
+    overflow-x: initial;
+    z-index: 1;
+    --search-label-width: 15rem;
+    background: linear-gradient(to left, rgba(0, 0, 0, 0.1), transparent 30%);
+  }
+  .category button {
+    width: var(--search-label-width);
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: start;
+    background: transparent;
+    color: black;
+    border: none;
+    margin: 0;
+  }
+  .category .search-container {
+    background: transparent;
+    top: 0;
+    left: auto;
+  }
+
+  .menu_container,
+  .menu_container .footer {
+    width: calc(100% - var(--category-width));
+  }
+
   .menu {
     display: flex;
   }

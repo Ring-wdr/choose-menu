@@ -7,11 +7,11 @@ import {
   ChangeEventHandler,
   KeyboardEventHandler,
 } from "react";
-import Image from "next/image";
 import Button from "@/component/Button";
 import LoadingImage from "@/component/Loading";
 import LoadingButton from "@/component/Loading/Button";
 import CustomBottomSheet from "@/component/BottomSheet/Custom";
+import BevImage from "./BevImage";
 import { useMenuContext } from "./MenuContext";
 import { startSafeViewTransition } from "@/hooks/startSafeViewTransition";
 import { Category, MenuProps } from "@/type";
@@ -64,6 +64,7 @@ export default function MenuContents({ categories, menuList }: MenuSideProps) {
           <button
             className={category === ALL_MENU ? styles.active : ""}
             onClick={changeCategory(ALL_MENU)}
+            title={ALL_MENU}
           >
             {ALL_MENU}
           </button>
@@ -74,6 +75,7 @@ export default function MenuContents({ categories, menuList }: MenuSideProps) {
               <button
                 className={item.category === category ? styles.active : ""}
                 onClick={changeCategory(item.category)}
+                title={item.title}
               >
                 {item.title}
               </button>
@@ -241,9 +243,6 @@ type TableProps = {
   dispatchSelected: (menu: MenuProps) => () => void;
 };
 
-const imgPlaceholder =
-  "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFklEQVR42mN8//HLfwYiAOOoQvoqBABbWyZJf74GZgAAAABJRU5ErkJggg==";
-
 /**
  * 메뉴를 보여주는 테이블
  */
@@ -264,11 +263,10 @@ function MenuTable({ menuList, selectedMenu, dispatchSelected }: TableProps) {
           >
             <button onClick={dispatchSelected(item)}>
               <div className={styles["img-container"]}>
-                <Image
+                <BevImage
                   src={item.photo}
                   alt={item.name.eng || "coffee"}
                   fill
-                  placeholder={imgPlaceholder}
                 />
               </div>
               <div className={styles["txt-container"]}>
