@@ -1,4 +1,4 @@
-import Image from "next/image";
+import BevImage from "./BevImage";
 import { MenuProps } from "@/type";
 import styles from "./card.module.css";
 import clsx from "clsx";
@@ -13,7 +13,7 @@ export default function MenuCard({ selectedMenu, className }: MenuCardProps) {
     <section className={clsx(styles.container, className)}>
       <div className={styles.item}>
         {selectedMenu ? (
-          <Image
+          <BevImage
             src={selectedMenu.photo}
             width={200}
             height={200}
