@@ -64,6 +64,7 @@ export default function MenuContents({ categories, menuList }: MenuSideProps) {
           <button
             className={category === ALL_MENU ? styles.active : ""}
             onClick={changeCategory(ALL_MENU)}
+            title={ALL_MENU}
           >
             {ALL_MENU}
           </button>
@@ -74,6 +75,7 @@ export default function MenuContents({ categories, menuList }: MenuSideProps) {
               <button
                 className={item.category === category ? styles.active : ""}
                 onClick={changeCategory(item.category)}
+                title={item.title}
               >
                 {item.title}
               </button>
