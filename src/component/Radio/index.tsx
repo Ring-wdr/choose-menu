@@ -4,6 +4,7 @@ import styles from "./index.module.css";
 export default function Radio({
   value,
   label,
+  className,
   ...props
 }: InputHTMLAttributes<HTMLInputElement> & { label: string; value: string }) {
   const radioId = useId();
@@ -16,7 +17,9 @@ export default function Radio({
         value={value}
         {...props}
       />
-      <label htmlFor={radioId}>{label}</label>
+      <label htmlFor={radioId} className={className}>
+        {label}
+      </label>
     </Fragment>
   );
 }
