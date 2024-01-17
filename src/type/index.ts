@@ -34,7 +34,7 @@ export type MenuProps = {
   };
   description: string;
   info: typeof initialIngredient;
-  soldOut: boolean;
+  soldOut?: boolean;
   only?: "ice" | "hot";
 };
 

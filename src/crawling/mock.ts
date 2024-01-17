@@ -1,4 +1,4 @@
-import { Category, initialIngredient, OrderItem } from "../type";
+import { Category, initialIngredient, MenuProps, OrderItem } from "../type";
 
 const CATEGORY_LIST: Array<Category> = [
   {
@@ -24,7 +24,8 @@ const MENULIST = [
     description: name.kor,
     info: initialIngredient,
     category: "13",
-    ...(Math.random() < 0.5 && { only: Math.random() < 0.5 ? "ice" : "hot" }),
+    ...(Math.random() < 0.5 &&
+      ({ only: Math.random() < 0.5 ? "ice" : "hot" } as const)),
   })),
   ...[
     {
@@ -53,7 +54,8 @@ const MENULIST = [
     description: name.kor,
     info: initialIngredient,
     category: "18",
-    ...(Math.random() < 0.5 && { only: Math.random() < 0.5 ? "ice" : "hot" }),
+    ...(Math.random() < 0.5 &&
+      ({ only: Math.random() < 0.5 ? "ice" : "hot" } as const)),
   })),
 ];
 
