@@ -85,19 +85,29 @@ export function MenuSubmitForm({
         <div className={styles["menu-column"]}>
           <label>온도</label>
           <div className={styles.radio}>
-            {temperatures.map((temperature, idx) => (
+            {selectedMenu.only && (
               <Radio
-                key={temperature}
                 name="temperature"
-                value={temperature}
-                label={temperature}
-                defaultChecked={
-                  prevEqualSelected
-                    ? previousMenu.temperature === temperature
-                    : idx === 0
-                }
+                value={selectedMenu.only.toUpperCase()}
+                label={`${selectedMenu.only.toUpperCase()} ONLY`}
+                theme={selectedMenu.only}
+                defaultChecked
               />
-            ))}
+            )}
+            {!selectedMenu.only &&
+              temperatures.map((temperature, idx) => (
+                <Radio
+                  key={temperature}
+                  name="temperature"
+                  value={temperature}
+                  label={temperature}
+                  defaultChecked={
+                    prevEqualSelected
+                      ? previousMenu.temperature === temperature
+                      : idx === 0
+                  }
+                />
+              ))}
           </div>
         </div>
         <div className={styles["menu-column"]}>

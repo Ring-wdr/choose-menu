@@ -24,6 +24,7 @@ const MENULIST = [
     description: name.kor,
     info: initialIngredient,
     category: "13",
+    ...(Math.random() < 0.5 && { only: Math.random() < 0.5 ? "ice" : "hot" }),
   })),
   ...[
     {
@@ -52,6 +53,7 @@ const MENULIST = [
     description: name.kor,
     info: initialIngredient,
     category: "18",
+    ...(Math.random() < 0.5 && { only: Math.random() < 0.5 ? "ice" : "hot" }),
   })),
 ];
 
