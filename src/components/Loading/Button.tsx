@@ -1,9 +1,9 @@
 "use client";
 
 import { useFormStatus } from "react-dom";
-import Button from "@/component/Button";
-import LoadingImage from "@/component/Loading";
-import Modal from "@/component/Modal";
+import Button from "@/components/Button";
+import LoadingImage from "@/components/Loading";
+import Modal from "@/components/Modal";
 
 type LoadingButtonProps = {
   label?: string;

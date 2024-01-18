@@ -8,7 +8,7 @@ import React, {
   useContext,
 } from "react";
 import { createPortal, useFormStatus } from "react-dom";
-import Button from "@/component/Button";
+import Button from "@/components/Button";
 import styles from "./index.module.css";
 
 type ModalProps = {

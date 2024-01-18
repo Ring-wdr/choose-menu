@@ -87,7 +87,7 @@
   height: 3rem;
   top: 50%;
   left: calc(var(--search-label-width) + 1.5rem);
-  outline: none;
+  border: 1px solid #000;
   translate: 0 -50%;
   transition-property: width, background-color;
   transition-duration: 0.5s, 2s;

@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import BillTable from "@/app/_component/bill";
-import CustomBottomSheet from "@/component/BottomSheet/Custom";
+import CustomBottomSheet from "@/components/BottomSheet/Custom";
 import { startSafeViewTransition } from "@/hooks/startSafeViewTransition";
 
 export default function Client({

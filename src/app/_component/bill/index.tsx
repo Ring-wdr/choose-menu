@@ -8,7 +8,7 @@ import {
   TouchEvent,
 } from "react";
 import { getOrderListGroupByNameSizeTemp } from "@/database/coffeebean/get";
-import Button from "@/component/Button";
+import Button from "@/components/Button";
 import styles from "./index.module.css";
 
 type AggTableProps = Awaited<

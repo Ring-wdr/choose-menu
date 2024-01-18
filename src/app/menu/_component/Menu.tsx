@@ -7,10 +7,10 @@ import {
   ChangeEventHandler,
   KeyboardEventHandler,
 } from "react";
-import Button from "@/component/Button";
-import LoadingImage from "@/component/Loading";
-import LoadingButton from "@/component/Loading/Button";
-import CustomBottomSheet from "@/component/BottomSheet/Custom";
+import Button from "@/components/Button";
+import LoadingImage from "@/components/Loading";
+import LoadingButton from "@/components/Loading/Button";
+import CustomBottomSheet from "@/components/BottomSheet/Custom";
 import BevImage from "./BevImage";
 import { useMenuContext } from "./MenuContext";
 import { startSafeViewTransition } from "@/hooks/startSafeViewTransition";
