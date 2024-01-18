@@ -7,5 +7,12 @@ export default function BevImage({
   alt = "beverage",
   ...props
 }: React.ComponentProps<typeof Image>) {
-  return <Image alt={alt} placeholder={imgPlaceholder} {...props} />;
+  return (
+    <Image
+      alt={alt}
+      placeholder={imgPlaceholder}
+      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+      {...props}
+    />
+  );
 }

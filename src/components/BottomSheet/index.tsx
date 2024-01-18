@@ -14,7 +14,7 @@ import React, {
 import { createPortal, useFormStatus } from "react-dom";
 import { useScreenSize } from "@/hooks/useScreenSize";
 import executeAnimate from "@/hooks/executeAnimate";
-import Button from "@/component/Button";
+import Button from "@/components/Button";
 import bsStyles from "./sheet.module.css";
 
 type BottomSheetProps = {

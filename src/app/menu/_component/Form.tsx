@@ -1,9 +1,9 @@
 import { useId } from "react";
 import { MenuProps, OrderItem } from "@/type";
-import Radio from "@/component/Radio";
-import BS from "@/component/BottomSheet";
-import Toggle from "@/component/Toggle";
-import LoadingButton from "@/component/Loading/Button";
+import Radio from "@/components/Radio";
+import BS from "@/components/BottomSheet";
+import Toggle from "@/components/Toggle";
+import LoadingButton from "@/components/Loading/Button";
 import styles from "./modal.module.css";
 
 type NameChangeProps = {

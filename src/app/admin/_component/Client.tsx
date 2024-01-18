@@ -7,7 +7,7 @@ import {
   crawlMenuFromExternal,
   toggleOrderState,
 } from "../action";
-import Button from "@/component/Button";
+import Button from "@/components/Button";
 
 function SubmitButton() {
   const status = useFormStatus();

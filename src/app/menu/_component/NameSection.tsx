@@ -6,8 +6,8 @@ import Link from "next/link";
 import { useMenuContext } from "./MenuContext";
 import { NameChangeForm } from "./Form";
 import { getUserNameFromSession } from "../action";
-import CustomBottomSheet from "@/component/BottomSheet/Custom";
-import Button from "@/component/Button";
+import CustomBottomSheet from "@/components/BottomSheet/Custom";
+import Button from "@/components/Button";
 import styles from "../layout.module.css";
 
 export default function NameSection() {
