@@ -47,6 +47,8 @@ export type OrderItem = {
   size: string;
   temperature: string;
   decaf?: "on" | null;
+  sub?: "on" | null;
+  shot?: number;
 };
 
 export type OrderBlock = {

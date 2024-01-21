@@ -26,6 +26,7 @@ const MENULIST = [
       "https://www.coffeebeankorea.com/data/menu/에스프레소-피넛-초콜릿-라떼_1.jpg",
     name,
     description: name.kor,
+    decaf: "on" as const,
     info: initialIngredient,
     category: "13",
     ...(Math.random() < 0.5 &&

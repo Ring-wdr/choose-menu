@@ -9,6 +9,25 @@ import {
 } from "@/database/coffeebean/get";
 import { OrderItem } from "@/type";
 import { ServerActionState } from "@/hooks/useServerAction";
+import { z } from "zod";
+
+const orderSchema = z
+  .object({
+    menuName: z.string(),
+    size: z.string(),
+    temperature: z.enum(["HOT", "ICE"]),
+    shot: z
+      .literal("")
+      .transform(() => undefined)
+      .or(z.coerce.number().min(0).max(4)),
+    sub: z.literal("on").nullable(),
+    decaf: z.literal("on").nullable(),
+  })
+  .partial({
+    shot: true,
+    sub: true,
+    decaf: true,
+  });
 
 export async function postSelectedMenu(data: FormData) {
   const isOrderBlock = await getOrderBlock();
@@ -16,17 +35,9 @@ export async function postSelectedMenu(data: FormData) {
     redirect("/orderblock");
   }
   const userName = getUserName()?.value!;
-  const { menuName, size, temperature, decaf } = Object.fromEntries(
-    data
-  ) as Record<string, string>;
+  const submitData = orderSchema.parse(Object.fromEntries(data));
   try {
-    await postContentsOfSelectedMenu({
-      userName,
-      menuName,
-      size,
-      temperature,
-      decaf: decaf as unknown as any,
-    });
+    await postContentsOfSelectedMenu({ userName, ...submitData });
   } catch (e) {
     console.log(e);
   } finally {
