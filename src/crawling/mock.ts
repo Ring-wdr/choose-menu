@@ -14,10 +14,14 @@ const CATEGORY_LIST: Array<Category> = [
 const MENULIST = [
   ...[
     { kor: "아메리카노", eng: "Americano" },
+    { kor: "카푸치노", eng: "Cappuccino" },
     { kor: "카페라떼", eng: "Cafe Latte" },
     { kor: "카페모카", eng: "Cafe Moca" },
+    { kor: "플랫화이트", eng: "Flat White" },
     { kor: "콜드브루", eng: "Cold Brew" },
+    { kor: "카페수아", eng: "Cafe Sua" },
   ].map((name) => ({
+    _id: name.kor,
     photo:
       "https://www.coffeebeankorea.com/data/menu/에스프레소-피넛-초콜릿-라떼_1.jpg",
     name,
@@ -49,6 +53,7 @@ const MENULIST = [
       eng: "Icetea with shot",
     },
   ].map((name) => ({
+    _id: name.kor,
     photo: "https://www.coffeebeankorea.com/data/menu/뱅쇼.jpg",
     name,
     description: name.kor,
