@@ -132,9 +132,13 @@ function DialogForm({ item }: DialogFormProps) {
       />
       <div className="m-3 flex flex-col gap-3 items-center sm:justify-between sm:flex-row ">
         <Label htmlFor={`${id}soldout`}>품절 여부</Label>
-        <Switch id={`${id}soldout`} name="soldOut" checked={item?.soldOut} />
+        <Switch
+          id={`${id}soldout`}
+          name="soldOut"
+          defaultChecked={item?.soldOut}
+        />
         <Label htmlFor={`${id}decaf`}>디카페인 여부</Label>
-        <Switch id={`${id}decaf`} name="decaf" checked={item?.decaf} />
+        <Switch id={`${id}decaf`} name="decaf" defaultChecked={item?.decaf} />
       </div>
     </>
   );
