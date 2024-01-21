@@ -9,32 +9,32 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { MenuProps } from "@/type";
+import { MenuPropsWithId } from "@/type";
 import { useReducer } from "react";
 import { initValue, reducer } from "./reducer";
+import { modifyAction, deleteAction } from "./action";
 import AdminDialog from "./AdminModify";
-import clsx from "clsx";
 
 type MenuAdminProps = {
-  menuList?: MenuProps[];
+  menuList?: MenuPropsWithId[];
 };
 
 export default function MenuAdmin({ menuList }: MenuAdminProps) {
   const [dialogState, dispatch] = useReducer(reducer, initValue);
   const [selected, setSelected] = useReducer(
     (_: string, name: string) => name,
-    (menuList && menuList[0]?.name.kor) || "메뉴"
+    (menuList && menuList[0]?._id) || "메뉴"
   );
-  const selectedItem = menuList?.find((menu) => menu.name.kor === selected);
+  const selectedItem = menuList?.find((menu) => menu._id === selected);
 
   return (
-    <div className="flex flex-col justify-center m-auto w-4/5 h-[calc(100%-var(--header-height))]">
+    <>
       <div className="flex justify-end gap-2 py-px">
-        <AdminDialog type="추가" open={dialogState.추가} dispatch={dispatch} />
         <AdminDialog
           type="수정"
           open={dialogState.수정}
           dispatch={dispatch}
+          action={modifyAction}
           item={selectedItem}
         />
         <AdminDialog
@@ -43,6 +43,7 @@ export default function MenuAdmin({ menuList }: MenuAdminProps) {
           dispatch={dispatch}
           item={selectedItem}
           description={`This action cannot be undone. This will permanently delete your account and remove your data from our servers.`}
+          action={deleteAction}
           hasForm={false}
         />
       </div>
@@ -51,28 +52,34 @@ export default function MenuAdmin({ menuList }: MenuAdminProps) {
         <TableHeader>
           <TableRow>
             <TableHead>이름</TableHead>
-            <TableHead className="w-[100px]">Only(HOT/ICE)</TableHead>
-            <TableHead className="w-[100px]">품절</TableHead>
-            <TableHead>카테고리</TableHead>
+            <TableHead className="w-12">Only</TableHead>
+            <TableHead className="w-12">품절</TableHead>
+            <TableHead className="w-24">디카페인</TableHead>
+            <TableHead className="w-24">카테고리</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {!menuList && <TableRow>No content</TableRow>}
+          {(!menuList || menuList.length === 0) && (
+            <TableRow>No content</TableRow>
+          )}
           {menuList &&
             menuList.map((item) => (
               <TableRow
                 key={item.name.kor}
-                className={clsx(selected === item.name.kor && "bg-muted")}
-                onClick={() => setSelected(item.name.kor)}
+                {...(selected === item._id && {
+                  "data-state": "selected",
+                })}
+                onClick={() => setSelected(item._id)}
               >
                 <TableCell className="font-medium">{item.name.kor}</TableCell>
-                <TableCell>{item.only}</TableCell>
-                <TableCell>{item.soldOut}</TableCell>
+                <TableCell>{item.only?.toUpperCase()}</TableCell>
+                <TableCell>{item.soldOut && "품절"}</TableCell>
+                <TableCell>{item.decaf && "디카페인"}</TableCell>
                 <TableCell>{item.category}</TableCell>
               </TableRow>
             ))}
         </TableBody>
       </Table>
-    </div>
+    </>
   );
 }

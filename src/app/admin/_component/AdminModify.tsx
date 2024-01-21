@@ -15,19 +15,25 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
-import { MenuProps } from "@/type";
-import { action } from "./action";
+import { MenuPropsWithId } from "@/type";
 
 type DialogDispatch = (input: Parameters<typeof reducer>[1]) => void;
 
 type AdminDialogProps = {
+  /** Dialog 기능 */
   type: ButtonUnion;
+  /** Dialog 상태 */
   open: boolean;
+  /** Dialog 상태의 dispatcher */
   dispatch: DialogDispatch;
+  /** 수정, 추가의 경우 */
   hasForm?: boolean;
-  hasConfirm?: boolean;
+  /** 설명 */
   description?: string;
-  item?: MenuProps;
+  /** table에서 선택된 메뉴 */
+  item?: MenuPropsWithId;
+  /** server action */
+  action?: (formData: FormData) => void;
 };
 
 function AdminDialog({
@@ -35,9 +41,9 @@ function AdminDialog({
   open,
   dispatch,
   hasForm = true,
-  hasConfirm = true,
   item,
   description,
+  action,
 }: AdminDialogProps) {
   return (
     <Dialog open={open} onOpenChange={(payload) => dispatch({ type, payload })}>
@@ -66,7 +72,7 @@ function AdminDialog({
             />
           )}
           <DialogFooter className="sm:justify-start mt-6  ">
-            {hasConfirm && <DialogFormButton type={type} dispatch={dispatch} />}
+            <DialogFormButton type={type} dispatch={dispatch} />
             <DialogClose asChild>
               <Button type="button" variant="secondary">
                 닫기
@@ -80,7 +86,7 @@ function AdminDialog({
 }
 
 type DialogFormProps = {
-  item?: MenuProps;
+  item?: MenuPropsWithId;
 };
 
 function DialogForm({ item }: DialogFormProps) {
@@ -99,6 +105,7 @@ function DialogForm({ item }: DialogFormProps) {
         id={`${id}name`}
         name="name.kor"
         defaultValue={item?.name.kor}
+        readOnly
         placeholder="한글 이름"
       />
       <Label htmlFor={`${id}name_eng`}>이름(영어)</Label>
@@ -106,7 +113,15 @@ function DialogForm({ item }: DialogFormProps) {
         id={`${id}name_eng`}
         name="name.eng"
         defaultValue={item?.name.eng}
+        readOnly
         placeholder="English Name"
+      />
+      <Input
+        id={`${id}`}
+        name="_id"
+        defaultValue={item?._id}
+        readOnly
+        className="hidden"
       />
       <Label htmlFor={`${id}only`}>온도 제한</Label>
       <Input
@@ -117,9 +132,9 @@ function DialogForm({ item }: DialogFormProps) {
       />
       <div className="m-3 flex flex-col gap-3 items-center sm:justify-between sm:flex-row ">
         <Label htmlFor={`${id}soldout`}>품절 여부</Label>
-        <Switch id={`${id}soldout`} name="soldOut" />
+        <Switch id={`${id}soldout`} name="soldOut" checked={item?.soldOut} />
         <Label htmlFor={`${id}decaf`}>디카페인 여부</Label>
-        <Switch id={`${id}decaf`} name="decaf" />
+        <Switch id={`${id}decaf`} name="decaf" checked={item?.decaf} />
       </div>
     </>
   );
