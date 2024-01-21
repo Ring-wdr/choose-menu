@@ -2,8 +2,15 @@ import { useId } from "react";
 import { MenuProps, OrderItem } from "@/type";
 import Radio from "@/components/Radio";
 import BS from "@/components/BottomSheet";
-import Toggle from "@/components/Toggle";
 import LoadingButton from "@/components/Loading/Button";
+import { Switch } from "@/components/ui/switch";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import styles from "./modal.module.css";
 
 type NameChangeProps = {
@@ -41,6 +48,7 @@ type MenuSubmitProps = {
 
 const coffeeSize = ["L", "M", "S"] as const;
 const temperatures = ["HOT", "ICE"] as const;
+const shots = Array.from({ length: 5 }, (_, idx) => idx);
 
 export function MenuSubmitForm({
   previousMenu,
@@ -48,7 +56,6 @@ export function MenuSubmitForm({
   formAction,
 }: MenuSubmitProps) {
   const menuNameId = useId();
-  const decafId = useId();
   /** 기존 선택 메뉴와 현재 선택 메뉴가 같을 경우 체크 */
   const prevEqualSelected = previousMenu?.menuName === selectedMenu.name.kor;
 
@@ -110,15 +117,45 @@ export function MenuSubmitForm({
               ))}
           </div>
         </div>
-        <div className={styles["menu-column"]}>
-          <label htmlFor={decafId}>디카페인</label>
-          <Toggle
-            name="decaf"
-            defaultChecked={prevEqualSelected ? !!previousMenu.decaf : false}
-          />
+        <div className="flex flex-col justify-between w-2/3 mb-3 gap-3">
+          {selectedMenu.decaf && (
+            <div className="flex flex-row justify-between items-center">
+              <label>디카페인</label>
+              <Switch
+                name="decaf"
+                className="mt-0"
+                defaultChecked={
+                  prevEqualSelected ? !!previousMenu.decaf : false
+                }
+              />
+            </div>
+          )}
+          <div className="flex flex-row justify-between items-center">
+            <label>예비 메뉴</label>
+            <Switch
+              name="sub"
+              className="mt-0"
+              defaultChecked={prevEqualSelected ? !!previousMenu.sub : false}
+            />
+          </div>
+          <div className="flex flex-row justify-between items-center">
+            <label>샷</label>
+            <Select name="shot">
+              <SelectTrigger className="w-36">
+                <SelectValue placeholder="추가 희망시 선택" />
+              </SelectTrigger>
+              <SelectContent>
+                {shots.map((num) => (
+                  <SelectItem key={num} value={String(num)}>
+                    {num}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
-        <p>선택하시겠습니까?</p>
-        <LoadingButton />
+        <p className="mt-6">선택하시겠습니까?</p>
+        <LoadingButton className={styles.submit} />
       </form>
     </div>
   );

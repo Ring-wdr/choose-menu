@@ -27,7 +27,7 @@
 .modal_container form input[type="text"] {
   height: 3rem;
 }
-.modal_container form button {
+.modal_container form button.submit {
   margin-top: 1rem;
 }
 /** 메뉴 선택 모달 */
