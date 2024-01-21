@@ -10,7 +10,7 @@
   background: #fff;
   bottom: 0;
   transition: 150ms ease-out;
-  z-index: 100;
+  z-index: 20;
   border-top-left-radius: 30px;
   border-top-right-radius: 30px;
   /* border: 1px solid black; */
