@@ -2,8 +2,9 @@ import { revalidatePath } from "next/cache";
 import clientPromise from "..";
 import { COFFEEBEAN } from ".";
 import { getCategories, getMenuFromPages } from "@/crawling";
-import { MenuProps, OrderItem } from "@/type";
+import { MenuProps, MenuPropsWithId, OrderItem } from "@/type";
 import { getCategoryList } from "./get";
+import { ObjectId } from "mongodb";
 
 export async function crawlAndSaveCategory() {
   const db = (await clientPromise).db(COFFEEBEAN.DB_NAME);
@@ -44,4 +45,27 @@ export async function postContentsOfSelectedMenu(props: OrderItem) {
   const db = (await clientPromise).db(COFFEEBEAN.DB_NAME);
   const orderCollection = db.collection(COFFEEBEAN.COLLECTION.ORDER);
   return orderCollection.insertOne(props);
+}
+
+export async function mutateMenudata({
+  name,
+  _id,
+  ...props
+}: Omit<MenuPropsWithId, "photo" | "description" | "info">) {
+  const db = (await clientPromise).db(COFFEEBEAN.DB_NAME);
+  const menuCollection = db.collection(COFFEEBEAN.COLLECTION.MENU);
+
+  const response = await menuCollection.findOneAndUpdate(
+    { _id: new ObjectId(_id) },
+    { $set: props },
+    { upsert: true }
+  );
+  return response;
+}
+
+export async function deleteMenudata({ _id }: Pick<MenuPropsWithId, "_id">) {
+  const db = (await clientPromise).db(COFFEEBEAN.DB_NAME);
+  const menuCollection = db.collection(COFFEEBEAN.COLLECTION.MENU);
+  const response = await menuCollection.deleteOne({ _id: new ObjectId(_id) });
+  return response;
 }

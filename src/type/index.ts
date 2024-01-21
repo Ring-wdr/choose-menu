@@ -35,8 +35,11 @@ export type MenuProps = {
   description: string;
   info: typeof initialIngredient;
   soldOut?: boolean;
+  decaf?: boolean;
   only?: "ice" | "hot";
 };
+
+export type MenuPropsWithId = MenuProps & { _id: string };
 
 export type OrderItem = {
   userName: string;

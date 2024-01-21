@@ -106,13 +106,59 @@ export const getMenuList = async (): Promise<MenuProps[]> => {
   if (process.env.NODE_ENV === "development") return MOCK.MENULIST;
   const db = (await clientPromise).db(COFFEEBEAN.DB_NAME);
   const menuCollection = db.collection<MenuProps>(COFFEEBEAN.COLLECTION.MENU);
-  return (await menuCollection.find().toArray()).map((item) => ({
+  return (
+    await menuCollection
+      .find({
+        soldOut: { $ne: true },
+      })
+      .toArray()
+  ).map((item) => ({
     ...item,
     _id: item._id.toString(),
   }));
 };
 
 export const cachedGetMenuList = cache(getMenuList);
+
+type PaginatedMenuParams = {
+  slug: number;
+  limit?: number;
+  length?: number;
+};
+
+export const getPaginatedMenuList = cache(
+  async ({
+    limit = 10,
+    length = 10,
+    slug = 1,
+  }: PaginatedMenuParams): Promise<{
+    menuList: Array<MenuProps & { _id: string }>;
+    totalPage: number;
+  }> => {
+    if (isNaN(slug) || slug < 1) {
+      throw new Error("Invalid slug value.");
+    }
+    const offset = (slug - 1) * length;
+    if (process.env.NODE_ENV === "development") {
+      return {
+        menuList: MOCK.MENULIST.slice(offset, offset + limit),
+        totalPage: Math.floor(MOCK.MENULIST.length / length) + 1,
+      };
+    }
+    const db = (await clientPromise).db(COFFEEBEAN.DB_NAME);
+    const menuCollection = db.collection<MenuProps>(COFFEEBEAN.COLLECTION.MENU);
+
+    const [menuList, totalDocuments] = await Promise.all([
+      menuCollection.find().limit(limit).skip(offset).toArray(),
+      menuCollection.estimatedDocumentCount(),
+    ]);
+    const totalPage = Math.ceil(totalDocuments / length);
+    return {
+      menuList: menuList.map((item) => ({ ...item, _id: item._id.toString() })),
+      totalPage,
+    };
+  }
+);
 
 export const getMenuListById = async (
   category: string
