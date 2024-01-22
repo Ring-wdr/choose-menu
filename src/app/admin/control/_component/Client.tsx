@@ -1,23 +1,23 @@
-"use client";
+'use client';
 
-import { useId } from "react";
-import { useFormState, useFormStatus } from "react-dom";
+import { useId } from 'react';
+import { useFormState, useFormStatus } from 'react-dom';
 
-import Button from "@/components/Button";
+import Button from '@/components/Button';
 
-import { crawlCategoriesFromExternal, crawlMenuFromExternal } from "../action";
+import { crawlCategoriesFromExternal, crawlMenuFromExternal } from '../action';
 
 function SubmitButton() {
   const status = useFormStatus();
   return (
     <Button fullWidth type="submit">
-      {status.pending ? "크롤링 중입니다." : "크롤링"}
+      {status.pending ? '크롤링 중입니다.' : '크롤링'}
     </Button>
   );
 }
 
 export default function Client() {
-  const [sendState, formAction] = useFormState(crawlCategoriesFromExternal, "");
+  const [sendState, formAction] = useFormState(crawlCategoriesFromExternal, '');
   const [sendMenu, menuAction] = useFormState(crawlMenuFromExternal, []);
   const masterKey = useId();
   return (
@@ -29,8 +29,8 @@ export default function Client() {
       </form>
       <p>실행 결과</p>
       <ul>
-        {typeof sendState === "string" ? (
-          <li>{sendState || "크롤링 대기 중"}</li>
+        {typeof sendState === 'string' ? (
+          <li>{sendState || '크롤링 대기 중'}</li>
         ) : null}
         {Array.isArray(sendState)
           ? sendState.map(({ title, category }, idx) => (

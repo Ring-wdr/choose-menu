@@ -1,8 +1,8 @@
-import LoadingButton from "@/components/Loading/Button";
+import LoadingButton from '@/components/Loading/Button';
 
-import { action } from "./action";
+import { action } from './action';
 
-import styles from "./page.module.css";
+import styles from './page.module.css';
 
 export default function Home() {
   return (

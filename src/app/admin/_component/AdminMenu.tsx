@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useReducer } from "react";
+import { useReducer } from 'react';
 
 import {
   Table,
@@ -10,12 +10,12 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { MenuPropsWithId } from "@/type";
+} from '@/components/ui/table';
+import { MenuPropsWithId } from '@/type';
 
-import { deleteAction, modifyAction } from "./action";
-import AdminDialog from "./AdminModify";
-import { initValue, reducer } from "./reducer";
+import { deleteAction, modifyAction } from './action';
+import AdminDialog from './AdminModify';
+import { initValue, reducer } from './reducer';
 
 type MenuAdminProps = {
   menuList?: MenuPropsWithId[];
@@ -25,7 +25,7 @@ export default function MenuAdmin({ menuList }: MenuAdminProps) {
   const [dialogState, dispatch] = useReducer(reducer, initValue);
   const [selected, setSelected] = useReducer(
     (_: string, name: string) => name,
-    (menuList && menuList[0]?._id) || "메뉴",
+    (menuList && menuList[0]?._id) || '메뉴',
   );
   const selectedItem = menuList?.find((menu) => menu._id === selected);
 
@@ -69,14 +69,14 @@ export default function MenuAdmin({ menuList }: MenuAdminProps) {
               <TableRow
                 key={item.name.kor}
                 {...(selected === item._id && {
-                  "data-state": "selected",
+                  'data-state': 'selected',
                 })}
                 onClick={() => setSelected(item._id)}
               >
                 <TableCell className="font-medium">{item.name.kor}</TableCell>
                 <TableCell>{item.only?.toUpperCase()}</TableCell>
-                <TableCell>{item.soldOut && "품절"}</TableCell>
-                <TableCell>{item.decaf && "디카페인"}</TableCell>
+                <TableCell>{item.soldOut && '품절'}</TableCell>
+                <TableCell>{item.decaf && '디카페인'}</TableCell>
                 <TableCell>{item.category}</TableCell>
               </TableRow>
             ))}

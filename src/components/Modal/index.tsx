@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import React, {
   createContext,
@@ -6,12 +6,12 @@ import React, {
   useEffect,
   useRef,
   useState,
-} from "react";
-import { createPortal, useFormStatus } from "react-dom";
+} from 'react';
+import { createPortal, useFormStatus } from 'react-dom';
 
-import Button from "@/components/Button";
+import Button from '@/components/Button';
 
-import styles from "./index.module.css";
+import styles from './index.module.css';
 
 type ModalProps = {
   isOpen: boolean;
@@ -43,11 +43,11 @@ function ModalMain({ children, onToggle, isOpen }: ModalProps) {
 function ModalPortal({ children }: React.PropsWithChildren) {
   const { onClose } = useModalContext();
 
-  const portalRef = useRef(document.createElement("div"));
+  const portalRef = useRef(document.createElement('div'));
   useEffect(() => {
     const container = portalRef.current;
     if (!hasTarget(container)) {
-      portalRef.current.className = styles["custom-portal"];
+      portalRef.current.className = styles['custom-portal'];
       document.body.appendChild(portalRef.current);
     }
     const onCloseByBackdropClick = (e: MouseEvent) => {
@@ -56,32 +56,32 @@ function ModalPortal({ children }: React.PropsWithChildren) {
       }
     };
     const onCloseByEsc = (e: KeyboardEvent) => {
-      onClose && e.key === "Escape" && onClose();
+      onClose && e.key === 'Escape' && onClose();
     };
     if (onClose) {
-      container.addEventListener("click", onCloseByBackdropClick);
-      window.addEventListener("keyup", onCloseByEsc);
+      container.addEventListener('click', onCloseByBackdropClick);
+      window.addEventListener('keyup', onCloseByEsc);
     }
     return () => {
       if (hasTarget(container)) {
         document.body?.removeChild(container);
       }
       if (onClose) {
-        container.addEventListener("click", onCloseByBackdropClick);
-        window.removeEventListener("keyup", onCloseByEsc);
+        container.addEventListener('click', onCloseByBackdropClick);
+        window.removeEventListener('keyup', onCloseByEsc);
       }
     };
   }, [onClose]);
 
   return portalRef.current
-    ? createPortal(children ?? "내용을 채워주세요.", portalRef.current)
+    ? createPortal(children ?? '내용을 채워주세요.', portalRef.current)
     : null;
 }
 
 function ModalCloseButton({
   children,
   ...props
-}: Omit<React.ComponentProps<typeof Button>, "onClick">) {
+}: Omit<React.ComponentProps<typeof Button>, 'onClick'>) {
   const { onClose } = useModalContext();
   return (
     <Button onClick={onClose} {...props}>
@@ -92,7 +92,7 @@ function ModalCloseButton({
 
 type ModalSubmitButtonProps = Omit<
   React.ComponentProps<typeof Button>,
-  "onClick" | "disabled"
+  'onClick' | 'disabled'
 > & {
   closeOnSubmit?: boolean;
   childrenOnPending?: React.ReactNode;

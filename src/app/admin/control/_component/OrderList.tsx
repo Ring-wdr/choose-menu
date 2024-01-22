@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import clsx from "clsx";
+import { useEffect, useState } from 'react';
+import clsx from 'clsx';
 
-import { getOrderListGroupByUserName } from "@/database/coffeebean/get";
-import useServerAction from "@/hooks/useServerAction";
-import { Absence, AwaitedReturn } from "@/type";
+import { getOrderListGroupByUserName } from '@/database/coffeebean/get';
+import useServerAction from '@/hooks/useServerAction';
+import { Absence, AwaitedReturn } from '@/type';
 
-import { getAbsenceListAction } from "../action";
+import { getAbsenceListAction } from '../action';
 
-import styles from "./client.module.css";
+import styles from './client.module.css';
 
 type OrderListProps = {
   orderList: AwaitedReturn<typeof getOrderListGroupByUserName>;
@@ -21,7 +21,7 @@ export default function OrderList({ orderList }: OrderListProps) {
   const toggleAbsence = (userName: string) => async () => {
     try {
       const response = await fetch(`/api/absence/${userName}`, {
-        method: "PATCH",
+        method: 'PATCH',
       });
       if (response.ok) {
         const result = (await response.json()) as Absence | null;
@@ -35,13 +35,13 @@ export default function OrderList({ orderList }: OrderListProps) {
         });
       }
     } catch (e) {
-      alert("toggle failed");
+      alert('toggle failed');
       refetch();
     }
   };
 
   useEffect(() => {
-    if (state.status === "success") {
+    if (state.status === 'success') {
       setAbsence((prev) => {
         if (state.data) return state.data;
         return prev;
@@ -65,8 +65,8 @@ export default function OrderList({ orderList }: OrderListProps) {
                 [styles.absence]: isAbsence,
               })}
             >
-              {order.userName}: {order.size || "S"} {order.temperature || ""}
-              {order.menuName} {order.decaf ? "DECAF" : ""}
+              {order.userName}: {order.size || 'S'} {order.temperature || ''}
+              {order.menuName} {order.decaf ? 'DECAF' : ''}
               <input
                 type="checkbox"
                 checked={isAbsence}

@@ -1,35 +1,35 @@
-"use client";
+'use client';
 
-import { useEffect } from "react";
-import { useFormState } from "react-dom";
+import { useEffect } from 'react';
+import { useFormState } from 'react-dom';
 
 export type ServerActionState<T = any> =
   | {
-      status: "pending";
+      status: 'pending';
       data?: T;
     }
   | {
-      status: "success";
+      status: 'success';
       message?: string;
       data?: T;
     }
   | {
-      status: "error";
+      status: 'error';
       message: string;
     };
 
 type LoadingTrueState<T> = {
-  state: Extract<ServerActionState<T>, { status: "pending" }>;
+  state: Extract<ServerActionState<T>, { status: 'pending' }>;
   loading: true;
   error: false;
 };
 type LoadingFalseSuccessState<T> = {
-  state: Extract<ServerActionState<T>, { status: "success" }>;
+  state: Extract<ServerActionState<T>, { status: 'success' }>;
   loading: false;
   error: false;
 };
 type LoadingFalseErrorState<T> = {
-  state: Extract<ServerActionState<T>, { status: "error" }>;
+  state: Extract<ServerActionState<T>, { status: 'error' }>;
   loading: false;
   error: true;
 };
@@ -45,21 +45,21 @@ export default function useServerAction<T>(
   initData?: T,
 ): ServerActionReturnType<T> {
   const [state, refetch] = useFormState<ServerActionState<T>>(callback, {
-    status: initData ? "success" : "pending",
+    status: initData ? 'success' : 'pending',
     data: initData,
   });
 
   useEffect(() => {
     switch (state.status) {
-      case "pending":
+      case 'pending':
         refetch();
         break;
     }
   }, [state, refetch]);
 
-  if (state.status === "pending")
+  if (state.status === 'pending')
     return { state, loading: true, error: false, refetch };
-  if (state.status === "success")
+  if (state.status === 'success')
     return { state, loading: false, error: false, refetch };
   return { state, loading: false, error: true, refetch };
 }

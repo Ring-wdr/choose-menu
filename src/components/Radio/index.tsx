@@ -1,7 +1,7 @@
-import { Fragment, InputHTMLAttributes, useId } from "react";
-import clsx from "clsx";
+import { Fragment, InputHTMLAttributes, useId } from 'react';
+import clsx from 'clsx';
 
-import styles from "./index.module.css";
+import styles from './index.module.css';
 
 export default function Radio({
   value,
@@ -12,11 +12,11 @@ export default function Radio({
 }: InputHTMLAttributes<HTMLInputElement> & {
   label: string;
   value: string;
-  theme?: "hot" | "ice";
+  theme?: 'hot' | 'ice';
 }) {
   const radioId = useId();
   return (
-    <Fragment key={value || "defaultkey"}>
+    <Fragment key={value || 'defaultkey'}>
       <input
         type="radio"
         className={styles.radio}

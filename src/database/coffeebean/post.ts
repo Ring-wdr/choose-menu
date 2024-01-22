@@ -1,20 +1,20 @@
-import { ObjectId } from "mongodb";
-import { revalidatePath } from "next/cache";
+import { ObjectId } from 'mongodb';
+import { revalidatePath } from 'next/cache';
 
-import { getCategories, getMenuFromPages } from "@/crawling";
-import { MenuProps, MenuPropsWithId, OrderItem } from "@/type";
+import { getCategories, getMenuFromPages } from '@/crawling';
+import { MenuProps, MenuPropsWithId, OrderItem } from '@/type';
 
-import clientPromise from "..";
+import clientPromise from '..';
 
-import { getCategoryList } from "./get";
-import { COFFEEBEAN } from ".";
+import { getCategoryList } from './get';
+import { COFFEEBEAN } from '.';
 
 export async function crawlAndSaveCategory() {
   const db = (await clientPromise).db(COFFEEBEAN.DB_NAME);
   const categoryCollection = db.collection(COFFEEBEAN.COLLECTION.CATEGORY);
   categoryCollection.deleteMany({});
   const categoryList = await getCategories(
-    "https://www.coffeebeankorea.com/menu/list.asp",
+    'https://www.coffeebeankorea.com/menu/list.asp',
   );
   const response = categoryCollection.insertMany(categoryList);
   return {
@@ -37,7 +37,7 @@ export async function crawlAndSaveMenu() {
     menuList.push(...menu);
   }
   const response = menuCollection.insertMany(menuList);
-  revalidatePath("/menu", "page");
+  revalidatePath('/menu', 'page');
   return {
     menuList,
     response,
@@ -54,7 +54,7 @@ export async function mutateMenudata({
   name,
   _id,
   ...props
-}: Omit<MenuPropsWithId, "photo" | "description" | "info">) {
+}: Omit<MenuPropsWithId, 'photo' | 'description' | 'info'>) {
   const db = (await clientPromise).db(COFFEEBEAN.DB_NAME);
   const menuCollection = db.collection(COFFEEBEAN.COLLECTION.MENU);
 
@@ -66,7 +66,7 @@ export async function mutateMenudata({
   return response;
 }
 
-export async function deleteMenudata({ _id }: Pick<MenuPropsWithId, "_id">) {
+export async function deleteMenudata({ _id }: Pick<MenuPropsWithId, '_id'>) {
   const db = (await clientPromise).db(COFFEEBEAN.DB_NAME);
   const menuCollection = db.collection(COFFEEBEAN.COLLECTION.MENU);
   const response = await menuCollection.deleteOne({ _id: new ObjectId(_id) });

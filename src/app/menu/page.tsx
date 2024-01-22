@@ -1,13 +1,13 @@
 import {
   cachedGetCategoryList,
   cachedGetMenuList,
-} from "@/database/coffeebean/get";
+} from '@/database/coffeebean/get';
 
-import BlockPage from "../_component/BlockPage";
+import BlockPage from '../_component/BlockPage';
 
-import MenuContents from "./_component/Menu";
+import MenuContents from './_component/Menu';
 
-import styles from "./page.module.css";
+import styles from './page.module.css';
 
 export default async function Menu() {
   const categories = await cachedGetCategoryList();

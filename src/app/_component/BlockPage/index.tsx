@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
-import styles from "./style.module.css";
+import styles from './style.module.css';
 
 export default function BlockPage() {
   const [isBlock, setBlock] = useState(false);
@@ -10,7 +10,7 @@ export default function BlockPage() {
   useEffect(() => {
     const ctl = new AbortController();
     const { signal } = ctl;
-    fetch("/api/orderblock", { signal })
+    fetch('/api/orderblock', { signal })
       .then((res) => res.json())
       .then(({ status }) => setBlock(status));
 
@@ -20,7 +20,7 @@ export default function BlockPage() {
   return (
     <>
       {isBlock ? (
-        <div className={styles["block-page"]}>현재는 주문할 수 없습니다.</div>
+        <div className={styles['block-page']}>현재는 주문할 수 없습니다.</div>
       ) : null}
     </>
   );

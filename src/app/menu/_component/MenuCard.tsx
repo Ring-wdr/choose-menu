@@ -1,10 +1,10 @@
-import clsx from "clsx";
+import clsx from 'clsx';
 
-import { MenuProps } from "@/type";
+import { MenuProps } from '@/type';
 
-import BevImage from "./BevImage";
+import BevImage from './BevImage';
 
-import styles from "./card.module.css";
+import styles from './card.module.css';
 
 type MenuCardProps = {
   selectedMenu?: MenuProps | null;
@@ -25,7 +25,7 @@ export default function MenuCard({ selectedMenu, className }: MenuCardProps) {
         ) : (
           <div className={styles.fallback}></div>
         )}
-        <p>{selectedMenu?.name.kor || "메뉴를 골라주세요"}</p>
+        <p>{selectedMenu?.name.kor || '메뉴를 골라주세요'}</p>
         {selectedMenu && (
           <>
             <p>{selectedMenu.name.eng}</p>

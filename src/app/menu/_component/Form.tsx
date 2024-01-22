@@ -1,19 +1,19 @@
-import { useId } from "react";
+import { useId } from 'react';
 
-import BS from "@/components/BottomSheet";
-import LoadingButton from "@/components/Loading/Button";
-import Radio from "@/components/Radio";
+import BS from '@/components/BottomSheet';
+import LoadingButton from '@/components/Loading/Button';
+import Radio from '@/components/Radio';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
-import { MenuProps, OrderItem } from "@/type";
+} from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
+import { MenuProps, OrderItem } from '@/type';
 
-import styles from "./modal.module.css";
+import styles from './modal.module.css';
 
 type NameChangeProps = {
   userName: string;
@@ -48,8 +48,8 @@ type MenuSubmitProps = {
   formAction: (payload: FormData) => void;
 };
 
-const coffeeSize = ["L", "M", "S"] as const;
-const temperatures = ["HOT", "ICE"] as const;
+const coffeeSize = ['L', 'M', 'S'] as const;
+const temperatures = ['HOT', 'ICE'] as const;
 const shots = Array.from({ length: 5 }, (_, idx) => idx);
 
 export function MenuSubmitForm({
@@ -72,10 +72,10 @@ export function MenuSubmitForm({
           hidden
           readOnly
         />
-        <div className={styles["menu-column"]}>
+        <div className={styles['menu-column']}>
           <span>[{selectedMenu?.name.kor}]</span>
         </div>
-        <div className={styles["menu-column"]}>
+        <div className={styles['menu-column']}>
           <label>사이즈</label>
           <div className={styles.radio}>
             {coffeeSize.map((size, idx) => (
@@ -91,7 +91,7 @@ export function MenuSubmitForm({
             ))}
           </div>
         </div>
-        <div className={styles["menu-column"]}>
+        <div className={styles['menu-column']}>
           <label>온도</label>
           <div className={styles.radio}>
             {selectedMenu.only && (

@@ -1,14 +1,14 @@
 export const ingredientList = [
-  { name: "calories", className: "bg1" },
-  { name: "saturatedFat", className: "bg2" },
-  { name: "sodium", className: "bg3" },
-  { name: "carbohydrate", className: "bg4" },
-  { name: "sugars", className: "bg5" },
-  { name: "caffeine", className: "bg6" },
-  { name: "protain", className: "bg7" },
+  { name: 'calories', className: 'bg1' },
+  { name: 'saturatedFat', className: 'bg2' },
+  { name: 'sodium', className: 'bg3' },
+  { name: 'carbohydrate', className: 'bg4' },
+  { name: 'sugars', className: 'bg5' },
+  { name: 'caffeine', className: 'bg6' },
+  { name: 'protain', className: 'bg7' },
 ] as const;
 
-type IngredientKey = (typeof ingredientList)[number]["name"];
+type IngredientKey = (typeof ingredientList)[number]['name'];
 
 export const initialIngredient = ingredientList.reduce(
   (acc, ingredient) => ({ ...acc, [ingredient.name]: 0 }),
@@ -36,7 +36,7 @@ export type MenuProps = {
   info: typeof initialIngredient;
   soldOut?: boolean;
   decaf?: boolean;
-  only?: "ice" | "hot";
+  only?: 'ice' | 'hot';
 };
 
 export type MenuPropsWithId = MenuProps & { _id: string };
@@ -46,8 +46,8 @@ export type OrderItem = {
   menuName: string;
   size: string;
   temperature: string;
-  decaf?: "on" | null;
-  sub?: "on" | null;
+  decaf?: 'on' | null;
+  sub?: 'on' | null;
   shot?: number;
 };
 

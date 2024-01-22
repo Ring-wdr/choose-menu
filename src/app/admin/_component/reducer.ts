@@ -1,4 +1,4 @@
-export const ctlButtons = ["추가", "수정", "삭제"] as const;
+export const ctlButtons = ['추가', '수정', '삭제'] as const;
 
 export type ButtonUnion = (typeof ctlButtons)[number];
 

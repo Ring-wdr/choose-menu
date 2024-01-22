@@ -1,10 +1,10 @@
 export const COFFEEBEAN = {
-  DB_NAME: "coffeebean",
+  DB_NAME: 'coffeebean',
   COLLECTION: {
-    CATEGORY: "category",
-    ORDER: "order",
-    ORDER_BLOCK: "orderBlock",
-    MENU: "menu",
-    ABSENCE: "absence",
+    CATEGORY: 'category',
+    ORDER: 'order',
+    ORDER_BLOCK: 'orderBlock',
+    MENU: 'menu',
+    ABSENCE: 'absence',
   },
 } as const;

@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import {
   DragEvent,
   Fragment,
@@ -6,12 +6,12 @@ import {
   useEffect,
   useRef,
   useState,
-} from "react";
+} from 'react';
 
-import Button from "@/components/Button";
-import { getOrderListGroupByNameSizeTemp } from "@/database/coffeebean/get";
+import Button from '@/components/Button';
+import { getOrderListGroupByNameSizeTemp } from '@/database/coffeebean/get';
 
-import styles from "./index.module.css";
+import styles from './index.module.css';
 
 type AggTableProps = Awaited<
   ReturnType<typeof getOrderListGroupByNameSizeTemp>
@@ -33,7 +33,7 @@ export default function BillTable({
   // order state
   const [orders, setOrders] = useState(data);
   const updateOrder = () => {
-    fetch("/api/bill")
+    fetch('/api/bill')
       .then((res) => res.json())
       .then((data) => setOrders(data));
   };
@@ -84,7 +84,7 @@ export default function BillTable({
     const { touches } = e;
     const { clientY } = touches[0];
     const y = clientY - currnentY.current;
-    e.currentTarget.style.setProperty("transform", `translateY(${y}px)`);
+    e.currentTarget.style.setProperty('transform', `translateY(${y}px)`);
   };
 
   const onTouchEnd = (e: TouchEvent<HTMLTableRowElement>) => {
@@ -93,9 +93,9 @@ export default function BillTable({
     const { clientX, clientY } = changedTouches[0];
     const { index } = currentTarget.dataset;
     const currentIdx = Number(index);
-    const tbody = currentTarget.closest("tbody");
+    const tbody = currentTarget.closest('tbody');
     if (tbody === null) return;
-    const trows = [...tbody.querySelectorAll("tr")];
+    const trows = [...tbody.querySelectorAll('tr')];
     const trowRects = trows.map((trow) => {
       const { left, right, bottom, top } = trow.getBoundingClientRect();
       const index = Number(trow.dataset.index);
@@ -131,13 +131,13 @@ export default function BillTable({
         break;
       }
     }
-    currentTarget.style.removeProperty("transform");
+    currentTarget.style.removeProperty('transform');
   };
 
   useEffect(() => {
-    document.body.style.setProperty("overscroll-behavior", "none");
+    document.body.style.setProperty('overscroll-behavior', 'none');
     return () => {
-      document.body.style.removeProperty("overscroll-behavior");
+      document.body.style.removeProperty('overscroll-behavior');
     };
   }, []);
 

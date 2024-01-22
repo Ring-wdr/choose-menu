@@ -1,10 +1,10 @@
-import { cache } from "react";
+import { cache } from 'react';
 
-import { MOCK } from "@/crawling/mock";
-import clientPromise from "@/database";
-import { Absence, Category, MenuProps, OrderBlock, OrderItem } from "@/type";
+import { MOCK } from '@/crawling/mock';
+import clientPromise from '@/database';
+import { Absence, Category, MenuProps, OrderBlock, OrderItem } from '@/type';
 
-import { COFFEEBEAN } from ".";
+import { COFFEEBEAN } from '.';
 
 export const getOrderedList = async () => {
   const db = (await clientPromise).db(COFFEEBEAN.DB_NAME);
@@ -19,8 +19,8 @@ export const getOrderedList = async () => {
 
 const groupStage = {
   $group: {
-    _id: "$userName",
-    latestOrder: { $last: "$$ROOT" },
+    _id: '$userName',
+    latestOrder: { $last: '$$ROOT' },
   },
 };
 const sortStage = {
@@ -31,19 +31,19 @@ const sortStage = {
 const projState = {
   $project: {
     _id: 0,
-    userName: "$_id",
-    menuName: "$latestOrder.menuName",
-    size: "$latestOrder.size",
-    temperature: "$latestOrder.temperature",
-    decaf: "$latestOrder.decaf",
+    userName: '$_id',
+    menuName: '$latestOrder.menuName',
+    size: '$latestOrder.size',
+    temperature: '$latestOrder.temperature',
+    decaf: '$latestOrder.decaf',
   },
 };
 
-type OrderOmitUserName = Omit<OrderItem, "userName">;
+type OrderOmitUserName = Omit<OrderItem, 'userName'>;
 export type BillType = OrderOmitUserName & { count: number };
 
 export const getOrderListGroupByUserName = async () => {
-  if (process.env.NODE_ENV === "development") {
+  if (process.env.NODE_ENV === 'development') {
     return MOCK.ORDER_LIST;
   }
   const db = (await clientPromise).db(COFFEEBEAN.DB_NAME);
@@ -80,7 +80,7 @@ export const getOrderListGroupByNameSizeTemp = cache(async () => {
   }, []);
   const result = orderList.map((lastOrder, idx) => ({
     id: idx,
-    title: `(${lastOrder.size || "S"})${lastOrder.temperature || ""} ${
+    title: `(${lastOrder.size || 'S'})${lastOrder.temperature || ''} ${
       lastOrder.menuName
     }`,
     decaf: lastOrder.decaf,
@@ -99,13 +99,13 @@ export const getCategoryList = async () => {
 
 /** cached method */
 export const cachedGetCategoryList = cache(async () => {
-  if (process.env.NODE_ENV === "development") return MOCK.CATEGORY_LIST;
+  if (process.env.NODE_ENV === 'development') return MOCK.CATEGORY_LIST;
   const categoryList = await getCategoryList();
   return categoryList.map((menu) => ({ ...menu, _id: menu._id.toString() }));
 });
 
 export const getMenuList = async (): Promise<MenuProps[]> => {
-  if (process.env.NODE_ENV === "development") return MOCK.MENULIST;
+  if (process.env.NODE_ENV === 'development') return MOCK.MENULIST;
   const db = (await clientPromise).db(COFFEEBEAN.DB_NAME);
   const menuCollection = db.collection<MenuProps>(COFFEEBEAN.COLLECTION.MENU);
   return (
@@ -138,10 +138,10 @@ export const getPaginatedMenuList = cache(
     totalPage: number;
   }> => {
     if (isNaN(slug) || slug < 1) {
-      throw new Error("Invalid slug value.");
+      throw new Error('Invalid slug value.');
     }
     const offset = (slug - 1) * length;
-    if (process.env.NODE_ENV === "development") {
+    if (process.env.NODE_ENV === 'development') {
       return {
         menuList: MOCK.MENULIST.slice(offset, offset + limit),
         totalPage: Math.floor(MOCK.MENULIST.length / length) + 1,
@@ -165,7 +165,7 @@ export const getPaginatedMenuList = cache(
 export const getMenuListById = async (
   category: string,
 ): Promise<MenuProps[]> => {
-  if (process.env.NODE_ENV === "development") {
+  if (process.env.NODE_ENV === 'development') {
     const menuById = MOCK.MENULIST.filter((menu) => menu.category === category);
     return menuById;
   }
@@ -181,10 +181,10 @@ export const getMenuListById = async (
 export const getRecentMenuByUserName = async (
   userName: string,
 ): Promise<OrderItem | null> => {
-  if (process.env.NODE_ENV === "development") {
+  if (process.env.NODE_ENV === 'development') {
     const dice = Math.random();
     if (dice < 0.3) {
-      throw new Error("server error");
+      throw new Error('server error');
     }
     if (dice > 0.7) {
       return null;
@@ -194,9 +194,9 @@ export const getRecentMenuByUserName = async (
     return {
       ...MOCK.ORDER,
       menuName: randomMenu.name.kor,
-      decaf: dice > 0.5 ? null : "on",
-      size: dice > 0.5 ? "L" : "S",
-      temperature: dice > 0.5 ? "ICE" : "HOT",
+      decaf: dice > 0.5 ? null : 'on',
+      size: dice > 0.5 ? 'L' : 'S',
+      temperature: dice > 0.5 ? 'ICE' : 'HOT',
     };
   }
 

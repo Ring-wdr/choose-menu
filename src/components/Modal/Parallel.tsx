@@ -1,10 +1,10 @@
-"use client";
-import { MouseEventHandler, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
+'use client';
+import { MouseEventHandler, useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 
-import { startSafeViewTransition } from "@/hooks/startSafeViewTransition";
+import { startSafeViewTransition } from '@/hooks/startSafeViewTransition';
 
-import styles from "./index.module.css";
+import styles from './index.module.css';
 
 export default function ParallelModal({
   children,
@@ -22,16 +22,16 @@ export default function ParallelModal({
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") startSafeViewTransition(router.back);
+      if (e.key === 'Escape') startSafeViewTransition(router.back);
     };
 
-    document.addEventListener("keydown", onKeyDown);
-    return () => document.removeEventListener("keydown", onKeyDown);
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
   }, [router]);
 
   return (
-    <div ref={overlay} className={styles["modal-overlay"]} onClick={onClick}>
-      <div className={styles["modal-wrapper"]}>{children}</div>
+    <div ref={overlay} className={styles['modal-overlay']} onClick={onClick}>
+      <div className={styles['modal-wrapper']}>{children}</div>
     </div>
   );
 }

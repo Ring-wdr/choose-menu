@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import React, {
   createContext,
@@ -10,14 +10,14 @@ import React, {
   useEffect,
   useRef,
   useState,
-} from "react";
-import { createPortal, useFormStatus } from "react-dom";
+} from 'react';
+import { createPortal, useFormStatus } from 'react-dom';
 
-import Button from "@/components/Button";
-import executeAnimate from "@/hooks/executeAnimate";
-import { useScreenSize } from "@/hooks/useScreenSize";
+import Button from '@/components/Button';
+import executeAnimate from '@/hooks/executeAnimate';
+import { useScreenSize } from '@/hooks/useScreenSize';
 
-import bsStyles from "./sheet.module.css";
+import bsStyles from './sheet.module.css';
 
 type BottomSheetProps = {
   isOpen: boolean;
@@ -45,13 +45,13 @@ type BottomSheetCtxProps = {
   closeDragElement: () => void;
   topPosition: number;
   bodyHeight: number;
-} & Required<Omit<BottomSheetProps, "onClose">>;
+} & Required<Omit<BottomSheetProps, 'onClose'>>;
 
 const bottomSheetInitValue = {
   isOpen: false,
   topPosition: 0,
-  initPosition: "20%",
-  closePosition: "50%",
+  initPosition: '20%',
+  closePosition: '50%',
   bodyHeight: 0,
   breakPosition: [],
   closeWhenBackdropClick: true,
@@ -69,19 +69,19 @@ function BottomSheetlMain({
   isOpen,
   onClose,
   children,
-  initPosition = "20%",
-  closePosition = "50%",
-  breakPosition = ["0%"],
+  initPosition = '20%',
+  closePosition = '50%',
+  breakPosition = ['0%'],
   closeWhenBackdropClick = true,
 }: React.PropsWithChildren<BottomSheetProps>) {
-  const portalRef = useRef(document.createElement("div"));
+  const portalRef = useRef(document.createElement('div'));
   /** control handle state */
   const dragRef = useRef<HTMLDivElement>(null);
   const dragStateOn = () => {
-    if (dragRef.current) dragRef.current.dataset.drag = "true";
+    if (dragRef.current) dragRef.current.dataset.drag = 'true';
   };
   const dragStateOff = () => {
-    if (dragRef.current) dragRef.current.dataset.drag = "false";
+    if (dragRef.current) dragRef.current.dataset.drag = 'false';
   };
   /** 페이지의 크기 */
   const { height: bodyHeight } = useScreenSize();
@@ -91,8 +91,8 @@ function BottomSheetlMain({
       if (!dragRef || (e && e.target !== e.currentTarget)) return;
       /** 현재 위치 */
       const currentTopPosition = Number(getBSPosition(dragRef));
-      if (dragRef.current) dragRef.current.style.transition = "none";
-      document.body.style.removeProperty("overflow");
+      if (dragRef.current) dragRef.current.style.transition = 'none';
+      document.body.style.removeProperty('overflow');
       executeAnimate(
         currentTopPosition,
         (position) => (setBSPosition(dragRef, `${position}px`), position + 30),
@@ -141,13 +141,13 @@ function BottomSheetlMain({
     dragStateOff();
     if (isOpen) {
       setTimeout(() => {
-        document.body.style.setProperty("overflow", "hidden");
+        document.body.style.setProperty('overflow', 'hidden');
         setBSPosition(dragRef, `${topPosition}px`);
       }, 100);
     } else {
-      document.body.style.removeProperty("overflow");
+      document.body.style.removeProperty('overflow');
       setTimeout(() => {
-        dragRef.current?.style.removeProperty("--current-bs-position");
+        dragRef.current?.style.removeProperty('--current-bs-position');
       }, 1000);
     }
   }, [isOpen, topPosition]);
@@ -182,7 +182,7 @@ function BottomSheetlMain({
  * @returns
  */
 function getPosition(pos: number | `${number}%`, height: number) {
-  return typeof pos === "number"
+  return typeof pos === 'number'
     ? pos
     : ~~((Number(pos.slice(0, -1)) * height) / 100);
 }
@@ -190,15 +190,15 @@ function getPosition(pos: number | `${number}%`, height: number) {
 function getBSPosition(bsRef: React.RefObject<HTMLDivElement>) {
   return (
     bsRef.current?.style
-      .getPropertyValue("--current-bs-position")
-      .slice(0, -2) || "0"
+      .getPropertyValue('--current-bs-position')
+      .slice(0, -2) || '0'
   );
 }
 function setBSPosition(
   bsRef: React.RefObject<HTMLDivElement>,
   position: string,
 ) {
-  bsRef.current?.style.setProperty("--current-bs-position", position);
+  bsRef.current?.style.setProperty('--current-bs-position', position);
 }
 
 export type BottomSheetPortalProps = {
@@ -232,7 +232,7 @@ export const BottomSheet = ({ children }: { children: React.ReactElement }) => {
       if (
         !dragRef ||
         dragRef.current === null ||
-        dragRef.current.dataset.drag === "false"
+        dragRef.current.dataset.drag === 'false'
       )
         return;
       setBSPosition(
@@ -251,14 +251,14 @@ export const BottomSheet = ({ children }: { children: React.ReactElement }) => {
       document.body.appendChild(portalRef.current);
     }
     const onCloseByEsc = (e: KeyboardEvent) => {
-      e.key === "Escape" && onCloseAction();
+      e.key === 'Escape' && onCloseAction();
     };
-    window.addEventListener("keyup", onCloseByEsc);
+    window.addEventListener('keyup', onCloseByEsc);
     return () => {
       if (hasTarget(container)) {
         document.body?.removeChild(container);
       }
-      window.removeEventListener("keyup", onCloseByEsc);
+      window.removeEventListener('keyup', onCloseByEsc);
     };
   }, [portalRef, onCloseAction]);
 
@@ -314,7 +314,7 @@ function BottomSheetHandle({
 function BottomSheetCloseButton({
   children,
   ...props
-}: Omit<React.ComponentProps<typeof Button>, "onClick">) {
+}: Omit<React.ComponentProps<typeof Button>, 'onClick'>) {
   const { onCloseAction } = useBottomSheetContext();
   return (
     <Button onClick={onCloseAction} {...props}>
@@ -325,7 +325,7 @@ function BottomSheetCloseButton({
 
 type BottomSheetSubmitButtonProps = Omit<
   React.ComponentProps<typeof Button>,
-  "onClick" | "disabled"
+  'onClick' | 'disabled'
 > & {
   closeOnSubmit?: boolean;
   childrenOnPending?: React.ReactNode;

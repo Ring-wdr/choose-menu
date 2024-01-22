@@ -1,15 +1,15 @@
-import { CheerioAPI, load } from "cheerio";
+import { CheerioAPI, load } from 'cheerio';
 
-import { ingredientList, initialIngredient, MenuProps } from "@/type";
+import { ingredientList, initialIngredient, MenuProps } from '@/type';
 
 export async function getCategories(url: string) {
-  const coffeeBeanPages = await fetch(url, { cache: "no-store" })
+  const coffeeBeanPages = await fetch(url, { cache: 'no-store' })
     .then((res) => res.text())
     .then(load)
     .then(getHrefFromTags)
     .then((list) =>
       list.map(({ title, category }) => {
-        const [, categoryNum] = category.split("?category=");
+        const [, categoryNum] = category.split('?category=');
         return {
           title,
           category: categoryNum,
@@ -20,21 +20,21 @@ export async function getCategories(url: string) {
 }
 
 function getHrefFromTags($: CheerioAPI) {
-  const contents = $("#contents .lnb_wrap2 li:first-child a").toArray();
+  const contents = $('#contents .lnb_wrap2 li:first-child a').toArray();
   const namesAndCategories = contents
     .map((el) => {
       const $this = $(el);
       return {
-        title: $this.html() || "",
-        category: $this.attr("href") || "",
+        title: $this.html() || '',
+        category: $this.attr('href') || '',
       };
     })
     .filter(
       ({ title, category }) =>
         category &&
-        category?.includes("category") &&
+        category?.includes('category') &&
         title &&
-        title.localeCompare("음료") !== 0,
+        title.localeCompare('음료') !== 0,
     );
 
   const result = namesAndCategories.reduce<typeof namesAndCategories>(
@@ -55,7 +55,7 @@ export async function getMenuFromPages(url: string) {
   let cnt = 1;
   while (cnt < 6) {
     await new Promise((res) => setTimeout(res, 500));
-    const data = await fetch(`${url}&page=${cnt++}`, { cache: "no-store" })
+    const data = await fetch(`${url}&page=${cnt++}`, { cache: 'no-store' })
       .then((res) => res.text())
       .then(load)
       .then(getMenuFromPage(protocolAndHostname));
@@ -67,27 +67,27 @@ export async function getMenuFromPages(url: string) {
 
 function getMenuFromPage(protocolAndHostname: string) {
   return function ($: CheerioAPI): { list: MenuProps[]; hasNextPage: boolean } {
-    const breadcrumb = $("#wrap .location li a");
-    const href = breadcrumb.last().attr("href");
+    const breadcrumb = $('#wrap .location li a');
+    const href = breadcrumb.last().attr('href');
     let category: string;
     if (href) {
-      [, category] = href.split("=");
+      [, category] = href.split('=');
     }
-    const contents = $("#contents .menu_list li").toArray();
+    const contents = $('#contents .menu_list li').toArray();
     const list = contents.map((el) => {
       const $this = $(el);
       const photo = `${protocolAndHostname}${$this
-        .find("figure img")
-        .attr("src")}`;
+        .find('figure img')
+        .attr('src')}`;
       const name = $this
-        .find("dl.txt dt span")
+        .find('dl.txt dt span')
         .toArray()
         .reduce(
           (obj, span) => ({ ...obj, [span.attribs.class]: $(span).text() }),
-          { kor: "", eng: "" },
+          { kor: '', eng: '' },
         );
-      const description = $this.find("dl.txt dd").text();
-      const infoDOM = $this.find(".info");
+      const description = $this.find('dl.txt dd').text();
+      const infoDOM = $this.find('.info');
       const info = ingredientList.reduce(
         (obj, { className, name }) => {
           const qty = Number(infoDOM.find(`.${className} dt`).text());
@@ -104,8 +104,8 @@ function getMenuFromPage(protocolAndHostname: string) {
         info,
       };
     });
-    const pagination = $(".list_wrap .paging a").toArray();
-    const hasNextPage = pagination.some((el) => el.attribs.class === "next");
+    const pagination = $('.list_wrap .paging a').toArray();
+    const hasNextPage = pagination.some((el) => el.attribs.class === 'next');
 
     return {
       list,

@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import {
   ChangeEventHandler,
   KeyboardEventHandler,
@@ -6,28 +6,28 @@ import {
   useEffect,
   useRef,
   useState,
-} from "react";
-import { hangulIncludes } from "@toss/hangul";
-import clsx from "clsx";
+} from 'react';
+import { hangulIncludes } from '@toss/hangul';
+import clsx from 'clsx';
 
-import CustomBottomSheet from "@/components/BottomSheet/Custom";
-import Button from "@/components/Button";
-import LoadingImage from "@/components/Loading";
-import LoadingButton from "@/components/Loading/Button";
-import { startSafeViewTransition } from "@/hooks/startSafeViewTransition";
-import { Category, MenuProps } from "@/type";
+import CustomBottomSheet from '@/components/BottomSheet/Custom';
+import Button from '@/components/Button';
+import LoadingImage from '@/components/Loading';
+import LoadingButton from '@/components/Loading/Button';
+import { startSafeViewTransition } from '@/hooks/startSafeViewTransition';
+import { Category, MenuProps } from '@/type';
 
-import { postSelectedMenu } from "../action";
+import { postSelectedMenu } from '../action';
 
-import BevImage from "./BevImage";
-import { MenuSubmitForm } from "./Form";
-import MenuCard from "./MenuCard";
-import { useMenuContext } from "./MenuContext";
+import BevImage from './BevImage';
+import { MenuSubmitForm } from './Form';
+import MenuCard from './MenuCard';
+import { useMenuContext } from './MenuContext';
 
-import styles from "../page.module.css";
+import styles from '../page.module.css';
 
 // menu part
-const ALL_MENU = "전체";
+const ALL_MENU = '전체';
 type MenuSideProps = {
   categories: Category[];
   menuList: MenuProps[];
@@ -35,7 +35,7 @@ type MenuSideProps = {
 
 export default function MenuContents({ categories, menuList }: MenuSideProps) {
   // search state
-  const [keyword, setKeyword] = useState("");
+  const [keyword, setKeyword] = useState('');
   const changeKeyword: ChangeEventHandler<HTMLInputElement> = (e) => {
     setKeyword(e.target.value);
   };
@@ -45,9 +45,9 @@ export default function MenuContents({ categories, menuList }: MenuSideProps) {
         (menu) =>
           hangulIncludes(menu.name.kor, deferedKeyword) ||
           menu.name.eng
-            .replace(/ /g, "")
+            .replace(/ /g, '')
             .toLowerCase()
-            .includes(deferedKeyword.replace(/ /g, "").toLowerCase()),
+            .includes(deferedKeyword.replace(/ /g, '').toLowerCase()),
       )
     : menuList;
 
@@ -66,7 +66,7 @@ export default function MenuContents({ categories, menuList }: MenuSideProps) {
         <SearchContainer keyword={keyword} changeKeyword={changeKeyword} />
         <li>
           <button
-            className={category === ALL_MENU ? styles.active : ""}
+            className={category === ALL_MENU ? styles.active : ''}
             onClick={changeCategory(ALL_MENU)}
             title={ALL_MENU}
           >
@@ -77,7 +77,7 @@ export default function MenuContents({ categories, menuList }: MenuSideProps) {
           categories.map((item, idx) => (
             <li key={idx}>
               <button
-                className={item.category === category ? styles.active : ""}
+                className={item.category === category ? styles.active : ''}
                 onClick={changeCategory(item.category)}
                 title={item.title}
               >
@@ -107,8 +107,8 @@ function SearchContainer({ keyword, changeKeyword }: SearchContainerProps) {
   };
   const onKeyDown: KeyboardEventHandler<HTMLInputElement> = (e) => {
     switch (e.key) {
-      case "Escape":
-      case "Enter":
+      case 'Escape':
+      case 'Enter':
         uncheck();
         break;
     }
@@ -119,23 +119,23 @@ function SearchContainer({ keyword, changeKeyword }: SearchContainerProps) {
       if (
         chkRef.current &&
         chkRef.current.checked &&
-        typeof clickedElement.closest === "function" &&
-        clickedElement.closest(`.${styles["search-container"]}`) !==
+        typeof clickedElement.closest === 'function' &&
+        clickedElement.closest(`.${styles['search-container']}`) !==
           chkRef.current.parentElement
       ) {
         chkRef.current.checked = false;
       }
     };
-    document.addEventListener("pointerdown", uncheckOnEffect);
-    return () => document.removeEventListener("pointerdown", uncheckOnEffect);
+    document.addEventListener('pointerdown', uncheckOnEffect);
+    return () => document.removeEventListener('pointerdown', uncheckOnEffect);
   }, []);
 
   return (
-    <div className={styles["search-container"]}>
-      <label htmlFor={styles["menu-search"]}>
+    <div className={styles['search-container']}>
+      <label htmlFor={styles['menu-search']}>
         검색 <span>⌕</span>
       </label>
-      <input id={styles["menu-search"]} ref={chkRef} type="checkbox" hidden />
+      <input id={styles['menu-search']} ref={chkRef} type="checkbox" hidden />
       <input
         type="text"
         placeholder="메뉴 이름을 입력하세요."
@@ -164,9 +164,9 @@ function MenuController({ menuList }: MenuControllerProps) {
     startSafeViewTransition(() => setMenu(menu), isWidthWideEnough);
   };
   /** 서버에서 에러가 나서 선택된 메뉴를 못 불러오고 아직 메뉴를 선택하지 않은 상태 */
-  const isShowErrorMessage = menuState.status === "error" && !selectedMenu;
+  const isShowErrorMessage = menuState.status === 'error' && !selectedMenu;
   /** 사용자가 이전에 메뉴를 선택한적이 없고 아직 메뉴를 선택하지 않은 상태 */
-  const previousNoSelected = menuState.status === "success" && !selectedMenu;
+  const previousNoSelected = menuState.status === 'success' && !selectedMenu;
 
   useEffect(() => {
     if (previousMenu) {
@@ -181,7 +181,7 @@ function MenuController({ menuList }: MenuControllerProps) {
       });
       document
         .getElementById(previousMenu.menuName)
-        ?.scrollIntoView({ behavior: "smooth", block: "center" });
+        ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   }, [previousMenu, menuList]);
 
@@ -193,8 +193,8 @@ function MenuController({ menuList }: MenuControllerProps) {
             [styles.fallback]: isShowErrorMessage || previousNoSelected,
           })}
         >
-          {menuState.status === "pending" && <LoadingImage />}
-          {menuState.status !== "pending" && (
+          {menuState.status === 'pending' && <LoadingImage />}
+          {menuState.status !== 'pending' && (
             <MenuCard selectedMenu={selectedMenu} />
           )}
           {previousNoSelected && <p>기존에 선택하신 메뉴가 없습니다.</p>}
@@ -217,7 +217,7 @@ function MenuController({ menuList }: MenuControllerProps) {
         <Button
           fullWidth
           onClick={() =>
-            selectedMenu ? setModal(true) : alert("메뉴를 선택해주세요.")
+            selectedMenu ? setModal(true) : alert('메뉴를 선택해주세요.')
           }
         >
           메뉴 선택
@@ -262,18 +262,18 @@ function MenuTable({ menuList, selectedMenu, dispatchSelected }: TableProps) {
             key={item.name.kor}
             id={item.name.kor}
             className={
-              selectedMenu?.name.kor === item.name.kor ? styles.active : ""
+              selectedMenu?.name.kor === item.name.kor ? styles.active : ''
             }
           >
             <button onClick={dispatchSelected(item)}>
-              <div className={styles["img-container"]}>
+              <div className={styles['img-container']}>
                 <BevImage
                   src={item.photo}
-                  alt={item.name.eng || "coffee"}
+                  alt={item.name.eng || 'coffee'}
                   fill
                 />
               </div>
-              <div className={styles["txt-container"]}>
+              <div className={styles['txt-container']}>
                 <span>{item.name.kor}</span>
                 <span>{item.name.eng}</span>
               </div>

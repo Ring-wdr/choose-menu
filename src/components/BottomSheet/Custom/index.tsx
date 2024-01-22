@@ -1,6 +1,6 @@
-import BS from "@/components/BottomSheet";
+import BS from '@/components/BottomSheet';
 
-import styles from "./bottomsheet.module.css";
+import styles from './bottomsheet.module.css';
 
 type MenuBottomSheetProps = React.ComponentProps<typeof BS>;
 

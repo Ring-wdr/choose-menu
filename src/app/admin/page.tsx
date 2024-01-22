@@ -1,21 +1,21 @@
-"use client";
+'use client';
 
-import { useFormState, useFormStatus } from "react-dom";
-import clsx from "clsx";
+import { useFormState, useFormStatus } from 'react-dom';
+import clsx from 'clsx';
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
-import action from "./action";
+import action from './action';
 
 function SubmitButton() {
   const { pending } = useFormStatus();
-  return <Button type="submit">{pending ? "Sending" : "Submit"}</Button>;
+  return <Button type="submit">{pending ? 'Sending' : 'Submit'}</Button>;
 }
 
 export default function Page() {
-  const [state, formAction] = useFormState(action, { message: "admin code" });
+  const [state, formAction] = useFormState(action, { message: 'admin code' });
   return (
     <form
       action={formAction}
@@ -28,8 +28,8 @@ export default function Page() {
         name="admin"
         placeholder="please input code"
       />
-      <span className={clsx(state.ok === false && "text-red-500")}>
-        {typeof state.ok !== "undefined" && state.message}
+      <span className={clsx(state.ok === false && 'text-red-500')}>
+        {typeof state.ok !== 'undefined' && state.message}
       </span>
       <SubmitButton />
     </form>

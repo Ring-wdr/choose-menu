@@ -1,10 +1,10 @@
-"use client";
-import { createContext, useContext, useEffect, useReducer } from "react";
+'use client';
+import { createContext, useContext, useEffect, useReducer } from 'react';
 
-import useServerAction from "@/hooks/useServerAction";
-import { ActionByState, OrderItem, ReducerByState } from "@/type";
+import useServerAction from '@/hooks/useServerAction';
+import { ActionByState, OrderItem, ReducerByState } from '@/type';
 
-import { getSelectedMenuByCookies } from "../action";
+import { getSelectedMenuByCookies } from '../action';
 
 type MenuContextState = {
   userName: string;
@@ -12,7 +12,7 @@ type MenuContextState = {
 };
 
 const initValue = {
-  userName: "",
+  userName: '',
 } satisfies MenuContextState;
 
 const reducer = <T,>(state: T, action: ActionByState<T>) => ({
@@ -28,7 +28,7 @@ type MenuContextProps = MenuContextState & {
 const MenuContext = createContext<MenuContextProps>({
   ...initValue,
   menuRefetch() {},
-  menuState: { status: "pending" },
+  menuState: { status: 'pending' },
 });
 
 export function MenuProvider({ children }: React.PropsWithChildren) {
@@ -38,9 +38,9 @@ export function MenuProvider({ children }: React.PropsWithChildren) {
   );
   const { state, refetch } = useServerAction(getSelectedMenuByCookies);
   useEffect(() => {
-    if (state.status === "success" && state.data) {
+    if (state.status === 'success' && state.data) {
       const { data } = state;
-      dispatch({ type: "menu", payload: data });
+      dispatch({ type: 'menu', payload: data });
     }
   }, [state]);
 

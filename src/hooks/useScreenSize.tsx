@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
 type WindowScreen = {
   width: number;
@@ -17,8 +17,8 @@ export const useScreenSize = () => {
     useState<WindowScreen>(getCurrentDimension);
   useEffect(() => {
     const detectHeight = () => setScreenSize(getCurrentDimension);
-    window.addEventListener("resize", detectHeight);
-    return () => window.removeEventListener("resize", detectHeight);
+    window.addEventListener('resize', detectHeight);
+    return () => window.removeEventListener('resize', detectHeight);
   }, [screenSize]);
   return screenSize;
 };
