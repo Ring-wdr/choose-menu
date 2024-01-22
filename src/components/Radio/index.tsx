@@ -1,6 +1,7 @@
 import { Fragment, InputHTMLAttributes, useId } from "react";
-import styles from "./index.module.css";
 import clsx from "clsx";
+
+import styles from "./index.module.css";
 
 export default function Radio({
   value,

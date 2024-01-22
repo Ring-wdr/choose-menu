@@ -1,25 +1,29 @@
 "use client";
 import {
-  useState,
-  useEffect,
-  useRef,
-  useDeferredValue,
   ChangeEventHandler,
   KeyboardEventHandler,
+  useDeferredValue,
+  useEffect,
+  useRef,
+  useState,
 } from "react";
+import { hangulIncludes } from "@toss/hangul";
+import clsx from "clsx";
+
+import CustomBottomSheet from "@/components/BottomSheet/Custom";
 import Button from "@/components/Button";
 import LoadingImage from "@/components/Loading";
 import LoadingButton from "@/components/Loading/Button";
-import CustomBottomSheet from "@/components/BottomSheet/Custom";
-import BevImage from "./BevImage";
-import { useMenuContext } from "./MenuContext";
 import { startSafeViewTransition } from "@/hooks/startSafeViewTransition";
 import { Category, MenuProps } from "@/type";
-import { hangulIncludes } from "@toss/hangul";
-import { MenuSubmitForm } from "./Form";
+
 import { postSelectedMenu } from "../action";
+
+import BevImage from "./BevImage";
+import { MenuSubmitForm } from "./Form";
 import MenuCard from "./MenuCard";
-import clsx from "clsx";
+import { useMenuContext } from "./MenuContext";
+
 import styles from "../page.module.css";
 
 // menu part
@@ -43,7 +47,7 @@ export default function MenuContents({ categories, menuList }: MenuSideProps) {
           menu.name.eng
             .replace(/ /g, "")
             .toLowerCase()
-            .includes(deferedKeyword.replace(/ /g, "").toLowerCase())
+            .includes(deferedKeyword.replace(/ /g, "").toLowerCase()),
       )
     : menuList;
 
@@ -169,7 +173,7 @@ function MenuController({ menuList }: MenuControllerProps) {
       setMenu((prev) => {
         if (prev === null && previousMenu.menuName) {
           const findMenuByName = menuList.find(
-            (item) => item.name.kor === previousMenu.menuName
+            (item) => item.name.kor === previousMenu.menuName,
           );
           if (findMenuByName) return findMenuByName;
         }

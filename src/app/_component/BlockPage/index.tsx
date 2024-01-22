@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+
 import styles from "./style.module.css";
 
 export default function BlockPage() {

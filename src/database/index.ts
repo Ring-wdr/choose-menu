@@ -2,7 +2,7 @@ import { MongoClient, ServerApiVersion } from "mongodb";
 
 if (!process.env.NEXT_PUBLIC_MONGO_KEY) {
   throw new Error(
-    'Invalid/Missing environment variable: "NEXT_PUBLIC_MONGO_KEY"'
+    'Invalid/Missing environment variable: "NEXT_PUBLIC_MONGO_KEY"',
   );
 }
 

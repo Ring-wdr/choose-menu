@@ -1,5 +1,6 @@
 import { ButtonHTMLAttributes } from "react";
 import clsx from "clsx";
+
 import styles from "./index.module.css";
 
 type ButtonProps = {
@@ -22,7 +23,7 @@ export default function Button({
         { [styles[variant]]: variant },
         { [styles["w-full"]]: fullWidth },
         { [styles.reset_style]: resetStyle },
-        className
+        className,
       )}
       {...props}
     />

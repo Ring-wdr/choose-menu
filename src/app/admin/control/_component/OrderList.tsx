@@ -1,11 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import clsx from "clsx";
+
 import { getOrderListGroupByUserName } from "@/database/coffeebean/get";
 import useServerAction from "@/hooks/useServerAction";
 import { Absence, AwaitedReturn } from "@/type";
+
 import { getAbsenceListAction } from "../action";
-import clsx from "clsx";
+
 import styles from "./client.module.css";
 
 type OrderListProps = {
@@ -53,7 +56,7 @@ export default function OrderList({ orderList }: OrderListProps) {
       <ul>
         {orderList.map((order, idx) => {
           const isAbsence = !!absenceList?.find(
-            (item) => item.userName === order.userName && item.absence
+            (item) => item.userName === order.userName && item.absence,
           );
           return (
             <li

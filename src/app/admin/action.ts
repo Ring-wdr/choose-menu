@@ -1,7 +1,8 @@
 "use server";
-import * as z from "zod";
-import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import * as z from "zod";
+
 import { encryptAdminCode } from "@/util/server/admin";
 
 const formSchema = z.object({
@@ -20,7 +21,7 @@ type FormActionState = {
 
 export default async function action(
   prevState: FormActionState,
-  data: FormData
+  data: FormData,
 ): Promise<FormActionState> {
   cookies().delete("admin");
   try {

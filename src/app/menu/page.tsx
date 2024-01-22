@@ -2,8 +2,11 @@ import {
   cachedGetCategoryList,
   cachedGetMenuList,
 } from "@/database/coffeebean/get";
-import MenuContents from "./_component/Menu";
+
 import BlockPage from "../_component/BlockPage";
+
+import MenuContents from "./_component/Menu";
+
 import styles from "./page.module.css";
 
 export default async function Menu() {

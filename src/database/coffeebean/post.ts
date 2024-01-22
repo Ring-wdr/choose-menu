@@ -1,17 +1,20 @@
+import { ObjectId } from "mongodb";
 import { revalidatePath } from "next/cache";
-import clientPromise from "..";
-import { COFFEEBEAN } from ".";
+
 import { getCategories, getMenuFromPages } from "@/crawling";
 import { MenuProps, MenuPropsWithId, OrderItem } from "@/type";
+
+import clientPromise from "..";
+
 import { getCategoryList } from "./get";
-import { ObjectId } from "mongodb";
+import { COFFEEBEAN } from ".";
 
 export async function crawlAndSaveCategory() {
   const db = (await clientPromise).db(COFFEEBEAN.DB_NAME);
   const categoryCollection = db.collection(COFFEEBEAN.COLLECTION.CATEGORY);
   categoryCollection.deleteMany({});
   const categoryList = await getCategories(
-    "https://www.coffeebeankorea.com/menu/list.asp"
+    "https://www.coffeebeankorea.com/menu/list.asp",
   );
   const response = categoryCollection.insertMany(categoryList);
   return {
@@ -29,7 +32,7 @@ export async function crawlAndSaveMenu() {
   for await (const { category } of categoryList) {
     await new Promise((res) => setTimeout(res, 500));
     const menu = await getMenuFromPages(
-      `https://www.coffeebeankorea.com/menu/list.asp?category=${category}`
+      `https://www.coffeebeankorea.com/menu/list.asp?category=${category}`,
     );
     menuList.push(...menu);
   }
@@ -58,7 +61,7 @@ export async function mutateMenudata({
   const response = await menuCollection.findOneAndUpdate(
     { _id: new ObjectId(_id) },
     { $set: props },
-    { upsert: true }
+    { upsert: true },
   );
   return response;
 }

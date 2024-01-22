@@ -1,5 +1,6 @@
-import { getOrderBlock } from "@/database/coffeebean/get";
 import { NextResponse } from "next/server";
+
+import { getOrderBlock } from "@/database/coffeebean/get";
 
 export const dynamic = "force-dynamic"; // defaults to auto
 export async function GET(request: Request) {

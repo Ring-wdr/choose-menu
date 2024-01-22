@@ -31,7 +31,7 @@ export default function Paginations({
   const pageCount = endOfPagination ? totalPage % chunk : chunk;
   const linkArray = Array.from(
     { length: pageCount },
-    (_, index) => startPage + index
+    (_, index) => startPage + index,
   );
   return (
     <Pagination>

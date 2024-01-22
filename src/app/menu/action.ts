@@ -1,15 +1,16 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { getUserName, setUserName } from "@/util/server";
-import { postContentsOfSelectedMenu } from "@/database/coffeebean/post";
+import { z } from "zod";
+
 import {
   getOrderBlock,
   getRecentMenuByUserName,
 } from "@/database/coffeebean/get";
-import { OrderItem } from "@/type";
+import { postContentsOfSelectedMenu } from "@/database/coffeebean/post";
 import { ServerActionState } from "@/hooks/useServerAction";
-import { z } from "zod";
+import { OrderItem } from "@/type";
+import { getUserName, setUserName } from "@/util/server";
 
 const orderSchema = z
   .object({
@@ -58,7 +59,7 @@ export async function getUserNameFromSession(_: string, data: FormData) {
 }
 
 export async function getSelectedMenuByCookies(
-  _: ServerActionState<OrderItem>
+  _: ServerActionState<OrderItem>,
 ): Promise<ServerActionState<OrderItem>> {
   const userName = getUserName();
   if (!userName || !userName.value) redirect("/");

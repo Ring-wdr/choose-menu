@@ -1,7 +1,10 @@
-import BevImage from "./BevImage";
-import { MenuProps } from "@/type";
-import styles from "./card.module.css";
 import clsx from "clsx";
+
+import { MenuProps } from "@/type";
+
+import BevImage from "./BevImage";
+
+import styles from "./card.module.css";
 
 type MenuCardProps = {
   selectedMenu?: MenuProps | null;

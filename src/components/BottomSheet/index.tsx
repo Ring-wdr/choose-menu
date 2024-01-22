@@ -1,20 +1,22 @@
 "use client";
 
 import React, {
-  useState,
-  useEffect,
-  useRef,
-  useCallback,
   createContext,
-  useContext,
   HTMLAttributes,
   MouseEvent as ReactMouseEvent,
   TouchEvent as ReactTouchEvent,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
 } from "react";
 import { createPortal, useFormStatus } from "react-dom";
-import { useScreenSize } from "@/hooks/useScreenSize";
-import executeAnimate from "@/hooks/executeAnimate";
+
 import Button from "@/components/Button";
+import executeAnimate from "@/hooks/executeAnimate";
+import { useScreenSize } from "@/hooks/useScreenSize";
+
 import bsStyles from "./sheet.module.css";
 
 type BottomSheetProps = {
@@ -94,11 +96,11 @@ function BottomSheetlMain({
       executeAnimate(
         currentTopPosition,
         (position) => (setBSPosition(dragRef, `${position}px`), position + 30),
-        (position) => position < document.body.clientHeight
+        (position) => position < document.body.clientHeight,
       );
       onClose && setTimeout(onClose, 300);
     },
-    [onClose, dragRef]
+    [onClose, dragRef],
   );
   const closeDragElement = () => {
     if (!dragRef || dragRef.current === null) return;
@@ -119,14 +121,14 @@ function BottomSheetlMain({
             calcPosition,
             diff: Math.abs(currentTopPosition - calcPosition),
           };
-        }
+        },
       );
       const { calcPosition } = calculatedDiffBreakPositions.reduce(
         (result, item) => (item.diff < result.diff ? item : result),
         {
           calcPosition: 0,
           diff: Number.MAX_SAFE_INTEGER,
-        }
+        },
       );
       setBSPosition(dragRef, `${calcPosition}px`);
     } else {
@@ -194,7 +196,7 @@ function getBSPosition(bsRef: React.RefObject<HTMLDivElement>) {
 }
 function setBSPosition(
   bsRef: React.RefObject<HTMLDivElement>,
-  position: string
+  position: string,
 ) {
   bsRef.current?.style.setProperty("--current-bs-position", position);
 }
@@ -239,7 +241,7 @@ export const BottomSheet = ({ children }: { children: React.ReactElement }) => {
           (e.clientY < topPosition
             ? (topPosition + e.clientY) / 2
             : e.clientY) - 20
-        }px`
+        }px`,
       );
     });
   useEffect(() => {
@@ -271,7 +273,7 @@ export const BottomSheet = ({ children }: { children: React.ReactElement }) => {
         >
           {React.cloneElement(children, { ...children.props, ref: dragRef })}
         </div>,
-        portalRef.current
+        portalRef.current,
       )
     : null;
 };
@@ -291,7 +293,7 @@ function BottomSheetHandle({
         dragRef,
         `${
           (clientY < topPosition ? (topPosition + clientY) / 2 : clientY) - 20
-        }px`
+        }px`,
       );
     });
 

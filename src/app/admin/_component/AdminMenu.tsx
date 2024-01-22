@@ -1,5 +1,7 @@
 "use client";
 
+import { useReducer } from "react";
+
 import {
   Table,
   TableBody,
@@ -10,10 +12,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { MenuPropsWithId } from "@/type";
-import { useReducer } from "react";
-import { initValue, reducer } from "./reducer";
-import { modifyAction, deleteAction } from "./action";
+
+import { deleteAction, modifyAction } from "./action";
 import AdminDialog from "./AdminModify";
+import { initValue, reducer } from "./reducer";
 
 type MenuAdminProps = {
   menuList?: MenuPropsWithId[];
@@ -23,7 +25,7 @@ export default function MenuAdmin({ menuList }: MenuAdminProps) {
   const [dialogState, dispatch] = useReducer(reducer, initValue);
   const [selected, setSelected] = useReducer(
     (_: string, name: string) => name,
-    (menuList && menuList[0]?._id) || "메뉴"
+    (menuList && menuList[0]?._id) || "메뉴",
   );
   const selectedItem = menuList?.find((menu) => menu._id === selected);
 

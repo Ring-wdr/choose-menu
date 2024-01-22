@@ -1,14 +1,16 @@
 "use client";
 
 import React, {
-  useState,
-  useEffect,
-  useRef,
   createContext,
   useContext,
+  useEffect,
+  useRef,
+  useState,
 } from "react";
 import { createPortal, useFormStatus } from "react-dom";
+
 import Button from "@/components/Button";
+
 import styles from "./index.module.css";
 
 type ModalProps = {

@@ -12,12 +12,12 @@ type AdminDialogAction = {
 
 export const initValue = ctlButtons.reduce(
   (acc, btn) => ({ ...acc, [btn]: false }),
-  {}
+  {},
 ) as AdminDialogState;
 
 export const reducer = (
   state: AdminDialogState,
-  action: AdminDialogAction
+  action: AdminDialogAction,
 ) => ({
   ...state,
   [action.type]: action.payload ?? !state[action.type],

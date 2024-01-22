@@ -1,5 +1,6 @@
 import { CheerioAPI, load } from "cheerio";
-import { MenuProps, ingredientList, initialIngredient } from "@/type";
+
+import { ingredientList, initialIngredient, MenuProps } from "@/type";
 
 export async function getCategories(url: string) {
   const coffeeBeanPages = await fetch(url, { cache: "no-store" })
@@ -13,7 +14,7 @@ export async function getCategories(url: string) {
           title,
           category: categoryNum,
         };
-      })
+      }),
     );
   return coffeeBeanPages;
 }
@@ -33,7 +34,7 @@ function getHrefFromTags($: CheerioAPI) {
         category &&
         category?.includes("category") &&
         title &&
-        title.localeCompare("음료") !== 0
+        title.localeCompare("음료") !== 0,
     );
 
   const result = namesAndCategories.reduce<typeof namesAndCategories>(
@@ -41,7 +42,7 @@ function getHrefFromTags($: CheerioAPI) {
       acc.find(({ category }) => category === item.category)
         ? acc
         : [...acc, item],
-    []
+    [],
   );
 
   return result;
@@ -83,7 +84,7 @@ function getMenuFromPage(protocolAndHostname: string) {
         .toArray()
         .reduce(
           (obj, span) => ({ ...obj, [span.attribs.class]: $(span).text() }),
-          { kor: "", eng: "" }
+          { kor: "", eng: "" },
         );
       const description = $this.find("dl.txt dd").text();
       const infoDOM = $this.find(".info");
@@ -92,7 +93,7 @@ function getMenuFromPage(protocolAndHostname: string) {
           const qty = Number(infoDOM.find(`.${className} dt`).text());
           return { ...obj, [name]: !isNaN(qty) ? qty : 0 };
         },
-        { ...initialIngredient }
+        { ...initialIngredient },
       );
 
       return {

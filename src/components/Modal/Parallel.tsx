@@ -1,7 +1,9 @@
 "use client";
-import { useRef, useEffect, MouseEventHandler } from "react";
+import { MouseEventHandler, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
+
 import { startSafeViewTransition } from "@/hooks/startSafeViewTransition";
+
 import styles from "./index.module.css";
 
 export default function ParallelModal({

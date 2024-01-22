@@ -1,9 +1,8 @@
 import { useId } from "react";
-import { MenuProps, OrderItem } from "@/type";
-import Radio from "@/components/Radio";
+
 import BS from "@/components/BottomSheet";
 import LoadingButton from "@/components/Loading/Button";
-import { Switch } from "@/components/ui/switch";
+import Radio from "@/components/Radio";
 import {
   Select,
   SelectContent,
@@ -11,6 +10,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { MenuProps, OrderItem } from "@/type";
+
 import styles from "./modal.module.css";
 
 type NameChangeProps = {

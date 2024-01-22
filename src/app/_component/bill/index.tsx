@@ -1,14 +1,16 @@
 "use client";
 import {
-  useState,
+  DragEvent,
+  Fragment,
+  TouchEvent,
   useEffect,
   useRef,
-  Fragment,
-  DragEvent,
-  TouchEvent,
+  useState,
 } from "react";
-import { getOrderListGroupByNameSizeTemp } from "@/database/coffeebean/get";
+
 import Button from "@/components/Button";
+import { getOrderListGroupByNameSizeTemp } from "@/database/coffeebean/get";
+
 import styles from "./index.module.css";
 
 type AggTableProps = Awaited<
@@ -51,10 +53,10 @@ export default function BillTable({
       if (!currentIndexRef.current || !targetIndexRef.current) return prev;
       const newPrev = [...prev];
       const currentIndex = prev.findIndex(
-        (order) => order === currentIndexRef.current
+        (order) => order === currentIndexRef.current,
       );
       const targetIndex = prev.findIndex(
-        (order) => order === targetIndexRef.current
+        (order) => order === targetIndexRef.current,
       );
       [newPrev[currentIndex], newPrev[targetIndex]] = [
         newPrev[targetIndex],
@@ -117,7 +119,7 @@ export default function BillTable({
         setOrders((prev) => {
           const newPrev = [...prev];
           const currentIndex = prev.findIndex(
-            (order) => order.id === currentIdx
+            (order) => order.id === currentIdx,
           );
           const targetIndex = prev.findIndex((order) => order.id === targetIdx);
           [newPrev[currentIndex], newPrev[targetIndex]] = [

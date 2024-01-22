@@ -15,7 +15,7 @@ type CategoryCrawlType =
 
 export const crawlCategoriesFromExternal = async (
   _: CategoryCrawlType,
-  data: FormData
+  data: FormData,
 ): Promise<CategoryCrawlType> => {
   const { masterKey } = Object.fromEntries(data);
   if (masterKey !== process.env.ADMIN_PASSWORD)
@@ -50,7 +50,7 @@ export const toggleOrderState = async (): Promise<
 };
 
 export async function getAbsenceListAction(
-  _: ServerActionState<Absence[]>
+  _: ServerActionState<Absence[]>,
 ): Promise<ServerActionState<Absence[]>> {
   try {
     const absenceList = await getAbsenceList();

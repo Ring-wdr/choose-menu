@@ -83,7 +83,7 @@ const ORDER_LIST = Array.from(
     size: Math.random() > 0.5 ? "S" : "L",
     temperature: Math.random() > 0.5 ? "HOT" : "ICE",
     decaf: Math.random() > 0.5 ? "on" : null,
-  })
+  }),
 ) satisfies OrderItem[];
 
 export const MOCK = {

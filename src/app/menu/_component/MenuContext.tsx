@@ -1,7 +1,9 @@
 "use client";
 import { createContext, useContext, useEffect, useReducer } from "react";
+
 import useServerAction from "@/hooks/useServerAction";
-import { ReducerByState, OrderItem, ActionByState } from "@/type";
+import { ActionByState, OrderItem, ReducerByState } from "@/type";
+
 import { getSelectedMenuByCookies } from "../action";
 
 type MenuContextState = {
@@ -32,7 +34,7 @@ const MenuContext = createContext<MenuContextProps>({
 export function MenuProvider({ children }: React.PropsWithChildren) {
   const [value, dispatch] = useReducer<ReducerByState<MenuContextState>>(
     reducer,
-    initValue
+    initValue,
   );
   const { state, refetch } = useServerAction(getSelectedMenuByCookies);
   useEffect(() => {

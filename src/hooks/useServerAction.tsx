@@ -42,7 +42,7 @@ export type ServerActionReturnType<T = any> = { refetch: () => void } & (
 
 export default function useServerAction<T>(
   callback: (prev: ServerActionState<T>) => Promise<ServerActionState<T>>,
-  initData?: T
+  initData?: T,
 ): ServerActionReturnType<T> {
   const [state, refetch] = useFormState<ServerActionState<T>>(callback, {
     status: initData ? "success" : "pending",

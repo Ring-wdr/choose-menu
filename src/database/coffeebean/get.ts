@@ -1,8 +1,10 @@
 import { cache } from "react";
-import { Absence, Category, MenuProps, OrderBlock, OrderItem } from "@/type";
-import clientPromise from "@/database";
-import { COFFEEBEAN } from ".";
+
 import { MOCK } from "@/crawling/mock";
+import clientPromise from "@/database";
+import { Absence, Category, MenuProps, OrderBlock, OrderItem } from "@/type";
+
+import { COFFEEBEAN } from ".";
 
 export const getOrderedList = async () => {
   const db = (await clientPromise).db(COFFEEBEAN.DB_NAME);
@@ -59,7 +61,7 @@ export const getOrderListGroupByNameSizeTemp = cache(async () => {
   ]);
   const filteredOrders = orders.filter(
     (order) =>
-      !absenceList.find((absence) => absence.userName === order.userName)
+      !absenceList.find((absence) => absence.userName === order.userName),
   );
 
   const orderList = filteredOrders.reduce<BillType[]>((res, lastOrder) => {
@@ -68,7 +70,7 @@ export const getOrderListGroupByNameSizeTemp = cache(async () => {
         order.menuName === lastOrder.menuName &&
         order.size === lastOrder.size &&
         order.temperature === lastOrder.temperature &&
-        !!order.decaf === !!lastOrder.decaf
+        !!order.decaf === !!lastOrder.decaf,
     );
     if (existGroup) {
       existGroup.count++;
@@ -90,7 +92,7 @@ export const getOrderListGroupByNameSizeTemp = cache(async () => {
 export const getCategoryList = async () => {
   const db = (await clientPromise).db(COFFEEBEAN.DB_NAME);
   const categoryCollection = db.collection<Category>(
-    COFFEEBEAN.COLLECTION.CATEGORY
+    COFFEEBEAN.COLLECTION.CATEGORY,
   );
   return categoryCollection.find().toArray();
 };
@@ -157,11 +159,11 @@ export const getPaginatedMenuList = cache(
       menuList: menuList.map((item) => ({ ...item, _id: item._id.toString() })),
       totalPage,
     };
-  }
+  },
 );
 
 export const getMenuListById = async (
-  category: string
+  category: string,
 ): Promise<MenuProps[]> => {
   if (process.env.NODE_ENV === "development") {
     const menuById = MOCK.MENULIST.filter((menu) => menu.category === category);
@@ -177,7 +179,7 @@ export const getMenuListById = async (
 };
 
 export const getRecentMenuByUserName = async (
-  userName: string
+  userName: string,
 ): Promise<OrderItem | null> => {
   if (process.env.NODE_ENV === "development") {
     const dice = Math.random();
@@ -202,7 +204,7 @@ export const getRecentMenuByUserName = async (
   const orderCollection = db.collection<OrderItem>(COFFEEBEAN.COLLECTION.ORDER);
   const orderByUserName = await orderCollection.findOne(
     { userName },
-    { sort: { _id: -1 } }
+    { sort: { _id: -1 } },
   );
   if (!orderByUserName) return null;
   const { _id, ...result } = orderByUserName;
@@ -212,7 +214,7 @@ export const getRecentMenuByUserName = async (
 export const getOrderBlock = async () => {
   const db = (await clientPromise).db(COFFEEBEAN.DB_NAME);
   const orderBlock = db.collection<OrderBlock>(
-    COFFEEBEAN.COLLECTION.ORDER_BLOCK
+    COFFEEBEAN.COLLECTION.ORDER_BLOCK,
   );
   return orderBlock.findOne();
 };

@@ -12,7 +12,7 @@ type IngredientKey = (typeof ingredientList)[number]["name"];
 
 export const initialIngredient = ingredientList.reduce(
   (acc, ingredient) => ({ ...acc, [ingredient.name]: 0 }),
-  {}
+  {},
 ) as Readonly<Record<IngredientKey, number>>;
 
 export type MenuContentsProps = {
