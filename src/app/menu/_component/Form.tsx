@@ -11,7 +11,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
-import { MenuProps, OrderItem } from '@/type';
+import { coffeeSize, MenuProps, OrderItem } from '@/type';
 
 import styles from './modal.module.css';
 
@@ -48,7 +48,6 @@ type MenuSubmitProps = {
   formAction: (payload: FormData) => void;
 };
 
-const coffeeSize = ['L', 'M', 'S'] as const;
 const temperatures = ['HOT', 'ICE'] as const;
 const shots = Array.from({ length: 5 }, (_, idx) => idx);
 
@@ -60,6 +59,9 @@ export function MenuSubmitForm({
   const menuNameId = useId();
   /** 기존 선택 메뉴와 현재 선택 메뉴가 같을 경우 체크 */
   const prevEqualSelected = previousMenu?.menuName === selectedMenu.name.kor;
+  const showingCoffeeSize = !selectedMenu.size
+    ? coffeeSize
+    : coffeeSize.filter((size) => selectedMenu.size?.includes(size));
 
   return (
     <div className={styles.modal_container}>
@@ -78,7 +80,7 @@ export function MenuSubmitForm({
         <div className={styles['menu-column']}>
           <label>사이즈</label>
           <div className={styles.radio}>
-            {coffeeSize.map((size, idx) => (
+            {showingCoffeeSize.map((size, idx) => (
               <Radio
                 key={size}
                 name="size"

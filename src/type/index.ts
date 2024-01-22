@@ -8,6 +8,8 @@ export const ingredientList = [
   { name: 'protain', className: 'bg7' },
 ] as const;
 
+export const coffeeSize = ['S', 'M', 'L'] as const;
+
 type IngredientKey = (typeof ingredientList)[number]['name'];
 
 export const initialIngredient = ingredientList.reduce(
@@ -37,6 +39,7 @@ export type MenuProps = {
   soldOut?: boolean;
   decaf?: boolean;
   only?: 'ice' | 'hot';
+  size?: Readonly<Array<(typeof coffeeSize)[number]>>;
 };
 
 export type MenuPropsWithId = MenuProps & { _id: string };

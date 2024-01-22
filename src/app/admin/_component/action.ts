@@ -6,7 +6,7 @@ import { z, ZodError } from 'zod';
 import { getAbsenceList } from '@/database/coffeebean/get';
 import { deleteMenudata, mutateMenudata } from '@/database/coffeebean/post';
 import { ServerActionState } from '@/hooks/useServerAction';
-import { Absence } from '@/type';
+import { Absence, coffeeSize } from '@/type';
 
 const menuSchema = z
   .object({
@@ -17,16 +17,19 @@ const menuSchema = z
     only: z.enum(['ice', 'hot']).or(z.literal('').transform(() => undefined)),
     soldOut: z.literal('on').nullable(),
     decaf: z.literal('on').nullable(),
+    size: z.enum(coffeeSize).array(),
   })
   .partial({
     only: true,
     soldOut: true,
     decaf: true,
+    size: true,
   });
 
 export const modifyAction = async (data: FormData) => {
   try {
-    const parsed = menuSchema.parse(Object.fromEntries(data));
+    const size = data.getAll('size');
+    const parsed = menuSchema.parse({ ...Object.fromEntries(data), size });
     await mutateMenudata({
       _id: parsed._id,
       category: parsed.category,
@@ -37,6 +40,7 @@ export const modifyAction = async (data: FormData) => {
       soldOut: Boolean(parsed.soldOut),
       only: parsed.only,
       decaf: Boolean(parsed.decaf),
+      size: parsed.size,
     });
     revalidatePath('/admin/menu/[slug]', 'page');
     revalidatePath('/menu', 'page');
