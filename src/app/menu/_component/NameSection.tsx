@@ -5,7 +5,7 @@ import { useFormState } from 'react-dom';
 import Link from 'next/link';
 
 import CustomBottomSheet from '@/components/BottomSheet/Custom';
-import Button from '@/components/Button';
+import { Button } from '@/components/ui/button';
 
 import { getUserNameFromSession } from '../action';
 
@@ -38,7 +38,7 @@ export default function NameSection() {
       <p>
         {userName ? (
           <>
-            <Button resetStyle onClick={bsOpen} className={styles.name}>
+            <Button variant={'link'} onClick={bsOpen} className={'p-0'}>
               {userName} ✎
             </Button>
             님, {parsedMenu || '메뉴를 고르세요.'}
@@ -49,7 +49,7 @@ export default function NameSection() {
       </p>
       <div>
         <Link href={'/menu/bill'}>
-          <Button variant="medium">청구서</Button>
+          <Button>청구서</Button>
         </Link>
       </div>
       {isBSOpen ? (

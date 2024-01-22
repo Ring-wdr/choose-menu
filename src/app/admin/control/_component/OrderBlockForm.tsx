@@ -2,6 +2,8 @@
 
 import { useFormState } from 'react-dom';
 
+import { Button } from '@/components/ui/button';
+
 import { toggleOrderState } from '../action';
 
 export default function OrderBlockForm() {
@@ -11,7 +13,7 @@ export default function OrderBlockForm() {
   return (
     <div>
       <form action={orderAction}>
-        <button> 서버 상태 변경</button>
+        <Button> 서버 상태 변경</Button>
       </form>
       <p>{typeof orderState.status == 'boolean' && orderState.message}</p>
     </div>

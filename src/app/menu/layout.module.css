@@ -10,9 +10,3 @@
 .name_section .name {
   text-decoration: underline !important;
 }
-
-.name_section button {
-  background-color: var(--button-color-main);
-  border: 1px solid saddlebrown;
-  color: #fff;
-}
