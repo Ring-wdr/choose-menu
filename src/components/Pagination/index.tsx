@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   Pagination,
@@ -10,7 +10,7 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "@/components/ui/pagination";
+} from '@/components/ui/pagination';
 
 type PaginationProps = {
   href: string;
@@ -31,7 +31,7 @@ export default function Paginations({
   const pageCount = endOfPagination ? totalPage % chunk : chunk;
   const linkArray = Array.from(
     { length: pageCount },
-    (_, index) => startPage + index
+    (_, index) => startPage + index,
   );
   return (
     <Pagination>

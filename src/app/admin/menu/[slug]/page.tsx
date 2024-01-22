@@ -1,7 +1,9 @@
-import { getPaginatedMenuList } from "@/database/coffeebean/get";
-import MenuAdmin from "../../_component/AdminMenu";
-import { redirect } from "next/navigation";
-import Paginations from "@/components/Pagination";
+import { redirect } from 'next/navigation';
+
+import Paginations from '@/components/Pagination';
+import { getPaginatedMenuList } from '@/database/coffeebean/get';
+
+import MenuAdmin from '../../_component/AdminMenu';
 
 export default async function MenuAdminPage({
   params,

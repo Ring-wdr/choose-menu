@@ -1,5 +1,8 @@
-import React, { useId, useRef, useEffect } from "react";
-import { useFormStatus } from "react-dom";
+import React, { useEffect, useId, useRef } from 'react';
+import { useFormStatus } from 'react-dom';
+
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   Dialog,
   DialogClose,
@@ -9,13 +12,13 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { reducer, ButtonUnion } from "./reducer";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
-import { MenuPropsWithId } from "@/type";
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
+import { coffeeSize, MenuPropsWithId } from '@/type';
+
+import { ButtonUnion, reducer } from './reducer';
 
 type DialogDispatch = (input: Parameters<typeof reducer>[1]) => void;
 
@@ -130,6 +133,23 @@ function DialogForm({ item }: DialogFormProps) {
         defaultValue={item?.only}
         placeholder="온도 제한"
       />
+      <div className="flex justify-between p-5">
+        <Label>사이즈</Label>
+        {coffeeSize.map((size) => (
+          <div key={size} className="items-top flex space-x-2">
+            <Checkbox
+              name="size"
+              value={size}
+              defaultChecked={!item?.size || item.size.includes(size)}
+            />
+            <div className="grid gap-1.5 leading-none">
+              <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                {size}
+              </label>
+            </div>
+          </div>
+        ))}
+      </div>
       <div className="m-3 flex flex-col gap-3 items-center sm:justify-between sm:flex-row ">
         <Label htmlFor={`${id}soldout`}>품절 여부</Label>
         <Switch

@@ -1,6 +1,8 @@
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import styles from "./page.module.css";
+import Link from 'next/link';
+
+import { Button } from '@/components/ui/button';
+
+import styles from './page.module.css';
 
 export default function Result() {
   return (

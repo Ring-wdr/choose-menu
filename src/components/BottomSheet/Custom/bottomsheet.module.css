@@ -3,14 +3,14 @@
   top: 0;
   left: 50%;
   --current-bs-position: 120%;
-  translate: -50% var(--current-bs-position);
+  transform: translate(-50%, var(--current-bs-position));
   max-width: 30rem;
   width: 100%;
   min-height: 100%;
   background: #fff;
   bottom: 0;
   transition: 150ms ease-out;
-  z-index: 100;
+  z-index: 20;
   border-top-left-radius: 30px;
   border-top-right-radius: 30px;
   /* border: 1px solid black; */

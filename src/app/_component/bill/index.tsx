@@ -1,15 +1,17 @@
-"use client";
+'use client';
 import {
-  useState,
+  DragEvent,
+  Fragment,
+  TouchEvent,
   useEffect,
   useRef,
-  Fragment,
-  DragEvent,
-  TouchEvent,
-} from "react";
-import { getOrderListGroupByNameSizeTemp } from "@/database/coffeebean/get";
-import Button from "@/components/Button";
-import styles from "./index.module.css";
+  useState,
+} from 'react';
+
+import Button from '@/components/Button';
+import { getOrderListGroupByNameSizeTemp } from '@/database/coffeebean/get';
+
+import styles from './index.module.css';
 
 type AggTableProps = Awaited<
   ReturnType<typeof getOrderListGroupByNameSizeTemp>
@@ -31,7 +33,7 @@ export default function BillTable({
   // order state
   const [orders, setOrders] = useState(data);
   const updateOrder = () => {
-    fetch("/api/bill")
+    fetch('/api/bill')
       .then((res) => res.json())
       .then((data) => setOrders(data));
   };
@@ -51,10 +53,10 @@ export default function BillTable({
       if (!currentIndexRef.current || !targetIndexRef.current) return prev;
       const newPrev = [...prev];
       const currentIndex = prev.findIndex(
-        (order) => order === currentIndexRef.current
+        (order) => order === currentIndexRef.current,
       );
       const targetIndex = prev.findIndex(
-        (order) => order === targetIndexRef.current
+        (order) => order === targetIndexRef.current,
       );
       [newPrev[currentIndex], newPrev[targetIndex]] = [
         newPrev[targetIndex],
@@ -82,7 +84,7 @@ export default function BillTable({
     const { touches } = e;
     const { clientY } = touches[0];
     const y = clientY - currnentY.current;
-    e.currentTarget.style.setProperty("transform", `translateY(${y}px)`);
+    e.currentTarget.style.setProperty('transform', `translateY(${y}px)`);
   };
 
   const onTouchEnd = (e: TouchEvent<HTMLTableRowElement>) => {
@@ -91,9 +93,9 @@ export default function BillTable({
     const { clientX, clientY } = changedTouches[0];
     const { index } = currentTarget.dataset;
     const currentIdx = Number(index);
-    const tbody = currentTarget.closest("tbody");
+    const tbody = currentTarget.closest('tbody');
     if (tbody === null) return;
-    const trows = [...tbody.querySelectorAll("tr")];
+    const trows = [...tbody.querySelectorAll('tr')];
     const trowRects = trows.map((trow) => {
       const { left, right, bottom, top } = trow.getBoundingClientRect();
       const index = Number(trow.dataset.index);
@@ -117,7 +119,7 @@ export default function BillTable({
         setOrders((prev) => {
           const newPrev = [...prev];
           const currentIndex = prev.findIndex(
-            (order) => order.id === currentIdx
+            (order) => order.id === currentIdx,
           );
           const targetIndex = prev.findIndex((order) => order.id === targetIdx);
           [newPrev[currentIndex], newPrev[targetIndex]] = [
@@ -129,13 +131,13 @@ export default function BillTable({
         break;
       }
     }
-    currentTarget.style.removeProperty("transform");
+    currentTarget.style.removeProperty('transform');
   };
 
   useEffect(() => {
-    document.body.style.setProperty("overscroll-behavior", "none");
+    document.body.style.setProperty('overscroll-behavior', 'none');
     return () => {
-      document.body.style.removeProperty("overscroll-behavior");
+      document.body.style.removeProperty('overscroll-behavior');
     };
   }, []);
 
@@ -146,7 +148,7 @@ export default function BillTable({
           계산서 재요청
         </Button>
       )}
-      현재 인원: {orders.length || 0}명
+      현재 인원: {orders.reduce((acc, { count }) => acc + count, 0) || 0}명
       <div className={styles.sticky_wrap}>
         <div className={styles.sticky_box}>
           <div className={styles.height_fix}>

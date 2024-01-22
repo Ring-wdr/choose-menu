@@ -1,17 +1,18 @@
-import { ButtonHTMLAttributes } from "react";
-import clsx from "clsx";
-import styles from "./index.module.css";
+import { ButtonHTMLAttributes } from 'react';
+import clsx from 'clsx';
+
+import styles from './index.module.css';
 
 type ButtonProps = {
-  variant?: "large" | "medium" | "small" | "none";
+  variant?: 'large' | 'medium' | 'small' | 'none';
   fullWidth?: boolean;
   resetStyle?: boolean;
 } & ButtonHTMLAttributes<HTMLButtonElement>;
 
 export default function Button({
-  variant = "none",
+  variant = 'none',
   fullWidth = false,
-  className = "",
+  className = '',
   resetStyle,
   ...props
 }: ButtonProps) {
@@ -20,9 +21,9 @@ export default function Button({
       className={clsx(
         styles.button,
         { [styles[variant]]: variant },
-        { [styles["w-full"]]: fullWidth },
+        { [styles['w-full']]: fullWidth },
         { [styles.reset_style]: resetStyle },
-        className
+        className,
       )}
       {...props}
     />

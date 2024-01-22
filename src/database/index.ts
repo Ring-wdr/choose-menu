@@ -1,8 +1,8 @@
-import { MongoClient, ServerApiVersion } from "mongodb";
+import { MongoClient, ServerApiVersion } from 'mongodb';
 
 if (!process.env.NEXT_PUBLIC_MONGO_KEY) {
   throw new Error(
-    'Invalid/Missing environment variable: "NEXT_PUBLIC_MONGO_KEY"'
+    'Invalid/Missing environment variable: "NEXT_PUBLIC_MONGO_KEY"',
   );
 }
 
@@ -13,13 +13,13 @@ const options = {
     strict: true,
     deprecationErrors: true,
   },
-  writeConcern: { w: "majority" },
+  writeConcern: { w: 'majority' },
 } as const;
 
 let client;
 let clientPromise: Promise<MongoClient>;
 
-if (process.env.NODE_ENV === "development") {
+if (process.env.NODE_ENV === 'development') {
   // In development mode, use a global variable so that the value
   // is preserved across module reloads caused by HMR (Hot Module Replacement).
   let globalWithMongo = global as typeof globalThis & {

@@ -1,5 +1,5 @@
 type ViewTransitionReturnType = Record<
-  "updateCallbackDone" | "ready" | "finished",
+  'updateCallbackDone' | 'ready' | 'finished',
   Promise<void>
 >;
 

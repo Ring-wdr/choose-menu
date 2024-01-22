@@ -1,9 +1,11 @@
-"use client";
+'use client';
 
-import { useFormStatus } from "react-dom";
-import Button from "@/components/Button";
-import LoadingImage from "@/components/Loading";
-import Modal from "@/components/Modal";
+import { useFormStatus } from 'react-dom';
+
+import LoadingImage from '@/components/Loading';
+import Modal from '@/components/Modal';
+
+import { Button } from '../ui/button';
 
 type LoadingButtonProps = {
   label?: string;
@@ -11,16 +13,16 @@ type LoadingButtonProps = {
 } & React.ComponentProps<typeof Button>;
 
 export default function LoadingButton({
-  label = "선택",
-  labelOnPending = "요청 중...",
-  fullWidth = true,
+  label = '선택',
+  labelOnPending = '요청 중...',
+  className,
   ...props
 }: LoadingButtonProps) {
   const { pending } = useFormStatus();
   return (
     <>
-      <Button fullWidth={fullWidth} {...props}>
-        {pending ? labelOnPending || "요청 중..." : label || "선택"}
+      <Button className={'w-full ' + className} {...props}>
+        {pending ? labelOnPending || '요청 중...' : label || '선택'}
       </Button>
       {pending && (
         <Modal isOpen={pending}>

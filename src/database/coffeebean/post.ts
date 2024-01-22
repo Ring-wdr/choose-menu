@@ -1,17 +1,20 @@
-import { revalidatePath } from "next/cache";
-import clientPromise from "..";
-import { COFFEEBEAN } from ".";
-import { getCategories, getMenuFromPages } from "@/crawling";
-import { MenuProps, MenuPropsWithId, OrderItem } from "@/type";
-import { getCategoryList } from "./get";
-import { ObjectId } from "mongodb";
+import { ObjectId } from 'mongodb';
+import { revalidatePath } from 'next/cache';
+
+import { getCategories, getMenuFromPages } from '@/crawling';
+import { MenuProps, MenuPropsWithId, OrderItem } from '@/type';
+
+import clientPromise from '..';
+
+import { getCategoryList } from './get';
+import { COFFEEBEAN } from '.';
 
 export async function crawlAndSaveCategory() {
   const db = (await clientPromise).db(COFFEEBEAN.DB_NAME);
   const categoryCollection = db.collection(COFFEEBEAN.COLLECTION.CATEGORY);
   categoryCollection.deleteMany({});
   const categoryList = await getCategories(
-    "https://www.coffeebeankorea.com/menu/list.asp"
+    'https://www.coffeebeankorea.com/menu/list.asp',
   );
   const response = categoryCollection.insertMany(categoryList);
   return {
@@ -29,12 +32,12 @@ export async function crawlAndSaveMenu() {
   for await (const { category } of categoryList) {
     await new Promise((res) => setTimeout(res, 500));
     const menu = await getMenuFromPages(
-      `https://www.coffeebeankorea.com/menu/list.asp?category=${category}`
+      `https://www.coffeebeankorea.com/menu/list.asp?category=${category}`,
     );
     menuList.push(...menu);
   }
   const response = menuCollection.insertMany(menuList);
-  revalidatePath("/menu", "page");
+  revalidatePath('/menu', 'page');
   return {
     menuList,
     response,
@@ -51,19 +54,19 @@ export async function mutateMenudata({
   name,
   _id,
   ...props
-}: Omit<MenuPropsWithId, "photo" | "description" | "info">) {
+}: Omit<MenuPropsWithId, 'photo' | 'description' | 'info'>) {
   const db = (await clientPromise).db(COFFEEBEAN.DB_NAME);
   const menuCollection = db.collection(COFFEEBEAN.COLLECTION.MENU);
 
   const response = await menuCollection.findOneAndUpdate(
     { _id: new ObjectId(_id) },
     { $set: props },
-    { upsert: true }
+    { upsert: true },
   );
   return response;
 }
 
-export async function deleteMenudata({ _id }: Pick<MenuPropsWithId, "_id">) {
+export async function deleteMenudata({ _id }: Pick<MenuPropsWithId, '_id'>) {
   const db = (await clientPromise).db(COFFEEBEAN.DB_NAME);
   const menuCollection = db.collection(COFFEEBEAN.COLLECTION.MENU);
   const response = await menuCollection.deleteOne({ _id: new ObjectId(_id) });

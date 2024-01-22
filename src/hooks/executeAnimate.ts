@@ -8,7 +8,7 @@
 export default function executeAnimate<T>(
   initValue: T,
   step: (val: T) => T,
-  continuableCondition?: (val: T) => boolean
+  continuableCondition?: (val: T) => boolean,
 ) {
   let closureValue = initValue;
   let animateRef = requestAnimationFrame(animateCallback);
