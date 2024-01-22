@@ -3,7 +3,10 @@
 import { revalidatePath } from 'next/cache';
 import { z, ZodError } from 'zod';
 
+import { getAbsenceList } from '@/database/coffeebean/get';
 import { deleteMenudata, mutateMenudata } from '@/database/coffeebean/post';
+import { ServerActionState } from '@/hooks/useServerAction';
+import { Absence } from '@/type';
 
 const menuSchema = z
   .object({
@@ -62,3 +65,20 @@ export const deleteAction = async (data: FormData) => {
     e instanceof Error && console.error(e.message);
   }
 };
+
+export async function getAbsenceListAction(
+  _: ServerActionState<Absence[]>,
+): Promise<ServerActionState<Absence[]>> {
+  try {
+    const absenceList = await getAbsenceList();
+    if (!absenceList || absenceList.length === 0)
+      return { status: 'success', message: '결석 인원이 없습니다.' };
+    return {
+      status: 'success',
+      message: '성공적으로 불러왔습니다.',
+      data: absenceList,
+    };
+  } catch {
+    return { status: 'error', message: '메뉴를 불러올 수 없습니다.' };
+  }
+}
