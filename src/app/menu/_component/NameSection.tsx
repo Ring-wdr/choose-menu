@@ -12,8 +12,6 @@ import { getUserNameFromSession } from '../action';
 import { NameChangeForm } from './Form';
 import { useMenuContext } from './MenuContext';
 
-import styles from '../layout.module.css';
-
 export default function NameSection() {
   // user state
   const [userName, formAction] = useFormState(getUserNameFromSession, '');
@@ -34,11 +32,15 @@ export default function NameSection() {
   }, [userName, formAction]);
 
   return (
-    <div className={styles.name_section}>
+    <div className="flex justify-between items-center p-4 h-[var(--name-section-height)] bg-amber-50">
       <p>
         {userName ? (
           <>
-            <Button variant={'link'} onClick={bsOpen} className={'p-0'}>
+            <Button
+              variant={'link'}
+              onClick={bsOpen}
+              className={'p-0 underline'}
+            >
               {userName} ✎
             </Button>
             님, {parsedMenu || '메뉴를 고르세요.'}
