@@ -9,7 +9,10 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  text-shadow: -1px -1px 0 var(--button-color-main),
-    1px -1px 0 var(--button-color-main), -1px 1px 0 var(--button-color-main),
+  text-shadow:
+    -1px -1px 0 var(--button-color-main),
+    1px -1px 0 var(--button-color-main),
+    -1px 1px 0 var(--button-color-main),
     1px 1px 0 var(--button-color-main);
+  z-index: 1;
 }
