@@ -10,8 +10,10 @@ import MenuContents from './_component/Menu';
 import styles from './page.module.css';
 
 export default async function Menu() {
-  const categories = await cachedGetCategoryList();
-  const menuList = await cachedGetMenuList();
+  const [categories, menuList] = await Promise.all([
+    cachedGetCategoryList(),
+    cachedGetMenuList(),
+  ]);
   if (!menuList || menuList.length === 0) {
     return <div>현재 메뉴를 불러올 수 없습니다.</div>;
   }
