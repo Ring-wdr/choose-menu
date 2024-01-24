@@ -82,7 +82,7 @@ export const getOrderListGroupByNameSizeTemp = cache(async () => {
     id: idx,
     title: `(${lastOrder.size || 'S'})${lastOrder.temperature || ''} ${
       lastOrder.menuName
-    }`,
+    }${lastOrder.shot ? `[${lastOrder.shot} SHOT]` : ''}`,
     decaf: lastOrder.decaf,
     count: lastOrder.count,
   }));
