@@ -11,9 +11,9 @@ import { hangulIncludes } from '@toss/hangul';
 import clsx from 'clsx';
 
 import CustomBottomSheet from '@/components/BottomSheet/Custom';
-import Button from '@/components/Button';
 import LoadingImage from '@/components/Loading';
 import LoadingButton from '@/components/Loading/Button';
+import { Button } from '@/components/ui/button';
 import { startSafeViewTransition } from '@/hooks/startSafeViewTransition';
 import { Category, MenuProps } from '@/type';
 
@@ -66,7 +66,11 @@ export default function MenuContents({ categories, menuList }: MenuSideProps) {
         <SearchContainer keyword={keyword} changeKeyword={changeKeyword} />
         <li>
           <button
-            className={category === ALL_MENU ? styles.active : ''}
+            className={
+              category === ALL_MENU
+                ? styles.active
+                : 'bg-primary text-primary-foreground'
+            }
             onClick={changeCategory(ALL_MENU)}
             title={ALL_MENU}
           >
@@ -77,7 +81,11 @@ export default function MenuContents({ categories, menuList }: MenuSideProps) {
           categories.map((item, idx) => (
             <li key={idx}>
               <button
-                className={item.category === category ? styles.active : ''}
+                className={
+                  item.category === category
+                    ? styles.active
+                    : 'bg-primary text-primary-foreground'
+                }
                 onClick={changeCategory(item.category)}
                 title={item.title}
               >
@@ -215,7 +223,7 @@ function MenuController({ menuList }: MenuControllerProps) {
       </div>
       <div className={styles.footer}>
         <Button
-          fullWidth
+          className="w-full"
           onClick={() =>
             selectedMenu ? setModal(true) : alert('메뉴를 선택해주세요.')
           }

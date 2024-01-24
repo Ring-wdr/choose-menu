@@ -1,9 +1,8 @@
 .header {
   width: 100%;
   height: var(--header-height, 50px);
-  background: black;
-  color: whitesmoke;
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
 }

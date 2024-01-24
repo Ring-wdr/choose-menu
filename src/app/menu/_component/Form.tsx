@@ -1,8 +1,10 @@
 import { useId } from 'react';
+import clsx from 'clsx';
 
 import BS from '@/components/BottomSheet';
 import LoadingButton from '@/components/Loading/Button';
 import Radio from '@/components/Radio';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
@@ -22,10 +24,10 @@ type NameChangeProps = {
 
 export function NameChangeForm({ userName, formAction }: NameChangeProps) {
   return (
-    <div className={styles.modal_container}>
+    <div className={clsx(styles.modal_container, 'dark:bg-black')}>
       <p>이름을 변경하세요.</p>
       <form action={formAction}>
-        <input
+        <Input
           type="text"
           name="userName"
           placeholder={userName}
@@ -34,7 +36,11 @@ export function NameChangeForm({ userName, formAction }: NameChangeProps) {
           pattern={`^(?:(?!${userName}).)*$`}
           maxLength={4}
         />
-        <BS.Submit fullWidth closeOnSubmit childrenOnPending="변경 중...">
+        <BS.Submit
+          className="w-full mt-3"
+          closeOnSubmit
+          childrenOnPending="변경 중..."
+        >
           변경
         </BS.Submit>
       </form>
@@ -134,19 +140,19 @@ export function MenuSubmitForm({
               />
             </div>
           )}
-          <div className="flex flex-row justify-between items-center">
+          {/* <div className="flex flex-row justify-between items-center">
             <label>예비 메뉴</label>
             <Switch
               name="sub"
               className="mt-0"
               defaultChecked={prevEqualSelected ? !!previousMenu.sub : false}
             />
-          </div>
+          </div> */}
           <div className="flex flex-row justify-between items-center">
             <label>샷</label>
             <Select name="shot">
               <SelectTrigger className="w-36">
-                <SelectValue placeholder="추가 희망시 선택" />
+                <SelectValue placeholder="추가 시 선택" />
               </SelectTrigger>
               <SelectContent>
                 {shots.map((num) => (

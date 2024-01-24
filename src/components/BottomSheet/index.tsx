@@ -13,9 +13,10 @@ import React, {
 } from 'react';
 import { createPortal, useFormStatus } from 'react-dom';
 
-import Button from '@/components/Button';
 import executeAnimate from '@/hooks/executeAnimate';
 import { useScreenSize } from '@/hooks/useScreenSize';
+
+import { Button } from '../ui/button';
 
 import bsStyles from './sheet.module.css';
 

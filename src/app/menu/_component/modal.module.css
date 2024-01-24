@@ -1,7 +1,6 @@
 .modal_container {
   position: relative;
   width: 100%;
-  background-color: #fff;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -24,7 +23,7 @@
 .modal_container form input {
   width: 100%;
 }
-.modal_container form input[type="text"] {
+.modal_container form input[type='text'] {
   height: 3rem;
 }
 .modal_container form button.submit {

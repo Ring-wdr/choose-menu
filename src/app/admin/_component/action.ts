@@ -86,3 +86,7 @@ export async function getAbsenceListAction(
     return { status: 'error', message: '메뉴를 불러올 수 없습니다.' };
   }
 }
+
+export async function calculation(data: any) {
+  console.log(data);
+}

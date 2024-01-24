@@ -1,3 +1,5 @@
+import clsx from 'clsx';
+
 import BS from '@/components/BottomSheet';
 
 import styles from './bottomsheet.module.css';
@@ -11,7 +13,7 @@ export default function CustomBottomSheet({
   return (
     <BS {...props}>
       <BS.BottomSheet>
-        <div className={styles.bottomSheet}>
+        <div className={clsx(styles.bottomSheet, 'dark:bg-black')}>
           <BS.Handle className={styles.handle} />
           <div className={styles.children}>{children}</div>
         </div>
