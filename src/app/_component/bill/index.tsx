@@ -8,7 +8,15 @@ import {
   useState,
 } from 'react';
 
-import Button from '@/components/Button';
+import { Button } from '@/components/ui/button';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import { getOrderListGroupByNameSizeTemp } from '@/database/coffeebean/get';
 
 import styles from './index.module.css';
@@ -144,49 +152,50 @@ export default function BillTable({
   return (
     <div className={styles.container}>
       {reset && (
-        <Button variant="large" onClick={updateOrder} className={styles.reset}>
+        <Button onClick={updateOrder} className={styles.reset}>
           계산서 재요청
         </Button>
       )}
       현재 인원: {orders.reduce((acc, { count }) => acc + count, 0) || 0}명
       <div className={styles.sticky_wrap}>
-        <div className={styles.sticky_box}>
-          <div className={styles.height_fix}>
-            <table className={styles.table} onMouseLeave={onMouseLeave}>
-              <thead>
-                <tr>
-                  <th>상품명</th>
-                  <th>수량</th>
-                </tr>
-              </thead>
-              <tbody>
-                {orders.map((order) => (
-                  <Fragment key={order.id}>
-                    <tr
-                      draggable={draggable}
-                      data-index={order.id}
-                      onDragStart={onDragStart(order)}
-                      onDragEnter={onDragEnter(order)}
-                      onDragEnd={onDragEnd}
-                      onDragOver={onDragOver}
-                      onTouchStart={onTouchStart}
-                      onTouchMove={onTouchMove}
-                      onTouchEnd={onTouchEnd}
-                    >
-                      <td>{order.title}</td>
-                      <td>{order.count}</td>
-                    </tr>
-                    {order.decaf && (
-                      <tr>
-                        <td>ㄴ DECAF</td>
-                        <td></td>
-                      </tr>
-                    )}
-                  </Fragment>
-                ))}
-              </tbody>
-            </table>
-          </div>
+        <div className={styles.height_fix}>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead> 상품명</TableHead>
+                <TableHead className="w-12">수량</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {(!orders || orders.length === 0) && (
+                <TableRow>No content</TableRow>
+              )}
+              {orders.map((order) => (
+                <Fragment key={order.id}>
+                  <TableRow
+                    draggable={draggable}
+                    data-index={order.id}
+                    onDragStart={onDragStart(order)}
+                    onDragEnter={onDragEnter(order)}
+                    onDragEnd={onDragEnd}
+                    onDragOver={onDragOver}
+                    onTouchStart={onTouchStart}
+                    onTouchMove={onTouchMove}
+                    onTouchEnd={onTouchEnd}
+                  >
+                    <TableCell>{order.title}</TableCell>
+                    <TableCell>{order.count}</TableCell>
+                  </TableRow>
+                  {order.decaf && (
+                    <TableRow>
+                      <TableCell>ㄴ DECAF</TableCell>
+                      <TableCell></TableCell>
+                    </TableRow>
+                  )}
+                </Fragment>
+              ))}
+            </TableBody>
+          </Table>
         </div>
       </div>
     </div>

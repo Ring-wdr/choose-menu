@@ -66,7 +66,11 @@ export default function MenuContents({ categories, menuList }: MenuSideProps) {
         <SearchContainer keyword={keyword} changeKeyword={changeKeyword} />
         <li>
           <button
-            className={category === ALL_MENU ? styles.active : ''}
+            className={
+              category === ALL_MENU
+                ? styles.active
+                : 'bg-primary text-primary-foreground'
+            }
             onClick={changeCategory(ALL_MENU)}
             title={ALL_MENU}
           >
@@ -77,7 +81,11 @@ export default function MenuContents({ categories, menuList }: MenuSideProps) {
           categories.map((item, idx) => (
             <li key={idx}>
               <button
-                className={item.category === category ? styles.active : ''}
+                className={
+                  item.category === category
+                    ? styles.active
+                    : 'bg-primary text-primary-foreground'
+                }
                 onClick={changeCategory(item.category)}
                 title={item.title}
               >

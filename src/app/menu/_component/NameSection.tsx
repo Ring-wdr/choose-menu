@@ -32,7 +32,7 @@ export default function NameSection() {
   }, [userName, formAction]);
 
   return (
-    <div className="flex justify-between items-center p-4 h-[var(--name-section-height)] bg-amber-50">
+    <div className="flex justify-between items-center p-4 h-[var(--name-section-height)] bg-slate-100 dark:bg-slate-700 border-2">
       <p>
         {userName ? (
           <>

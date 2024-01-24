@@ -18,7 +18,7 @@
   -ms-overflow-style: none; /* 인터넷 익스플로러 */
   scrollbar-width: none; /* 파이어폭스 */
 }
-.bottomSheet[data-drag="true"] {
+.bottomSheet[data-drag='true'] {
   transition: none;
 }
 
@@ -37,12 +37,6 @@
   z-index: 5;
   width: 100%;
   height: var(--handle-height);
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 1) 50%,
-    #ffffff4d 75%,
-    rgba(0, 212, 255, 0) 100%
-  );
   touch-action: none;
   cursor: pointer;
 }
