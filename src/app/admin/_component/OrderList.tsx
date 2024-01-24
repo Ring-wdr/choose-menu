@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 
+import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import {
   Table,
@@ -13,6 +14,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { getOrderListGroupByUserName } from '@/database/coffeebean/get';
+import { toggleUserAbsence } from '@/database/coffeebean/patch';
 import useServerAction from '@/hooks/useServerAction';
 import { Absence, AwaitedReturn } from '@/type';
 
@@ -20,23 +22,26 @@ import { getAbsenceListAction } from './action';
 
 type OrderListProps = {
   orderList: AwaitedReturn<typeof getOrderListGroupByUserName>;
+  calculation: (data: any) => any;
+  toggleAbsence: typeof toggleUserAbsence;
 };
 
-export default function OrderList({ orderList }: OrderListProps) {
+export default function OrderList({
+  orderList,
+  calculation,
+  toggleAbsence,
+}: OrderListProps) {
   const { state, loading, refetch } = useServerAction(getAbsenceListAction);
   const [absenceList, setAbsence] = useState<Absence[] | null>(null);
-  const toggleAbsence = (userName: string) => async () => {
+  const onToggleAbsence = (userName: string) => async () => {
     try {
-      const response = await fetch(`/api/absence/${userName}`, {
-        method: 'PATCH',
-      });
-      if (response.ok) {
-        const result = (await response.json()) as Absence | null;
+      const response = await toggleAbsence(userName);
+      if (response) {
         setAbsence((prevList) => {
           if (prevList === null) return null;
           const newAbsence = [
             ...prevList?.filter((item) => item.userName !== userName),
-            { userName, absence: !result?.absence },
+            { userName, absence: !response.absence },
           ];
           return newAbsence;
         });
@@ -54,11 +59,22 @@ export default function OrderList({ orderList }: OrderListProps) {
         return prev;
       });
     }
-  }, [state, setAbsence]);
+  }, [state]);
 
   return (
-    <div>
+    <div className="w-full">
       {loading && <div>리스트를 불러오고 있습니다...</div>}
+      <div className="flex justify-end p-3">
+        {state.status === 'success' && (
+          <Button
+            onClick={async () => {
+              await calculation(orderList);
+            }}
+          >
+            정산
+          </Button>
+        )}
+      </div>
       <Table>
         <TableCaption>직원들이 주문한 메뉴</TableCaption>
         <TableHeader>
@@ -92,7 +108,7 @@ export default function OrderList({ orderList }: OrderListProps) {
                   <TableCell>
                     <Switch
                       checked={isAbsence}
-                      onChange={toggleAbsence(order.userName)}
+                      onClick={onToggleAbsence(order.userName)}
                     />
                   </TableCell>
                   <TableCell>

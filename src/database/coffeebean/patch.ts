@@ -1,3 +1,5 @@
+'use server';
+
 import { Absence, OrderBlock } from '@/type';
 
 import clientPromise from '..';
