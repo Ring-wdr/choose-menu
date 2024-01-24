@@ -151,11 +151,7 @@ export default function BillTable({
 
   return (
     <div className={styles.container}>
-      {reset && (
-        <Button onClick={updateOrder} className={styles.reset}>
-          계산서 재요청
-        </Button>
-      )}
+      {reset && <Button onClick={updateOrder}>계산서 재요청</Button>}
       현재 인원: {orders.reduce((acc, { count }) => acc + count, 0) || 0}명
       <div className={styles.sticky_wrap}>
         <div className={styles.height_fix}>
