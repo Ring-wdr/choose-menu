@@ -11,9 +11,9 @@ import { hangulIncludes } from '@toss/hangul';
 import clsx from 'clsx';
 
 import CustomBottomSheet from '@/components/BottomSheet/Custom';
-import Button from '@/components/Button';
 import LoadingImage from '@/components/Loading';
 import LoadingButton from '@/components/Loading/Button';
+import { Button } from '@/components/ui/button';
 import { startSafeViewTransition } from '@/hooks/startSafeViewTransition';
 import { Category, MenuProps } from '@/type';
 
@@ -215,7 +215,7 @@ function MenuController({ menuList }: MenuControllerProps) {
       </div>
       <div className={styles.footer}>
         <Button
-          fullWidth
+          className="w-full"
           onClick={() =>
             selectedMenu ? setModal(true) : alert('메뉴를 선택해주세요.')
           }
