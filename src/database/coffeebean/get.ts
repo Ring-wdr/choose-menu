@@ -2,7 +2,14 @@ import { cache } from 'react';
 
 import { MOCK } from '@/crawling/mock';
 import clientPromise from '@/database';
-import { Absence, Category, MenuProps, OrderBlock, OrderItem } from '@/type';
+import {
+  Absence,
+  Category,
+  MenuProps,
+  OrderBlock,
+  OrderItem,
+  OrderWithSubMenu,
+} from '@/type';
 
 import { COFFEEBEAN } from '.';
 
@@ -19,7 +26,7 @@ export const getOrderedList = async () => {
 
 const groupStage = {
   $group: {
-    _id: '$userName',
+    _id: { userName: '$userName', sub: '$sub' },
     latestOrder: { $last: '$$ROOT' },
   },
 };
@@ -31,7 +38,8 @@ const sortStage = {
 const projState = {
   $project: {
     _id: 0,
-    userName: '$_id',
+    userName: '$_id.userName',
+    sub: '$_id.sub',
     menuName: '$latestOrder.menuName',
     size: '$latestOrder.size',
     temperature: '$latestOrder.temperature',
@@ -43,15 +51,40 @@ type OrderOmitUserName = Omit<OrderItem, 'userName'>;
 export type BillType = OrderOmitUserName & { count: number };
 
 export const getOrderListGroupByUserName = async () => {
-  if (process.env.NODE_ENV === 'development') {
-    return MOCK.ORDER_LIST;
-  }
+  // if (process.env.NODE_ENV === 'development') {
+  //   return MOCK.ORDER_LIST;
+  // }
   const db = (await clientPromise).db(COFFEEBEAN.DB_NAME);
   const orderCollection = db.collection<OrderItem>(COFFEEBEAN.COLLECTION.ORDER);
-  const orders = (await orderCollection
-    .aggregate([groupStage, sortStage, projState])
-    .toArray()) as OrderItem[];
+  const orders = await orderCollection
+    .aggregate<OrderItem>([groupStage, sortStage, projState])
+    .toArray();
   return orders;
+};
+
+export const getOrderListGroupByUserNameAdmin = async () => {
+  const orders = await getOrderListGroupByUserName();
+  const ordersContainSubmenu = orders.reduce<Array<OrderWithSubMenu>>(
+    (result, order) => {
+      const findOrderByName = result.find(
+        ({ userName }) => userName === order.userName,
+      );
+      if (findOrderByName) {
+        if (order.sub === 'on') {
+          findOrderByName.subMenuName = order.menuName;
+        } else {
+          findOrderByName.menuName = order.menuName;
+        }
+        return result;
+      }
+      if (order.sub === 'on') {
+        return [...result, { ...order, subMenuName: order.menuName }];
+      }
+      return [...result, order];
+    },
+    [],
+  );
+  return ordersContainSubmenu;
 };
 
 export const getOrderListGroupByNameSizeTemp = cache(async () => {
@@ -59,10 +92,16 @@ export const getOrderListGroupByNameSizeTemp = cache(async () => {
     getOrderListGroupByUserName(),
     getAbsenceList(),
   ]);
-  const filteredOrders = orders.filter(
-    (order) =>
-      !absenceList.find((absence) => absence.userName === order.userName),
-  );
+  /** absence = true, sub */
+  const filteredOrders = orders.filter((order) => {
+    const findUserState = absenceList.find(
+      ({ userName }) => userName === order.userName,
+    );
+    return (
+      !findUserState ||
+      (!findUserState.absence && (findUserState.sub ? order.sub : !order.sub))
+    );
+  });
 
   const orderList = filteredOrders.reduce<BillType[]>((res, lastOrder) => {
     const existGroup = res.find(
@@ -222,7 +261,7 @@ export const getOrderBlock = async () => {
 export const getAbsenceList = async () => {
   const db = (await clientPromise).db(COFFEEBEAN.DB_NAME);
   const absenceList = db.collection<Absence>(COFFEEBEAN.COLLECTION.ABSENCE);
-  return (await absenceList.find({ absence: true }).toArray()).map((item) => ({
+  return (await absenceList.find().toArray()).map((item) => ({
     ...item,
     _id: item._id.toString(),
   }));

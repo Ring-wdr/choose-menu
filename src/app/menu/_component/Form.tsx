@@ -140,14 +140,14 @@ export function MenuSubmitForm({
               />
             </div>
           )}
-          {/* <div className="flex flex-row justify-between items-center">
+          <div className="flex flex-row justify-between items-center">
             <label>예비 메뉴</label>
             <Switch
               name="sub"
               className="mt-0"
               defaultChecked={prevEqualSelected ? !!previousMenu.sub : false}
             />
-          </div> */}
+          </div>
           <div className="flex flex-row justify-between items-center">
             <label>샷</label>
             <Select name="shot">

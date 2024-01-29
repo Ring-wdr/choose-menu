@@ -84,6 +84,9 @@ const ORDER_LIST = Array.from(
     temperature: Math.random() > 0.5 ? 'HOT' : 'ICE',
     decaf: Math.random() > 0.5 ? 'on' : null,
     ...(Math.random() > 0.5 && { shot: Math.floor(Math.random() * 5) }),
+    ...(Math.random() > 0.5 && {
+      sub: Math.round(Math.random()) ? 'on' : null,
+    }),
   }),
 ) satisfies OrderItem[];
 

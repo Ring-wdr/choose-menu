@@ -13,44 +13,43 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { getOrderListGroupByUserName } from '@/database/coffeebean/get';
-import { toggleUserAbsence } from '@/database/coffeebean/patch';
+import { getOrderListGroupByUserNameAdmin } from '@/database/coffeebean/get';
+import { toggleUserState } from '@/database/coffeebean/patch';
 import useServerAction from '@/hooks/useServerAction';
 import { Absence, AwaitedReturn } from '@/type';
 
 import { getAbsenceListAction } from './action';
 
 type OrderListProps = {
-  orderList: AwaitedReturn<typeof getOrderListGroupByUserName>;
+  orderList: AwaitedReturn<typeof getOrderListGroupByUserNameAdmin>;
   calculation: (data: any) => any;
-  toggleAbsence: typeof toggleUserAbsence;
+  toggleUserState: typeof toggleUserState;
 };
 
 export default function OrderList({
   orderList,
   calculation,
-  toggleAbsence,
+  toggleUserState,
 }: OrderListProps) {
   const { state, loading, refetch } = useServerAction(getAbsenceListAction);
   const [absenceList, setAbsence] = useState<Absence[] | null>(null);
-  const onToggleAbsence = (userName: string) => async () => {
-    try {
-      const response = await toggleAbsence(userName);
-      if (response) {
+  const onToggleState =
+    (userName: string, key: 'absence' | 'sub') => async () => {
+      try {
+        const response = await toggleUserState(userName, key);
+        if (!response) return;
         setAbsence((prevList) => {
           if (prevList === null) return null;
-          const newAbsence = [
-            ...prevList?.filter((item) => item.userName !== userName),
-            { userName, absence: !response.absence },
-          ];
-          return newAbsence;
+          const changeUser = prevList.find((item) => item.userName == userName);
+          if (!changeUser) return prevList;
+          changeUser[key] = !response[key];
+          return prevList.slice();
         });
+      } catch (e) {
+        alert('toggle failed');
+        refetch();
       }
-    } catch (e) {
-      alert('toggle failed');
-      refetch();
-    }
-  };
+    };
 
   useEffect(() => {
     if (state.status === 'success') {
@@ -94,6 +93,9 @@ export default function OrderList({
               const isAbsence = !!absenceList?.find(
                 (item) => item.userName === order.userName && item.absence,
               );
+              const isSub = !!absenceList?.find(
+                (item) => item.userName === order.userName && item.sub,
+              );
               return (
                 <TableRow
                   key={order.userName}
@@ -104,15 +106,20 @@ export default function OrderList({
                   <TableCell className="font-medium">
                     {order.userName}
                   </TableCell>
-                  <TableCell>{order.menuName}</TableCell>
+                  <TableCell>
+                    {!isSub ? order.menuName : order.subMenuName}
+                  </TableCell>
                   <TableCell>
                     <Switch
                       checked={isAbsence}
-                      onClick={onToggleAbsence(order.userName)}
+                      onClick={onToggleState(order.userName, 'absence')}
                     />
                   </TableCell>
                   <TableCell>
-                    <Switch></Switch>
+                    <Switch
+                      checked={isSub}
+                      onClick={onToggleState(order.userName, 'sub')}
+                    />
                   </TableCell>
                 </TableRow>
               );
@@ -120,35 +127,5 @@ export default function OrderList({
         </TableBody>
       </Table>
     </div>
-  );
-}
-
-function OrderListTable({
-  orderList,
-}: {
-  orderList: AwaitedReturn<typeof getOrderListGroupByUserName>;
-}) {
-  return (
-    <Table>
-      <TableCaption>현재 메뉴 목록입니다.</TableCaption>
-      <TableHeader>
-        <TableRow>
-          <TableHead>유저 이름</TableHead>
-          <TableHead className="w-24">디카페인</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {(!orderList || orderList.length === 0) && (
-          <TableRow>No content</TableRow>
-        )}
-        {orderList &&
-          orderList.map((item) => (
-            <TableRow key={item.userName}>
-              <TableCell className="font-medium">{item.userName}</TableCell>
-              <TableCell>{item.decaf && '디카페인'}</TableCell>
-            </TableRow>
-          ))}
-      </TableBody>
-    </Table>
   );
 }
