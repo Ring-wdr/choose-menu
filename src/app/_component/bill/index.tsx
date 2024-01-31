@@ -18,6 +18,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { getOrderListGroupByNameSizeTemp } from '@/database/coffeebean/get';
+import { startSafeViewTransition } from '@/hooks/startSafeViewTransition';
 
 import styles from './index.module.css';
 
@@ -92,7 +93,9 @@ export default function BillTable({
     const { touches } = e;
     const { clientY } = touches[0];
     const y = clientY - currnentY.current;
-    e.currentTarget.style.setProperty('transform', `translateY(${y}px)`);
+    startSafeViewTransition(() =>
+      e.currentTarget.style.setProperty('transform', `translateY(${y}px)`),
+    );
   };
 
   const onTouchEnd = (e: TouchEvent<HTMLTableRowElement>) => {

@@ -19,12 +19,15 @@ export async function toggleOrderBlock() {
   return response;
 }
 
-export async function toggleUserAbsence(userName: string) {
+export async function toggleUserState(
+  userName: string,
+  key: 'absence' | 'sub' = 'absence',
+) {
   const db = (await clientPromise).db(COFFEEBEAN.DB_NAME);
   const absence = db.collection<Absence>(COFFEEBEAN.COLLECTION.ABSENCE);
   const response = await absence.findOneAndUpdate(
     { userName },
-    [{ $set: { absence: { $not: '$absence' } } }],
+    [{ $set: { [key]: { $not: `$${key}` } } }],
     { upsert: true },
   );
   return response;

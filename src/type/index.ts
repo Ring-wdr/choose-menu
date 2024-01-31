@@ -54,6 +54,13 @@ export type OrderItem = {
   shot?: number;
 };
 
+export type OrderWithSubMenu = Omit<
+  OrderItem,
+  'sub' | 'size' | 'temperature' | 'decaf'
+> & {
+  subMenuName?: string;
+};
+
 export type OrderBlock = {
   status: boolean;
 };
@@ -67,6 +74,7 @@ export type ReducerByState<T> = (state: T, action: ActionByState<T>) => T;
 export type Absence = {
   userName: string;
   absence: boolean;
+  sub?: boolean;
 };
 
 export type AwaitedReturn<T> = T extends (...args: any) => Promise<any>

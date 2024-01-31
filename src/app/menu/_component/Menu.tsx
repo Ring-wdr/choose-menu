@@ -139,7 +139,12 @@ function SearchContainer({ keyword, changeKeyword }: SearchContainerProps) {
   }, []);
 
   return (
-    <div className={styles['search-container']}>
+    <div
+      className={clsx(
+        styles['search-container'],
+        'bg-gradient-to-r from-white from-50% dark:from-black to-transparent',
+      )}
+    >
       <label htmlFor={styles['menu-search']}>
         검색 <span>⌕</span>
       </label>

@@ -50,11 +50,6 @@
   left: 0;
   display: flex;
   align-items: center;
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 1) 50%,
-    transparent 100%
-  );
 }
 .category .search-container label {
   background-color: #ffffff;
