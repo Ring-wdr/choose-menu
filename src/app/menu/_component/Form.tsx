@@ -55,7 +55,7 @@ type MenuSubmitProps = {
 };
 
 const temperatures = ['HOT', 'ICE'] as const;
-const shots = Array.from({ length: 5 }, (_, idx) => idx);
+const shots = Array.from({ length: 3 }, (_, idx) => idx);
 
 export function MenuSubmitForm({
   previousMenu,
@@ -128,6 +128,14 @@ export function MenuSubmitForm({
           </div>
         </div>
         <div className="flex flex-col justify-between w-2/3 mb-3 gap-3">
+          <div className="flex flex-row justify-between items-center">
+            <label>예비 메뉴</label>
+            <Switch
+              name="sub"
+              className="mt-0"
+              defaultChecked={prevEqualSelected ? !!previousMenu.sub : false}
+            />
+          </div>
           {selectedMenu.decaf && (
             <div className="flex flex-row justify-between items-center">
               <label>디카페인</label>
@@ -140,14 +148,6 @@ export function MenuSubmitForm({
               />
             </div>
           )}
-          <div className="flex flex-row justify-between items-center">
-            <label>예비 메뉴</label>
-            <Switch
-              name="sub"
-              className="mt-0"
-              defaultChecked={prevEqualSelected ? !!previousMenu.sub : false}
-            />
-          </div>
           <div className="flex flex-row justify-between items-center">
             <label>샷</label>
             <Select name="shot">
