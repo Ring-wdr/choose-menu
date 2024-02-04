@@ -66,11 +66,7 @@ export default function MenuContents({ categories, menuList }: MenuSideProps) {
         <SearchContainer keyword={keyword} changeKeyword={changeKeyword} />
         <li>
           <button
-            className={
-              category === ALL_MENU
-                ? styles.active
-                : 'bg-primary text-primary-foreground'
-            }
+            className={category === ALL_MENU ? styles.active : ''}
             onClick={changeCategory(ALL_MENU)}
             title={ALL_MENU}
           >
@@ -81,11 +77,7 @@ export default function MenuContents({ categories, menuList }: MenuSideProps) {
           categories.map((item, idx) => (
             <li key={idx}>
               <button
-                className={
-                  item.category === category
-                    ? styles.active
-                    : 'bg-primary text-primary-foreground'
-                }
+                className={item.category === category ? styles.active : ''}
                 onClick={changeCategory(item.category)}
                 title={item.title}
               >
@@ -173,7 +165,7 @@ function MenuController({ menuList }: MenuControllerProps) {
   const dispatchSelected = (menu: MenuProps) => () => {
     const isWidthWideEnough =
       window.innerWidth / window.innerHeight >= 6 / 5 &&
-      window.innerHeight >= 768;
+      window.innerHeight >= 640;
     startSafeViewTransition(() => setMenu(menu), isWidthWideEnough);
   };
   /** 서버에서 에러가 나서 선택된 메뉴를 못 불러오고 아직 메뉴를 선택하지 않은 상태 */

@@ -178,7 +178,7 @@ input#menu-search:not(:checked) + input[type='text']::-ms-input-placeholder {
   top: calc(100% - var(--footer-height));
 }
 
-@media (min-aspect-ratio: 6/5) and (min-height: 768px) {
+@media (min-aspect-ratio: 6/5) and (min-height: 640px) {
   .client {
     display: flex;
     --category-width: 15rem;
@@ -207,7 +207,6 @@ input#menu-search:not(:checked) + input[type='text']::-ms-input-placeholder {
     text-align: start;
     border: none;
     margin: 0;
-    filter: invert(1);
   }
   .category .search-container {
     background: transparent;
