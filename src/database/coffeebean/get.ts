@@ -42,6 +42,7 @@ const projState = {
     sub: '$_id.sub',
     menuName: '$latestOrder.menuName',
     size: '$latestOrder.size',
+    shot: '$latestOrder.shot',
     temperature: '$latestOrder.temperature',
     decaf: '$latestOrder.decaf',
   },
@@ -51,9 +52,9 @@ type OrderOmitUserName = Omit<OrderItem, 'userName'>;
 export type BillType = OrderOmitUserName & { count: number };
 
 export const getOrderListGroupByUserName = async () => {
-  // if (process.env.NODE_ENV === 'development') {
-  //   return MOCK.ORDER_LIST;
-  // }
+  if (process.env.NODE_ENV === 'development') {
+    return MOCK.ORDER_LIST;
+  }
   const db = (await clientPromise).db(COFFEEBEAN.DB_NAME);
   const orderCollection = db.collection<OrderItem>(COFFEEBEAN.COLLECTION.ORDER);
   const orders = await orderCollection
