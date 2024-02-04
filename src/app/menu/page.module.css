@@ -158,10 +158,10 @@ input#menu-search:not(:checked) + input[type='text']::-ms-input-placeholder {
 }
 
 .menu .list li:hover {
-  background-color: rgba(128, 128, 128, 0.1);
+  background-color: rgba(128, 128, 128, 0.2);
 }
 .menu .list li.active {
-  background-color: rgba(128, 128, 128, 0.2);
+  background-color: rgba(128, 128, 128, 0.4);
 }
 
 .menu .selected {
