@@ -2,7 +2,6 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-height: 1000px;
   gap: 1rem;
 }
 
@@ -10,7 +9,4 @@
   width: 80%;
   max-width: 1000px;
   position: relative;
-}
-.height_fix {
-  max-height: 60vh;
 }

@@ -36,7 +36,11 @@ export async function postSelectedMenu(data: FormData) {
     redirect('/orderblock');
   }
   const userName = getUserName()?.value!;
-  const submitData = orderSchema.parse(Object.fromEntries(data));
+  const submitObj = Object.fromEntries(data);
+  const submitData = orderSchema.parse({
+    ...submitObj,
+    sub: submitObj.sub === 'on' ? 'on' : undefined,
+  });
   try {
     await postContentsOfSelectedMenu({ userName, ...submitData });
   } catch (e) {

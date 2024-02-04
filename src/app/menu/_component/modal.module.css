@@ -40,7 +40,8 @@
 }
 .modal_container .menu-column > span {
   margin-bottom: 2rem;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
+  font-weight: bold;
 }
 
 .modal_container .menu-column label {

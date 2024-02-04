@@ -7,5 +7,9 @@ export const dynamic = 'force-dynamic';
 
 export default async function Page() {
   const data = await getOrderListGroupByNameSizeTemp();
-  return <Bill data={data} />;
+  return (
+    <div className="h-[calc(100%-var(--header-height)-var(--name-section-height))] overflow-y-scroll">
+      <Bill data={data} />
+    </div>
+  );
 }

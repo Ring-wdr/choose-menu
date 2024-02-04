@@ -129,12 +129,25 @@ export function MenuSubmitForm({
         </div>
         <div className="flex flex-col justify-between w-2/3 mb-3 gap-3">
           <div className="flex flex-row justify-between items-center">
-            <label>예비 메뉴</label>
-            <Switch
-              name="sub"
-              className="mt-0"
-              defaultChecked={prevEqualSelected ? !!previousMenu.sub : false}
-            />
+            <label>우선 순위</label>
+            <div className={styles.radio}>
+              <Radio
+                name="sub"
+                label={'1순위'}
+                value={''}
+                defaultChecked={
+                  prevEqualSelected ? previousMenu.sub !== 'on' : true
+                }
+              />
+              <Radio
+                name="sub"
+                label={'2순위'}
+                value={'on'}
+                defaultChecked={
+                  prevEqualSelected ? previousMenu.sub === 'on' : false
+                }
+              />
+            </div>
           </div>
           {selectedMenu.decaf && (
             <div className="flex flex-row justify-between items-center">

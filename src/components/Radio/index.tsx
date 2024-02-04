@@ -11,7 +11,7 @@ export default function Radio({
   ...props
 }: InputHTMLAttributes<HTMLInputElement> & {
   label: string;
-  value: string;
+  value?: string;
   theme?: 'hot' | 'ice';
 }) {
   const radioId = useId();

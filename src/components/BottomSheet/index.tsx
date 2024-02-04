@@ -236,14 +236,7 @@ export const BottomSheet = ({ children }: { children: React.ReactElement }) => {
         dragRef.current.dataset.drag === 'false'
       )
         return;
-      setBSPosition(
-        dragRef,
-        `${
-          (e.clientY < topPosition
-            ? (topPosition + e.clientY) / 2
-            : e.clientY) - 20
-        }px`,
-      );
+      setBSPosition(dragRef, `${e.clientY - 20}px`);
     });
   useEffect(() => {
     if (!portalRef) return;
@@ -290,12 +283,7 @@ function BottomSheetHandle({
     requestAnimationFrame(() => {
       if (!dragRef || dragRef.current === null) return;
       const { clientY } = e.touches[0];
-      setBSPosition(
-        dragRef,
-        `${
-          (clientY < topPosition ? (topPosition + clientY) / 2 : clientY) - 20
-        }px`,
-      );
+      setBSPosition(dragRef, `${clientY - 20}px`);
     });
 
   return (
