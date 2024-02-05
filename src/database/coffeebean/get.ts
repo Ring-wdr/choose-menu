@@ -71,17 +71,13 @@ export const getOrderListGroupByUserNameAdmin = async () => {
         ({ userName }) => userName === order.userName,
       );
       if (findOrderByName) {
-        if (order.sub === 'on') {
-          findOrderByName.subMenuName = order.menuName;
-        } else {
-          findOrderByName.menuName = order.menuName;
-        }
-        return result;
+        findOrderByName[order.sub === 'on' ? 'subMenuName' : 'menuName'] =
+          order.menuName;
       }
       if (order.sub === 'on') {
-        return [...result, { ...order, subMenuName: order.menuName }];
+        result.push({ ...order, subMenuName: order.menuName });
       }
-      return [...result, order];
+      return result;
     },
     [],
   );
@@ -220,7 +216,7 @@ export const getMenuListById = async (
 
 export const getRecentMenuByUserName = async (
   userName: string,
-): Promise<OrderItem | null> => {
+): Promise<[OrderItem, OrderItem | null] | null> => {
   if (process.env.NODE_ENV === 'development') {
     const dice = Math.random();
     if (dice < 0.3) {
@@ -231,24 +227,34 @@ export const getRecentMenuByUserName = async (
     }
     const randomMenu =
       MOCK.MENULIST[Math.floor(Math.random() * MOCK.MENULIST.length)];
-    return {
-      ...MOCK.ORDER,
-      menuName: randomMenu.name.kor,
-      decaf: dice > 0.5 ? null : 'on',
-      size: dice > 0.5 ? 'L' : 'S',
-      temperature: dice > 0.5 ? 'ICE' : 'HOT',
-    };
+    return [
+      {
+        ...MOCK.ORDER,
+        menuName: randomMenu.name.kor,
+        decaf: dice > 0.5 ? null : 'on',
+        size: dice > 0.5 ? 'L' : 'S',
+        temperature: dice > 0.5 ? 'ICE' : 'HOT',
+      },
+      {
+        ...MOCK.ORDER,
+        menuName: randomMenu.name.kor,
+        decaf: dice > 0.5 ? null : 'on',
+        size: dice > 0.5 ? 'L' : 'S',
+        temperature: dice > 0.5 ? 'ICE' : 'HOT',
+        sub: 'on',
+      },
+    ];
   }
 
   const db = (await clientPromise).db(COFFEEBEAN.DB_NAME);
   const orderCollection = db.collection<OrderItem>(COFFEEBEAN.COLLECTION.ORDER);
-  const orderByUserName = await orderCollection.findOne(
-    { userName },
-    { sort: { _id: -1 } },
-  );
-  if (!orderByUserName) return null;
-  const { _id, ...result } = orderByUserName;
-  return result;
+  const [firstOrder, subOrder] = await Promise.all([
+    orderCollection.findOne({ userName }, { sort: { _id: -1 } }),
+    orderCollection.findOne({ userName, sub: 'on' }, { sort: { _id: -1 } }),
+  ]);
+
+  if (!firstOrder) return null;
+  return [firstOrder, subOrder];
 };
 
 export const getOrderBlock = async () => {
