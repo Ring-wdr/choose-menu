@@ -127,7 +127,7 @@ export function MenuSubmitForm({
               ))}
           </div>
         </div>
-        <div className="flex flex-col justify-between w-2/3 mb-3 gap-3">
+        <div className="flex flex-col justify-between w-2/3 min-w-64 mb-3 gap-3">
           <div className="flex flex-row justify-between items-center">
             <label>우선 순위</label>
             <div className={styles.radio}>
