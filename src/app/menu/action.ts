@@ -61,22 +61,3 @@ export async function getUserNameFromSession(_: string, data: FormData) {
   }
   return currentUserName.value;
 }
-
-export async function getSelectedMenuByCookies(
-  _: ServerActionState<OrderItem>,
-): Promise<ServerActionState<OrderItem>> {
-  const userName = getUserName();
-  if (!userName || !userName.value) redirect('/');
-  try {
-    const selectedMenu = await getRecentMenuByUserName(userName.value);
-    if (!selectedMenu)
-      return { status: 'success', message: '선택한 메뉴가 없습니다.' };
-    return {
-      status: 'success',
-      message: '성공적으로 불러왔습니다.',
-      data: selectedMenu,
-    };
-  } catch {
-    return { status: 'error', message: '메뉴를 불러올 수 없습니다.' };
-  }
-}

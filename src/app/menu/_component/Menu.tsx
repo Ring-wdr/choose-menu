@@ -11,8 +11,6 @@ import { hangulIncludes } from '@toss/hangul';
 import clsx from 'clsx';
 
 import CustomBottomSheet from '@/components/BottomSheet/Custom';
-import LoadingImage from '@/components/Loading';
-import LoadingButton from '@/components/Loading/Button';
 import { Button } from '@/components/ui/button';
 import { startSafeViewTransition } from '@/hooks/startSafeViewTransition';
 import { Category, MenuProps } from '@/type';
@@ -22,7 +20,6 @@ import { postSelectedMenu } from '../action';
 import BevImage from './BevImage';
 import { MenuSubmitForm } from './Form';
 import MenuCard from './MenuCard';
-import { useMenuContext } from './MenuContext';
 
 import styles from '../page.module.css';
 
