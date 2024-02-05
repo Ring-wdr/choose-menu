@@ -10,17 +10,10 @@ import { Button } from '@/components/ui/button';
 import { getUserNameFromSession } from '../action';
 
 import { NameChangeForm } from './Form';
-import { useMenuContext } from './MenuContext';
 
 export default function NameSection() {
   // user state
   const [userName, formAction] = useFormState(getUserNameFromSession, '');
-  const { menu } = useMenuContext();
-  const parsedMenu =
-    menu &&
-    `현재 메뉴는 (${menu.size || 'S'})${menu.temperature || ''} ${
-      menu.menuName
-    }${menu.decaf ? '(DECAF)' : ''}입니다.`;
 
   // modal state
   const [isBSOpen, setBSOpen] = useState(false);
@@ -43,22 +36,23 @@ export default function NameSection() {
             >
               {userName} ✎
             </Button>
-            님, {parsedMenu || '메뉴를 고르세요.'}
+            님, 어서오세요.
           </>
         ) : (
           '사용자 정보를 불러오는 중입니다.'
         )}
       </p>
-      <div>
+      <div className="flex gap-2">
+        <Link href={'/menu/detail'}>
+          <Button>선택 메뉴</Button>
+        </Link>
         <Link href={'/menu/bill'}>
           <Button>청구서</Button>
         </Link>
       </div>
-      {isBSOpen ? (
-        <CustomBottomSheet isOpen={isBSOpen} onClose={bsClose}>
-          <NameChangeForm userName={userName} formAction={formAction} />
-        </CustomBottomSheet>
-      ) : null}
+      <CustomBottomSheet isOpen={isBSOpen} onClose={bsClose}>
+        <NameChangeForm userName={userName} formAction={formAction} />
+      </CustomBottomSheet>
     </div>
   );
 }
