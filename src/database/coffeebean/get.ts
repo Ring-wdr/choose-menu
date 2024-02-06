@@ -149,6 +149,7 @@ export const getMenuList = async (): Promise<MenuProps[]> => {
       .find({
         soldOut: { $ne: true },
       })
+      .sort({ _id: -1 })
       .toArray()
   ).map((item) => ({
     ...item,
