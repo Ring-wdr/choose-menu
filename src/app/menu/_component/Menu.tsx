@@ -134,18 +134,18 @@ function SearchContainer({ keyword, changeKeyword }: SearchContainerProps) {
         'bg-gradient-to-r from-white from-50% dark:from-black to-transparent',
       )}
     >
-      <label htmlFor={styles['menu-search']}>
-        검색 <span>⌕</span>
-      </label>
       <input id={styles['menu-search']} ref={chkRef} type="checkbox" hidden />
-      <input
-        type="text"
-        placeholder="메뉴 이름을 입력하세요."
-        value={keyword}
-        onChange={changeKeyword}
-        onBlur={uncheck}
-        onKeyDown={onKeyDown}
-      />
+      <label htmlFor={styles['menu-search']}>
+        <input
+          type="text"
+          placeholder="메뉴 이름"
+          value={keyword}
+          onChange={changeKeyword}
+          onBlur={uncheck}
+          onKeyDown={onKeyDown}
+        />
+        <span>⌕</span>
+      </label>
     </div>
   );
 }

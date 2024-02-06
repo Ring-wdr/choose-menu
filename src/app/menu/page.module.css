@@ -20,7 +20,7 @@
   white-space: nowrap;
   height: var(--category-height);
   position: relative;
-  --search-label-width: 5rem;
+  --search-label-width: 5.5rem;
 }
 
 .category li {
@@ -68,41 +68,22 @@
   cursor: pointer;
   user-select: none;
 }
+.category .search-container label input[type='text'] {
+  width: 100%;
+  background-color: transparent;
+  outline: transparent;
+}
+
 .category .search-container label span {
   font-size: 2rem;
   margin-left: 0.5rem;
   margin-bottom: 0.25rem;
 }
 
-.category input#menu-search + input[type='text'] {
-  position: absolute;
-  width: calc(100vw - var(--search-label-width) - 2.5rem);
-  height: 3rem;
-  top: 50%;
-  left: calc(var(--search-label-width) + 1.5rem);
-  border: 1px solid #000;
-  translate: 0 -50%;
-  transition-property: width, background-color;
-  transition-duration: 0.5s, 2s;
+.category input#menu-search:checked + label {
+  width: 95vw;
 }
-.category input#menu-search:not(:checked) + input[type='text'] {
-  width: 0px;
-  left: calc(var(--search-label-width) + 1rem);
-  padding: 0;
-  border: 0;
-  background-color: transparent;
-  color: transparent;
-}
-input#menu-search:not(:checked) + input[type='text']::placeholder {
-  color: transparent;
-}
-input#menu-search:not(:checked)
-  + input[type='text']::-webkit-input-placeholder {
-  color: transparent;
-}
-input#menu-search:not(:checked) + input[type='text']::-ms-input-placeholder {
-  color: transparent;
-}
+
 .menu {
   min-height: calc(100% - var(--footer-height) - 4rem);
   width: 100%;
@@ -188,7 +169,7 @@ input#menu-search:not(:checked) + input[type='text']::-ms-input-placeholder {
     width: var(--category-width);
     display: flex;
     flex-direction: column;
-    overflow-y: initial;
+    overflow-y: scroll;
     overflow-x: initial;
     z-index: 1;
     --search-label-width: 15rem;
