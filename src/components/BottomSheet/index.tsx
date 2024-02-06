@@ -221,7 +221,7 @@ export const BottomSheet = ({ children }: { children: React.ReactElement }) => {
   const {
     portalRef,
     dragRef,
-    topPosition,
+    isOpen,
     onCloseAction,
     closeDragElement,
     closeWhenBackdropClick,
@@ -256,7 +256,7 @@ export const BottomSheet = ({ children }: { children: React.ReactElement }) => {
     };
   }, [portalRef, onCloseAction]);
 
-  return portalRef && portalRef.current
+  return portalRef && portalRef.current && isOpen
     ? createPortal(
         <div
           className={bsStyles.backdrop}

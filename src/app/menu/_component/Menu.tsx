@@ -11,8 +11,6 @@ import { hangulIncludes } from '@toss/hangul';
 import clsx from 'clsx';
 
 import CustomBottomSheet from '@/components/BottomSheet/Custom';
-import LoadingImage from '@/components/Loading';
-import LoadingButton from '@/components/Loading/Button';
 import { Button } from '@/components/ui/button';
 import { startSafeViewTransition } from '@/hooks/startSafeViewTransition';
 import { Category, MenuProps } from '@/type';
@@ -22,7 +20,6 @@ import { postSelectedMenu } from '../action';
 import BevImage from './BevImage';
 import { MenuSubmitForm } from './Form';
 import MenuCard from './MenuCard';
-import { useMenuContext } from './MenuContext';
 
 import styles from '../page.module.css';
 
@@ -137,18 +134,18 @@ function SearchContainer({ keyword, changeKeyword }: SearchContainerProps) {
         'bg-gradient-to-r from-white from-50% dark:from-black to-transparent',
       )}
     >
-      <label htmlFor={styles['menu-search']}>
-        검색 <span>⌕</span>
-      </label>
       <input id={styles['menu-search']} ref={chkRef} type="checkbox" hidden />
-      <input
-        type="text"
-        placeholder="메뉴 이름을 입력하세요."
-        value={keyword}
-        onChange={changeKeyword}
-        onBlur={uncheck}
-        onKeyDown={onKeyDown}
-      />
+      <label htmlFor={styles['menu-search']}>
+        <input
+          type="text"
+          placeholder="메뉴 이름"
+          value={keyword}
+          onChange={changeKeyword}
+          onBlur={uncheck}
+          onKeyDown={onKeyDown}
+        />
+        <span>⌕</span>
+      </label>
     </div>
   );
 }
@@ -158,8 +155,6 @@ type MenuControllerProps = {
 };
 
 function MenuController({ menuList }: MenuControllerProps) {
-  // selected Menu state
-  const { menu: previousMenu, menuState, menuRefetch } = useMenuContext();
   const [isBSOpen, setModal] = useState(false);
   const [selectedMenu, setMenu] = useState<MenuProps | null>(null);
   const dispatchSelected = (menu: MenuProps) => () => {
@@ -168,49 +163,12 @@ function MenuController({ menuList }: MenuControllerProps) {
       window.innerHeight >= 640;
     startSafeViewTransition(() => setMenu(menu), isWidthWideEnough);
   };
-  /** 서버에서 에러가 나서 선택된 메뉴를 못 불러오고 아직 메뉴를 선택하지 않은 상태 */
-  const isShowErrorMessage = menuState.status === 'error' && !selectedMenu;
-  /** 사용자가 이전에 메뉴를 선택한적이 없고 아직 메뉴를 선택하지 않은 상태 */
-  const previousNoSelected = menuState.status === 'success' && !selectedMenu;
-
-  useEffect(() => {
-    if (previousMenu) {
-      setMenu((prev) => {
-        if (prev === null && previousMenu.menuName) {
-          const findMenuByName = menuList.find(
-            (item) => item.name.kor === previousMenu.menuName,
-          );
-          if (findMenuByName) return findMenuByName;
-        }
-        return prev;
-      });
-      document
-        .getElementById(previousMenu.menuName)
-        ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-  }, [previousMenu, menuList]);
 
   return (
     <>
       <div className={styles.menu}>
-        <div
-          className={clsx(styles.card, {
-            [styles.fallback]: isShowErrorMessage || previousNoSelected,
-          })}
-        >
-          {menuState.status === 'pending' && <LoadingImage />}
-          {menuState.status !== 'pending' && (
-            <MenuCard selectedMenu={selectedMenu} />
-          )}
-          {previousNoSelected && <p>기존에 선택하신 메뉴가 없습니다.</p>}
-          {isShowErrorMessage && (
-            <>
-              <p>기존 주문 메뉴를 불러오지 못했습니다.</p>
-              <form action={menuRefetch}>
-                <LoadingButton label="새로고침" labelOnPending="새로고침 중" />
-              </form>
-            </>
-          )}
+        <div className={clsx(styles.card)}>
+          <MenuCard selectedMenu={selectedMenu} />
         </div>
         <MenuTable
           menuList={menuList}
@@ -227,7 +185,7 @@ function MenuController({ menuList }: MenuControllerProps) {
         >
           메뉴 선택
         </Button>
-        {selectedMenu && isBSOpen ? (
+        {selectedMenu && (
           <CustomBottomSheet
             onClose={() => setModal(false)}
             isOpen={isBSOpen}
@@ -235,12 +193,11 @@ function MenuController({ menuList }: MenuControllerProps) {
             closePosition="50%"
           >
             <MenuSubmitForm
-              previousMenu={previousMenu}
               selectedMenu={selectedMenu}
               formAction={postSelectedMenu}
             />
           </CustomBottomSheet>
-        ) : null}
+        )}
       </div>
     </>
   );
