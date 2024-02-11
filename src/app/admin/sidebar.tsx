@@ -3,12 +3,14 @@
 import { useEffect, useRef } from 'react';
 import { TriangleLeftIcon } from '@radix-ui/react-icons';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 import { Button } from '@/components/ui/button';
 
 const pathnames = ['control', 'menu', 'user'];
 
 export default function AdminSideBar() {
+  const pathname = usePathname();
   const sidebarRef = useRef<HTMLDivElement>(null);
   const checkboxRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
@@ -24,6 +26,10 @@ export default function AdminSideBar() {
     window.addEventListener('mousedown', handleClick);
     return () => window.removeEventListener('mousedown', handleClick);
   }, []);
+  useEffect(() => {
+    checkboxRef.current && (checkboxRef.current.checked = true);
+  }, [pathname]);
+
   return (
     <div className="relative flex h-full z-10" ref={sidebarRef}>
       <input
