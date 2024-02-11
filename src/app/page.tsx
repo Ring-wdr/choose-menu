@@ -1,4 +1,5 @@
 import LoadingButton from '@/components/Loading/Button';
+import { Input } from '@/components/ui/input';
 
 import { action } from './action';
 
@@ -9,7 +10,7 @@ export default function Home() {
     <main className={styles.main}>
       <form action={action} className={styles.description}>
         <h3>이름을 입력하세요</h3>
-        <input type="text" name="userName" required />
+        <Input type="text" name="userName" required />
         <LoadingButton />
       </form>
     </main>
