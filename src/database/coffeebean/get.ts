@@ -20,18 +20,18 @@ export const getOrderedList = async () => {
   return orders.map(idToString);
 };
 
-const matchState = {
-  $match: {
-    $or: [
-      { sub: 'on' }, // sub가 'on'인 경우
-      { sub: { $exists: false } }, // sub 필드가 없는 경우
-    ],
-  },
-} as const;
-
 const groupState = {
   $group: {
-    _id: { userName: '$userName', sub: '$sub' },
+    _id: {
+      userName: '$userName',
+      sub: {
+        $cond: {
+          if: { $eq: ['$sub', 'on'] }, // sub이 'on'인 경우
+          then: 'on',
+          else: null, // 'on'이 아닌 경우
+        },
+      },
+    },
     latestOrder: { $last: '$$ROOT' },
   },
 } as const;
@@ -63,12 +63,7 @@ export const getOrderListGroupByUserName = async () => {
   const db = (await clientPromise).db(COFFEEBEAN.DB_NAME);
   const orderCollection = db.collection<OrderItem>(COFFEEBEAN.COLLECTION.ORDER);
   const orders = await orderCollection
-    .aggregate<OrderItem>([
-      matchState,
-      groupState,
-      sortRecentFirstState,
-      projState,
-    ])
+    .aggregate<OrderItem>([groupState, sortRecentFirstState, projState])
     .toArray();
   return orders;
 };
