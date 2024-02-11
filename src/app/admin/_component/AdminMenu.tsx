@@ -1,6 +1,7 @@
 'use client';
 
 import { useReducer } from 'react';
+import { CheckIcon } from '@radix-ui/react-icons';
 
 import {
   Table,
@@ -49,15 +50,15 @@ export default function MenuAdmin({ menuList }: MenuAdminProps) {
           hasForm={false}
         />
       </div>
-      <Table>
+      <Table className="table-fixed">
         <TableCaption>현재 메뉴 목록입니다.</TableCaption>
         <TableHeader>
           <TableRow>
             <TableHead>이름</TableHead>
             <TableHead className="w-12">Only</TableHead>
-            <TableHead className="w-12">품절</TableHead>
-            <TableHead className="w-24">디카페인</TableHead>
-            <TableHead className="w-24">카테고리</TableHead>
+            <TableHead className="w-12 text-center">품절</TableHead>
+            <TableHead className="w-20 text-center">디카페인</TableHead>
+            <TableHead className="w-20 text-center">카테고리</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -73,11 +74,17 @@ export default function MenuAdmin({ menuList }: MenuAdminProps) {
                 })}
                 onClick={() => setSelected(item._id)}
               >
-                <TableCell className="font-medium">{item.name.kor}</TableCell>
+                <TableCell className="font-medium w-1/2 whitespace-nowrap overflow-hidden text-ellipsis">
+                  {item.name.kor}
+                </TableCell>
                 <TableCell>{item.only?.toUpperCase()}</TableCell>
-                <TableCell>{item.soldOut && '품절'}</TableCell>
-                <TableCell>{item.decaf && '디카페인'}</TableCell>
-                <TableCell>{item.category}</TableCell>
+                <TableCell>
+                  {item.soldOut && <CheckIcon className="mx-auto" />}
+                </TableCell>
+                <TableCell>
+                  {item.decaf && <CheckIcon className="mx-auto" />}
+                </TableCell>
+                <TableCell className="text-center">{item.category}</TableCell>
               </TableRow>
             ))}
         </TableBody>

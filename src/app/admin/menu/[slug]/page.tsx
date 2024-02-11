@@ -14,7 +14,7 @@ export default async function MenuAdminPage({
   const { menuList, totalPage } = await getPaginatedMenuList({ slug });
   if (slug > totalPage) redirect(`/admin/menu/${totalPage}`);
   return (
-    <div className="flex flex-col justify-center m-auto w-4/5 h-[calc(100%-var(--header-height))]">
+    <div className="flex flex-col justify-center m-auto w-full max-w-3xl h-[calc(100%-var(--header-height))]">
       <MenuAdmin menuList={menuList} />
       <Paginations href="/admin/menu" slug={slug} totalPage={totalPage} />
     </div>

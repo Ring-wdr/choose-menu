@@ -34,7 +34,7 @@ export default function Paginations({
     (_, index) => startPage + index,
   );
   return (
-    <Pagination>
+    <Pagination className="overflow-hidden">
       <PaginationContent>
         <PaginationItem>
           <PaginationFirst disabled={slug === 1} href={`${href}/1`} />
