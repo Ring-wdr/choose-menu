@@ -156,7 +156,7 @@ export const cachedGetCategoryList = cache(async () => {
 });
 
 export const getMenuList = async (): Promise<
-  Array<ReturnType<typeof idToString>>
+  Array<ReturnType<typeof idToString<MenuProps>>>
 > => {
   if (process.env.NODE_ENV === 'development') return MOCK.MENULIST;
   const db = (await clientPromise).db(COFFEEBEAN.DB_NAME);
