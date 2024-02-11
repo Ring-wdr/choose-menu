@@ -26,10 +26,14 @@ const menuSchema = z
     size: true,
   });
 
-export const modifyAction = async (data: FormData) => {
+export const modifyAction = async (_id: string, data: FormData) => {
   try {
     const size = data.getAll('size');
-    const parsed = menuSchema.parse({ ...Object.fromEntries(data), size });
+    const parsed = menuSchema.parse({
+      ...Object.fromEntries(data),
+      _id,
+      size,
+    });
     await mutateMenudata({
       _id: parsed._id,
       category: parsed.category,
@@ -52,14 +56,9 @@ export const modifyAction = async (data: FormData) => {
   }
 };
 
-export const deleteAction = async (data: FormData) => {
+export const deleteAction = async (_id: string) => {
   try {
-    const { _id } = menuSchema
-      .pick({ _id: true })
-      .parse(Object.fromEntries(data));
-    await deleteMenudata({
-      _id,
-    });
+    await deleteMenudata({ _id });
     revalidatePath('/admin/menu/[slug]', 'page');
     revalidatePath('/menu', 'page');
   } catch (e) {

@@ -88,7 +88,6 @@ export async function postContentsOfSelectedMenu(props: OrderItem) {
 }
 
 export async function mutateMenudata({
-  name,
   _id,
   ...props
 }: Omit<MenuPropsWithId, 'photo' | 'description' | 'info'>) {

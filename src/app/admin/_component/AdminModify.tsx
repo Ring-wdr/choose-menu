@@ -36,7 +36,7 @@ type AdminDialogProps = {
   /** table에서 선택된 메뉴 */
   item?: MenuPropsWithId;
   /** server action */
-  action?: (formData: FormData) => void;
+  action?: (itemId: string, formData: FormData) => void;
 };
 
 function AdminDialog({
@@ -48,12 +48,13 @@ function AdminDialog({
   description,
   action,
 }: AdminDialogProps) {
+  const bindedAction = action?.bind(null, item?._id ?? '');
   return (
     <Dialog open={open} onOpenChange={(payload) => dispatch({ type, payload })}>
       <DialogTrigger asChild>
         <Button>{type}</Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="sm:max-w-[425px]">
         <DialogHeader className="space-y-3">
           <DialogTitle>메뉴 {type}</DialogTitle>
           {description && (
@@ -62,19 +63,9 @@ function AdminDialog({
             </DialogDescription>
           )}
         </DialogHeader>
-        <form action={action}>
-          {hasForm ? (
-            <DialogForm item={item} />
-          ) : (
-            <Input
-              className="hidden"
-              name="name"
-              defaultValue={item?.name.kor}
-              hidden
-              disabled
-            />
-          )}
-          <DialogFooter className="sm:justify-start mt-6  ">
+        <form action={bindedAction}>
+          {hasForm && <DialogForm item={item} />}
+          <DialogFooter className="sm:justify-start mt-6">
             <DialogFormButton type={type} dispatch={dispatch} />
             <DialogClose asChild>
               <Button type="button" variant="secondary">
@@ -119,13 +110,6 @@ function DialogForm({ item }: DialogFormProps) {
         readOnly
         placeholder="English Name"
       />
-      <Input
-        id={`${id}`}
-        name="_id"
-        defaultValue={item?._id}
-        readOnly
-        className="hidden"
-      />
       <Label htmlFor={`${id}only`}>온도 제한</Label>
       <Input
         id={`${id}only`}
@@ -150,7 +134,7 @@ function DialogForm({ item }: DialogFormProps) {
           </div>
         ))}
       </div>
-      <div className="m-3 flex flex-col gap-3 items-center sm:justify-between sm:flex-row ">
+      <div className="m-3 flex gap-3 items-center justify-between flex-row ">
         <Label htmlFor={`${id}soldout`}>품절 여부</Label>
         <Switch
           id={`${id}soldout`}
