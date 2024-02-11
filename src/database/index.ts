@@ -1,4 +1,4 @@
-import { MongoClient, ServerApiVersion } from 'mongodb';
+import { MongoClient, ServerApiVersion, WithId } from 'mongodb';
 
 if (!process.env.NEXT_PUBLIC_MONGO_KEY) {
   throw new Error(
@@ -40,3 +40,8 @@ if (process.env.NODE_ENV === 'development') {
 // Export a module-scoped MongoClient promise. By doing this in a
 // separate module, the client can be shared across functions.
 export default clientPromise;
+
+export const idToString = <T>(item: WithId<T>) => ({
+  ...item,
+  _id: item._id.toString(),
+});

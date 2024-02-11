@@ -37,13 +37,15 @@ export default function OrderList({
     (userName: string, key: 'absence' | 'sub') => async () => {
       try {
         const response = await toggleUserState(userName, key);
-        if (!response) return;
         setAbsence((prevList) => {
-          if (prevList === null) return null;
+          if (!prevList) return [{ userName, absence: true }];
           const changeUser = prevList.find((item) => item.userName == userName);
-          if (!changeUser) return prevList;
-          changeUser[key] = !response[key];
-          return prevList.slice();
+          if (response && changeUser) {
+            changeUser[key] = !response[key];
+            return prevList.slice();
+          } else {
+            return [...prevList, { userName, absence: true }];
+          }
         });
       } catch (e) {
         alert('toggle failed');

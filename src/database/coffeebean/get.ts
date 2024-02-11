@@ -1,7 +1,7 @@
 import { cache } from 'react';
 
 import { MOCK } from '@/crawling/mock';
-import clientPromise from '@/database';
+import clientPromise, { idToString } from '@/database';
 import {
   Absence,
   Category,
@@ -17,24 +17,29 @@ export const getOrderedList = async () => {
   const db = (await clientPromise).db(COFFEEBEAN.DB_NAME);
   const orderCollection = db.collection<OrderItem>(COFFEEBEAN.COLLECTION.ORDER);
   const orders = await orderCollection.find().toArray();
-  return orders.map((order) => ({
-    ...order,
-    _id: order._id.toString(),
-    timestamp: order._id.getTimestamp(),
-  }));
+  return orders.map(idToString);
 };
 
-const groupStage = {
+const matchState = {
+  $match: {
+    $or: [
+      { sub: 'on' }, // sub가 'on'인 경우
+      { sub: { $exists: false } }, // sub 필드가 없는 경우
+    ],
+  },
+} as const;
+
+const groupState = {
   $group: {
     _id: { userName: '$userName', sub: '$sub' },
     latestOrder: { $last: '$$ROOT' },
   },
-};
-const sortStage = {
+} as const;
+const sortRecentFirstState = {
   $sort: {
     _id: -1,
   },
-};
+} as const;
 const projState = {
   $project: {
     _id: 0,
@@ -46,7 +51,7 @@ const projState = {
     temperature: '$latestOrder.temperature',
     decaf: '$latestOrder.decaf',
   },
-};
+} as const;
 
 type OrderOmitUserName = Omit<OrderItem, 'userName'>;
 export type BillType = OrderOmitUserName & { count: number };
@@ -58,7 +63,12 @@ export const getOrderListGroupByUserName = async () => {
   const db = (await clientPromise).db(COFFEEBEAN.DB_NAME);
   const orderCollection = db.collection<OrderItem>(COFFEEBEAN.COLLECTION.ORDER);
   const orders = await orderCollection
-    .aggregate<OrderItem>([groupStage, sortStage, projState])
+    .aggregate<OrderItem>([
+      matchState,
+      groupState,
+      sortRecentFirstState,
+      projState,
+    ])
     .toArray();
   return orders;
 };
@@ -73,11 +83,12 @@ export const getOrderListGroupByUserNameAdmin = async () => {
       if (findOrderByName) {
         findOrderByName[order.sub === 'on' ? 'subMenuName' : 'menuName'] =
           order.menuName;
+        return result;
       }
       if (order.sub === 'on') {
-        result.push({ ...order, subMenuName: order.menuName });
+        return [...result, { ...order, subMenuName: order.menuName }];
       }
-      return result;
+      return [...result, order];
     },
     [],
   );
@@ -94,10 +105,14 @@ export const getOrderListGroupByNameSizeTemp = cache(async () => {
     const findUserState = absenceList.find(
       ({ userName }) => userName === order.userName,
     );
-    return (
-      !findUserState ||
-      (!findUserState.absence && (findUserState.sub ? order.sub : !order.sub))
-    );
+    if (findUserState) {
+      return (
+        findUserState.absence !== true &&
+        (findUserState.sub ? order.sub : !order.sub)
+      );
+    } else {
+      return order.sub !== 'on';
+    }
   });
 
   const orderList = filteredOrders.reduce<BillType[]>((res, lastOrder) => {
@@ -137,10 +152,12 @@ export const getCategoryList = async () => {
 export const cachedGetCategoryList = cache(async () => {
   if (process.env.NODE_ENV === 'development') return MOCK.CATEGORY_LIST;
   const categoryList = await getCategoryList();
-  return categoryList.map((menu) => ({ ...menu, _id: menu._id.toString() }));
+  return categoryList.map(idToString);
 });
 
-export const getMenuList = async (): Promise<MenuProps[]> => {
+export const getMenuList = async (): Promise<
+  Array<ReturnType<typeof idToString<MenuProps>>>
+> => {
   if (process.env.NODE_ENV === 'development') return MOCK.MENULIST;
   const db = (await clientPromise).db(COFFEEBEAN.DB_NAME);
   const menuCollection = db.collection<MenuProps>(COFFEEBEAN.COLLECTION.MENU);
@@ -151,10 +168,7 @@ export const getMenuList = async (): Promise<MenuProps[]> => {
       })
       .sort({ _id: -1 })
       .toArray()
-  ).map((item) => ({
-    ...item,
-    _id: item._id.toString(),
-  }));
+  ).map(idToString);
 };
 
 export const cachedGetMenuList = cache(getMenuList);
@@ -193,7 +207,7 @@ export const getPaginatedMenuList = cache(
     ]);
     const totalPage = Math.ceil(totalDocuments / length);
     return {
-      menuList: menuList.map((item) => ({ ...item, _id: item._id.toString() })),
+      menuList: menuList.map(idToString),
       totalPage,
     };
   },
@@ -209,10 +223,7 @@ export const getMenuListById = async (
 
   const db = (await clientPromise).db(COFFEEBEAN.DB_NAME);
   const menuCollection = db.collection<MenuProps>(COFFEEBEAN.COLLECTION.MENU);
-  return (await menuCollection.find({ category }).toArray()).map((item) => ({
-    ...item,
-    _id: item._id.toString(),
-  }));
+  return (await menuCollection.find({ category }).toArray()).map(idToString);
 };
 
 export const getRecentMenuByUserName = async (
@@ -255,7 +266,7 @@ export const getRecentMenuByUserName = async (
   ]);
 
   if (!firstOrder) return null;
-  return [firstOrder, subOrder];
+  return [idToString(firstOrder), subOrder ? idToString(subOrder) : null];
 };
 
 export const getOrderBlock = async () => {
@@ -269,8 +280,5 @@ export const getOrderBlock = async () => {
 export const getAbsenceList = async () => {
   const db = (await clientPromise).db(COFFEEBEAN.DB_NAME);
   const absenceList = db.collection<Absence>(COFFEEBEAN.COLLECTION.ABSENCE);
-  return (await absenceList.find().toArray()).map((item) => ({
-    ...item,
-    _id: item._id.toString(),
-  }));
+  return (await absenceList.find().toArray()).map(idToString);
 };
