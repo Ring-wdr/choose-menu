@@ -29,10 +29,13 @@ const menuSchema = z
 export const modifyAction = async (_id: string, data: FormData) => {
   try {
     const size = data.getAll('size');
+    const only = data.getAll('only');
+    const preOnly = only.length === 1 ? only[0] : undefined;
     const parsed = menuSchema.parse({
       ...Object.fromEntries(data),
       _id,
       size,
+      only: preOnly,
     });
     await mutateMenudata({
       _id: parsed._id,
