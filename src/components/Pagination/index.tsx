@@ -43,11 +43,15 @@ export default function Paginations<T>({
           <PaginationFirst
             disabled={slug === 1}
             href={`${calculatedHref}slug=1`}
+            prefetch={false}
           />
         </PaginationItem>
         {slug > 1 && (
           <PaginationItem>
-            <PaginationPrevious href={`${calculatedHref}slug=${slug - 1}`} />
+            <PaginationPrevious
+              href={`${calculatedHref}slug=${slug - 1}`}
+              prefetch={false}
+            />
           </PaginationItem>
         )}
         {slug > chunk && (
@@ -60,6 +64,7 @@ export default function Paginations<T>({
             <PaginationLink
               isActive={page === slug}
               href={`${calculatedHref}slug=${page}`}
+              prefetch={false}
             >
               {page}
             </PaginationLink>
@@ -73,11 +78,17 @@ export default function Paginations<T>({
         {!totalPage ||
           (slug < totalPage && (
             <PaginationItem>
-              <PaginationNext href={`${calculatedHref}slug=${slug + 1}`} />
+              <PaginationNext
+                href={`${calculatedHref}slug=${slug + 1}`}
+                prefetch={false}
+              />
             </PaginationItem>
           ))}
         <PaginationItem>
-          <PaginationLast href={`${calculatedHref}slug=${totalPage}`} />
+          <PaginationLast
+            href={`${calculatedHref}slug=${totalPage}`}
+            prefetch={false}
+          />
         </PaginationItem>
       </PaginationContent>
     </Pagination>
