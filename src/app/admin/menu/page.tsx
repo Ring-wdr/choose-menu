@@ -8,6 +8,8 @@ import {
 
 import MenuAdmin from '../_component/AdminMenu';
 
+export const revalidate = 0;
+export const dynamic = 'force-dynamic';
 const menuSearchKeys = ['slug', 'category', 'keyword'];
 
 const MenuPaginations = Paginations<'category' | 'keyword'>;
