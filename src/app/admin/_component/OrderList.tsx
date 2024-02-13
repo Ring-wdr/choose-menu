@@ -38,13 +38,13 @@ export default function OrderList({
       try {
         const response = await toggleUserState(userName, key);
         setAbsence((prevList) => {
-          if (!prevList) return [{ userName, absence: true }];
+          if (!prevList) return [{ userName, [key]: true }];
           const changeUser = prevList.find((item) => item.userName == userName);
           if (response && changeUser) {
             changeUser[key] = !response[key];
             return prevList.slice();
           } else {
-            return [...prevList, { userName, absence: true }];
+            return [...prevList, { userName, [key]: true }];
           }
         });
       } catch (e) {

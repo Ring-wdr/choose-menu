@@ -2,7 +2,7 @@
 
 import { Absence, OrderBlock } from '@/type';
 
-import clientPromise from '..';
+import clientPromise, { idToString } from '..';
 
 import { COFFEEBEAN } from '.';
 
@@ -30,5 +30,5 @@ export async function toggleUserState(
     [{ $set: { [key]: { $not: `$${key}` } } }],
     { upsert: true },
   );
-  return response;
+  return response ? idToString(response) : null;
 }
