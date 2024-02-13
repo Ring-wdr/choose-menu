@@ -169,7 +169,9 @@ export const getMenuList = async (): Promise<
 export const cachedGetMenuList = cache(getMenuList);
 
 type PaginatedMenuParams = {
-  slug: number;
+  slug?: number;
+  category?: string;
+  keyword?: string;
   limit?: number;
   length?: number;
 };
@@ -179,6 +181,8 @@ export const getPaginatedMenuList = cache(
     limit = 10,
     length = 10,
     slug = 1,
+    category,
+    keyword,
   }: PaginatedMenuParams): Promise<{
     menuList: Array<MenuProps & { _id: string }>;
     totalPage: number;
@@ -195,12 +199,20 @@ export const getPaginatedMenuList = cache(
     }
     const db = (await clientPromise).db(COFFEEBEAN.DB_NAME);
     const menuCollection = db.collection<MenuProps>(COFFEEBEAN.COLLECTION.MENU);
+    const filterObject = {
+      ...(category && { category }),
+      ...(keyword && { 'name.kor': { $regex: keyword, $options: 'i' } }),
+    };
 
     const [menuList, totalDocuments] = await Promise.all([
-      menuCollection.find().limit(limit).skip(offset).toArray(),
-      menuCollection.estimatedDocumentCount(),
+      menuCollection.find(filterObject).limit(limit).skip(offset).toArray(),
+      !category && !keyword
+        ? menuCollection.estimatedDocumentCount()
+        : menuCollection.countDocuments(filterObject),
     ]);
+
     const totalPage = Math.ceil(totalDocuments / length);
+
     return {
       menuList: menuList.map(idToString),
       totalPage,

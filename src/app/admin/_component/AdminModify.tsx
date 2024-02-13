@@ -55,25 +55,35 @@ function AdminDialog({
         <Button>{type}</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader className="space-y-3">
+        <DialogHeader className="space-y-5">
           <DialogTitle>메뉴 {type}</DialogTitle>
-          {description && (
-            <DialogDescription className="mt-5">
-              {description}
+          {(description || !item) && (
+            <DialogDescription>
+              {item ? description : 'There is no selected Item on Screen'}
             </DialogDescription>
           )}
         </DialogHeader>
-        <form action={bindedAction}>
-          {hasForm && <DialogForm item={item} />}
+        {item ? (
+          <form action={bindedAction}>
+            {hasForm && <DialogForm item={item} />}
+            <DialogFooter className="sm:justify-start mt-6">
+              <DialogFormButton type={type} dispatch={dispatch} />
+              <DialogClose asChild>
+                <Button type="button" variant="secondary">
+                  닫기
+                </Button>
+              </DialogClose>
+            </DialogFooter>
+          </form>
+        ) : (
           <DialogFooter className="sm:justify-start mt-6">
-            <DialogFormButton type={type} dispatch={dispatch} />
             <DialogClose asChild>
               <Button type="button" variant="secondary">
                 닫기
               </Button>
             </DialogClose>
           </DialogFooter>
-        </form>
+        )}
       </DialogContent>
     </Dialog>
   );

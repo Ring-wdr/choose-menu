@@ -1,18 +1,27 @@
 'use client';
 
-import { useReducer } from 'react';
+import { useReducer, useRef } from 'react';
 import { CheckIcon } from '@radix-ui/react-icons';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
+import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Input } from '@/components/ui/input';
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { MenuPropsWithId } from '@/type';
+import { Category, MenuPropsWithId } from '@/type';
 
 import { deleteAction, modifyAction } from './action';
 import AdminDialog from './AdminModify';
@@ -20,19 +29,28 @@ import { initValue, reducer } from './reducer';
 
 type MenuAdminProps = {
   menuList?: MenuPropsWithId[];
+  categories?: Category[];
 };
 
-export default function MenuAdmin({ menuList }: MenuAdminProps) {
+export default function MenuAdmin({
+  menuList,
+  categories = [],
+}: MenuAdminProps) {
+  const router = useRouter();
+  const keywordRef = useRef<React.ComponentRef<'input'>>(null);
   const [dialogState, dispatch] = useReducer(reducer, initValue);
   const [selected, setSelected] = useReducer(
     (_: string, name: string) => name,
     (menuList && menuList[0]?._id) || '메뉴',
   );
   const selectedItem = menuList?.find((menu) => menu._id === selected);
+  const searchByKeyword = (condition: boolean, keyword: string) =>
+    condition && router.push(`/admin/menu?keyword=${keyword}`);
 
   return (
     <>
-      <div className="flex justify-end gap-2 py-px">
+      <div className="flex justify-end gap-2 py-px m-2">
+        <CategoryToggle categories={categories} />
         <AdminDialog
           type="수정"
           open={dialogState.수정}
@@ -51,7 +69,6 @@ export default function MenuAdmin({ menuList }: MenuAdminProps) {
         />
       </div>
       <Table className="table-fixed">
-        <TableCaption>현재 메뉴 목록입니다.</TableCaption>
         <TableHeader>
           <TableRow>
             <TableHead>이름</TableHead>
@@ -84,11 +101,56 @@ export default function MenuAdmin({ menuList }: MenuAdminProps) {
                 <TableCell>
                   {item.decaf && <CheckIcon className="mx-auto" />}
                 </TableCell>
-                <TableCell className="text-center">{item.category}</TableCell>
+                <TableCell className="text-center whitespace-nowrap overflow-hidden text-ellipsis">
+                  {categories.find(({ category }) => category == item.category)
+                    ?.title ?? ''}
+                </TableCell>
               </TableRow>
             ))}
         </TableBody>
       </Table>
+      <div className="flex gap-2 mx-auto my-3">
+        <Input
+          ref={keywordRef}
+          className="w-2/3 max-w-48"
+          onKeyUp={(e) => {
+            searchByKeyword(e.key === 'Enter', e.currentTarget.value);
+          }}
+        />
+        <Button
+          onClick={() => {
+            searchByKeyword(
+              keywordRef.current !== null,
+              keywordRef.current?.value || '',
+            );
+          }}
+        >
+          검색
+        </Button>
+      </div>
     </>
+  );
+}
+
+function CategoryToggle({ categories }: { categories: Category[] }) {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="outline" size="icon" className="w-28 right-2">
+          카테고리 선택
+          <span className="sr-only">Toggle Category</span>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem asChild>
+          <Link href={`/admin/menu`}>전체</Link>
+        </DropdownMenuItem>
+        {categories.map(({ category, title }) => (
+          <DropdownMenuItem asChild key={category}>
+            <Link href={`/admin/menu?category=${category}`}>{title}</Link>
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }

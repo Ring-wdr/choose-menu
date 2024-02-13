@@ -12,20 +12,23 @@ import {
   PaginationPrevious,
 } from '@/components/ui/pagination';
 
-type PaginationProps = {
+type PaginationProps<T> = {
   href: string;
   slug: number;
   totalPage?: number;
   chunk?: number;
-};
+} & (T extends string ? Record<T, string | undefined> : {});
 
 /** 5단위로 끊어서 보여줄 예정 */
-export default function Paginations({
+export default function Paginations<T>({
   href,
   slug,
   totalPage,
   chunk = 5,
-}: PaginationProps) {
+  ...props
+}: PaginationProps<T>) {
+  const searchParams = new URLSearchParams(Object.entries(props));
+  const calculatedHref = `${href}?${searchParams.toString()}`;
   const startPage = Math.floor((slug - 1) / chunk) * chunk + 1;
   const endOfPagination = totalPage && startPage + chunk > totalPage;
   const pageCount = endOfPagination ? totalPage % chunk : chunk;
@@ -37,11 +40,14 @@ export default function Paginations({
     <Pagination className="overflow-hidden">
       <PaginationContent>
         <PaginationItem>
-          <PaginationFirst disabled={slug === 1} href={`${href}/1`} />
+          <PaginationFirst
+            disabled={slug === 1}
+            href={`${calculatedHref}&slug=1`}
+          />
         </PaginationItem>
         {slug > 1 && (
           <PaginationItem>
-            <PaginationPrevious href={`${href}/${slug - 1}`} />
+            <PaginationPrevious href={`${calculatedHref}&slug=${slug - 1}`} />
           </PaginationItem>
         )}
         {slug > chunk && (
@@ -51,7 +57,10 @@ export default function Paginations({
         )}
         {linkArray.map((page) => (
           <PaginationItem key={page}>
-            <PaginationLink isActive={page === slug} href={`${href}/${page}`}>
+            <PaginationLink
+              isActive={page === slug}
+              href={`${calculatedHref}&slug=${page}`}
+            >
               {page}
             </PaginationLink>
           </PaginationItem>
@@ -64,11 +73,11 @@ export default function Paginations({
         {!totalPage ||
           (slug < totalPage && (
             <PaginationItem>
-              <PaginationNext href={`${href}/${slug + 1}`} />
+              <PaginationNext href={`${calculatedHref}&slug=${slug + 1}`} />
             </PaginationItem>
           ))}
         <PaginationItem>
-          <PaginationLast href={`${href}/${totalPage}`} />
+          <PaginationLast href={`${calculatedHref}&slug=${totalPage}`} />
         </PaginationItem>
       </PaginationContent>
     </Pagination>
