@@ -9,6 +9,7 @@ export const ingredientList = [
 ] as const;
 
 export const coffeeSize = ['S', 'M', 'L'] as const;
+export const temperatures = ['HOT', 'ICE'] as const;
 
 type IngredientKey = (typeof ingredientList)[number]['name'];
 

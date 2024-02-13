@@ -27,8 +27,8 @@ export default function Paginations<T>({
   chunk = 5,
   ...props
 }: PaginationProps<T>) {
-  const searchParams = new URLSearchParams(Object.entries(props));
-  const calculatedHref = `${href}?${searchParams.toString()}`;
+  const searchParams = new URLSearchParams(Object.entries(props)).toString();
+  const calculatedHref = `${href}?${searchParams.length !== 0 ? `${searchParams}&` : ''}`;
   const startPage = Math.floor((slug - 1) / chunk) * chunk + 1;
   const endOfPagination = totalPage && startPage + chunk > totalPage;
   const pageCount = endOfPagination ? totalPage % chunk : chunk;
@@ -42,12 +42,16 @@ export default function Paginations<T>({
         <PaginationItem>
           <PaginationFirst
             disabled={slug === 1}
-            href={`${calculatedHref}&slug=1`}
+            href={`${calculatedHref}slug=1`}
+            prefetch={false}
           />
         </PaginationItem>
         {slug > 1 && (
           <PaginationItem>
-            <PaginationPrevious href={`${calculatedHref}&slug=${slug - 1}`} />
+            <PaginationPrevious
+              href={`${calculatedHref}slug=${slug - 1}`}
+              prefetch={false}
+            />
           </PaginationItem>
         )}
         {slug > chunk && (
@@ -59,7 +63,8 @@ export default function Paginations<T>({
           <PaginationItem key={page}>
             <PaginationLink
               isActive={page === slug}
-              href={`${calculatedHref}&slug=${page}`}
+              href={`${calculatedHref}slug=${page}`}
+              prefetch={false}
             >
               {page}
             </PaginationLink>
@@ -73,11 +78,17 @@ export default function Paginations<T>({
         {!totalPage ||
           (slug < totalPage && (
             <PaginationItem>
-              <PaginationNext href={`${calculatedHref}&slug=${slug + 1}`} />
+              <PaginationNext
+                href={`${calculatedHref}slug=${slug + 1}`}
+                prefetch={false}
+              />
             </PaginationItem>
           ))}
         <PaginationItem>
-          <PaginationLast href={`${calculatedHref}&slug=${totalPage}`} />
+          <PaginationLast
+            href={`${calculatedHref}slug=${totalPage}`}
+            prefetch={false}
+          />
         </PaginationItem>
       </PaginationContent>
     </Pagination>

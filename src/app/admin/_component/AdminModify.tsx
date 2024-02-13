@@ -16,7 +16,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import { coffeeSize, MenuPropsWithId } from '@/type';
+import { coffeeSize, MenuPropsWithId, temperatures } from '@/type';
 
 import { ButtonUnion, reducer } from './reducer';
 
@@ -120,13 +120,25 @@ function DialogForm({ item }: DialogFormProps) {
         readOnly
         placeholder="English Name"
       />
-      <Label htmlFor={`${id}only`}>온도 제한</Label>
-      <Input
-        id={`${id}only`}
-        name="only"
-        defaultValue={item?.only}
-        placeholder="온도 제한"
-      />
+      <div className="flex justify-between p-5">
+        <Label htmlFor={`${id}only`}>온도 제한</Label>
+        {temperatures.map((temperature) => (
+          <div key={temperature} className="items-top flex space-x-2">
+            <Checkbox
+              name="only"
+              value={temperature.toLowerCase()}
+              defaultChecked={
+                !item?.only || item.only === temperature.toLowerCase()
+              }
+            />
+            <div className="grid gap-1.5 leading-none">
+              <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                {temperature}
+              </label>
+            </div>
+          </div>
+        ))}
+      </div>
       <div className="flex justify-between p-5">
         <Label>사이즈</Label>
         {coffeeSize.map((size) => (
