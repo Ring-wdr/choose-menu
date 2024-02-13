@@ -20,18 +20,18 @@ export const getOrderedList = async () => {
   return orders.map(idToString);
 };
 
-const matchState = {
-  $match: {
-    $or: [
-      { sub: 'on' }, // sub가 'on'인 경우
-      { sub: { $exists: false } }, // sub 필드가 없는 경우
-    ],
-  },
-} as const;
-
 const groupState = {
   $group: {
-    _id: { userName: '$userName', sub: '$sub' },
+    _id: {
+      userName: '$userName',
+      sub: {
+        $cond: {
+          if: { $eq: ['$sub', 'on'] }, // sub이 'on'인 경우
+          then: 'on',
+          else: null, // 'on'이 아닌 경우
+        },
+      },
+    },
     latestOrder: { $last: '$$ROOT' },
   },
 } as const;
@@ -63,12 +63,7 @@ export const getOrderListGroupByUserName = async () => {
   const db = (await clientPromise).db(COFFEEBEAN.DB_NAME);
   const orderCollection = db.collection<OrderItem>(COFFEEBEAN.COLLECTION.ORDER);
   const orders = await orderCollection
-    .aggregate<OrderItem>([
-      matchState,
-      groupState,
-      sortRecentFirstState,
-      projState,
-    ])
+    .aggregate<OrderItem>([groupState, sortRecentFirstState, projState])
     .toArray();
   return orders;
 };
@@ -174,7 +169,9 @@ export const getMenuList = async (): Promise<
 export const cachedGetMenuList = cache(getMenuList);
 
 type PaginatedMenuParams = {
-  slug: number;
+  slug?: number;
+  category?: string;
+  keyword?: string;
   limit?: number;
   length?: number;
 };
@@ -184,6 +181,8 @@ export const getPaginatedMenuList = cache(
     limit = 10,
     length = 10,
     slug = 1,
+    category,
+    keyword,
   }: PaginatedMenuParams): Promise<{
     menuList: Array<MenuProps & { _id: string }>;
     totalPage: number;
@@ -200,12 +199,20 @@ export const getPaginatedMenuList = cache(
     }
     const db = (await clientPromise).db(COFFEEBEAN.DB_NAME);
     const menuCollection = db.collection<MenuProps>(COFFEEBEAN.COLLECTION.MENU);
+    const filterObject = {
+      ...(category && { category }),
+      ...(keyword && { 'name.kor': { $regex: keyword, $options: 'i' } }),
+    };
 
     const [menuList, totalDocuments] = await Promise.all([
-      menuCollection.find().limit(limit).skip(offset).toArray(),
-      menuCollection.estimatedDocumentCount(),
+      menuCollection.find(filterObject).limit(limit).skip(offset).toArray(),
+      !category && !keyword
+        ? menuCollection.estimatedDocumentCount()
+        : menuCollection.countDocuments(filterObject),
     ]);
+
     const totalPage = Math.ceil(totalDocuments / length);
+
     return {
       menuList: menuList.map(idToString),
       totalPage,

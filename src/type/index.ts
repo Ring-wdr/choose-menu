@@ -73,7 +73,7 @@ export type ReducerByState<T> = (state: T, action: ActionByState<T>) => T;
 
 export type Absence = {
   userName: string;
-  absence: boolean;
+  absence?: boolean;
   sub?: boolean;
 };
 
