@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 
 import Header from '@/components/Header';
@@ -12,6 +12,15 @@ const inter = Inter({ subsets: ['latin'] });
 export const metadata: Metadata = {
   title: '메뉴 정하는 페이지',
   description: '메뉴 고르기용 페이지',
+  appleWebApp: {
+    statusBarStyle: 'black-translucent',
+  },
+};
+export const viewport: Viewport = {
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: 'white' },
+    { media: '(prefers-color-scheme: dark)', color: 'black' },
+  ],
 };
 
 export default function RootLayout({
@@ -29,6 +38,7 @@ export default function RootLayout({
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
+          nonce=""
         >
           <Header />
           {children}
