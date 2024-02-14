@@ -57,6 +57,7 @@ export default function MenuAdmin({
           dispatch={dispatch}
           action={modifyAction}
           item={selectedItem}
+          categories={categories}
         />
         <AdminDialog
           type="삭제"

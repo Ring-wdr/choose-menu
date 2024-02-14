@@ -4,10 +4,11 @@ import { ObjectId } from 'mongodb';
 import { revalidatePath } from 'next/cache';
 
 import { getCategories, getMenuFromPages } from '@/crawling';
-import { MenuProps, MenuPropsWithId, OrderItem } from '@/type';
+import { AwaitedReturn, MenuProps, MenuPropsWithId, OrderItem } from '@/type';
 
 import clientPromise from '..';
 
+import { getOrderListGroupByUserNameAdmin } from './get';
 import { COFFEEBEAN } from '.';
 
 export async function crawlAndSaveCategory() {
@@ -107,4 +108,12 @@ export async function deleteMenudata({ _id }: Pick<MenuPropsWithId, '_id'>) {
   const menuCollection = db.collection(COFFEEBEAN.COLLECTION.MENU);
   const response = await menuCollection.deleteOne({ _id: new ObjectId(_id) });
   return response;
+}
+
+export async function aggregateContentsOfCurrentOrders(
+  orderList: AwaitedReturn<typeof getOrderListGroupByUserNameAdmin>,
+) {
+  const db = (await clientPromise).db(COFFEEBEAN.DB_NAME);
+  const orderCollection = db.collection(COFFEEBEAN.COLLECTION.AGGREGATION);
+  return orderCollection.insertMany(orderList);
 }

@@ -6,5 +6,6 @@ export const COFFEEBEAN = {
     ORDER_BLOCK: 'orderBlock',
     MENU: 'menu',
     ABSENCE: 'absence',
+    AGGREGATION: 'aggregation',
   },
 } as const;
