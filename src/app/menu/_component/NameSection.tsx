@@ -39,7 +39,7 @@ export default function NameSection() {
             님, 어서오세요.
           </>
         ) : (
-          '사용자 정보를 불러오는 중입니다.'
+          '사용자 정보 불러오는 중...'
         )}
       </p>
       <div className="flex gap-2">
