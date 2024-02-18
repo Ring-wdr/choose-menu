@@ -267,16 +267,26 @@ export const getRecentMenuByUserName = async (
 
   const db = (await clientPromise).db(COFFEEBEAN.DB_NAME);
   const orderCollection = db.collection<OrderItem>(COFFEEBEAN.COLLECTION.ORDER);
-  const [firstOrder, subOrder] = await Promise.all([
-    orderCollection.findOne(
-      { userName, sub: { $ne: 'on' } },
-      { sort: { _id: -1 } },
-    ),
-    orderCollection.findOne({ userName, sub: 'on' }, { sort: { _id: -1 } }),
-  ]);
+  const [[latestMainOrder, seclatestMainOrder], lastSubOrder] =
+    await Promise.all([
+      orderCollection
+        .find({ userName, sub: { $ne: 'on' } }, { sort: { _id: -1 } })
+        .limit(2)
+        .toArray(),
+      orderCollection.findOne({ userName, sub: 'on' }, { sort: { _id: -1 } }),
+    ]);
 
-  if (!firstOrder) return null;
-  return [idToString(firstOrder), subOrder ? idToString(subOrder) : null];
+  if (!latestMainOrder) return null;
+  /**
+   * 2순위 메뉴
+   * 1. sub: 'on'인 메뉴가 있는 경우 해당 조건에서 최신 메뉴를 전달
+   * 2. sub: 'on'인 메뉴가 없는 경우 최신 메뉴 직전의 메뉴를 전달
+   */
+  const parsedSubOrder = lastSubOrder ?? seclatestMainOrder ?? null;
+  return [
+    idToString(latestMainOrder),
+    parsedSubOrder ? idToString(parsedSubOrder) : null,
+  ];
 };
 
 export const getOrderBlock = async () => {
