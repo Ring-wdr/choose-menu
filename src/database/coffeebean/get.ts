@@ -268,7 +268,10 @@ export const getRecentMenuByUserName = async (
   const db = (await clientPromise).db(COFFEEBEAN.DB_NAME);
   const orderCollection = db.collection<OrderItem>(COFFEEBEAN.COLLECTION.ORDER);
   const [firstOrder, subOrder] = await Promise.all([
-    orderCollection.findOne({ userName }, { sort: { _id: -1 } }),
+    orderCollection.findOne(
+      { userName, sub: { $ne: 'on' } },
+      { sort: { _id: -1 } },
+    ),
     orderCollection.findOne({ userName, sub: 'on' }, { sort: { _id: -1 } }),
   ]);
 
