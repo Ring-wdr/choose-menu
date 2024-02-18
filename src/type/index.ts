@@ -55,10 +55,7 @@ export type OrderItem = {
   shot?: number;
 };
 
-export type OrderWithSubMenu = Omit<
-  OrderItem,
-  'sub' | 'size' | 'temperature' | 'decaf'
-> & {
+export type OrderWithSubMenu = OrderItem & {
   subMenuName?: string;
 };
 

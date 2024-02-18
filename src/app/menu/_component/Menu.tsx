@@ -178,7 +178,7 @@ function MenuController({ menuList }: MenuControllerProps) {
       </div>
       <div className={styles.footer}>
         <Button
-          className="w-full"
+          className="w-full max-w-72 mx-auto"
           onClick={() =>
             selectedMenu ? setModal(true) : alert('메뉴를 선택해주세요.')
           }

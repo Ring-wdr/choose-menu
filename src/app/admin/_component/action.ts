@@ -4,7 +4,11 @@ import { revalidatePath } from 'next/cache';
 import { z, ZodError } from 'zod';
 
 import { getAbsenceList } from '@/database/coffeebean/get';
-import { deleteMenudata, mutateMenudata } from '@/database/coffeebean/post';
+import {
+  aggregateContentsOfCurrentOrders,
+  deleteMenudata,
+  mutateMenudata,
+} from '@/database/coffeebean/post';
 import { ServerActionState } from '@/hooks/useServerAction';
 import { Absence, coffeeSize } from '@/type';
 
@@ -90,5 +94,5 @@ export async function getAbsenceListAction(
 }
 
 export async function calculation(data: any) {
-  console.log(data);
+  await aggregateContentsOfCurrentOrders(data);
 }

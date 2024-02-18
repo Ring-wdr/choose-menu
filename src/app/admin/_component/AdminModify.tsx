@@ -15,8 +15,15 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
-import { coffeeSize, MenuPropsWithId, temperatures } from '@/type';
+import { Category, coffeeSize, MenuPropsWithId, temperatures } from '@/type';
 
 import { ButtonUnion, reducer } from './reducer';
 
@@ -35,6 +42,8 @@ type AdminDialogProps = {
   description?: string;
   /** table에서 선택된 메뉴 */
   item?: MenuPropsWithId;
+  /** category목록 */
+  categories?: Category[];
   /** server action */
   action?: (itemId: string, formData: FormData) => void;
 };
@@ -46,6 +55,7 @@ function AdminDialog({
   hasForm = true,
   item,
   description,
+  categories = [],
   action,
 }: AdminDialogProps) {
   const bindedAction = action?.bind(null, item?._id ?? '');
@@ -65,7 +75,7 @@ function AdminDialog({
         </DialogHeader>
         {item ? (
           <form action={bindedAction}>
-            {hasForm && <DialogForm item={item} />}
+            {hasForm && <DialogForm item={item} categories={categories} />}
             <DialogFooter className="sm:justify-start mt-6">
               <DialogFormButton type={type} dispatch={dispatch} />
               <DialogClose asChild>
@@ -91,19 +101,35 @@ function AdminDialog({
 
 type DialogFormProps = {
   item?: MenuPropsWithId;
+  categories: Category[];
 };
 
-function DialogForm({ item }: DialogFormProps) {
+function DialogForm({ item, categories }: DialogFormProps) {
   const id = useId();
   return (
     <>
       <Label htmlFor={`${id}category`}>카테고리</Label>
-      <Input
-        id={`${id}category`}
-        name="category"
-        defaultValue={item?.category}
-        placeholder="카테고리 키 값"
-      />
+      {categories.length !== 0 ? (
+        <Select name="category" defaultValue={item?.category}>
+          <SelectTrigger>
+            <SelectValue placeholder="카테고리" />
+          </SelectTrigger>
+          <SelectContent>
+            {categories.map(({ category, title }) => (
+              <SelectItem key={category} value={category}>
+                {title}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      ) : (
+        <Input
+          id={`${id}category`}
+          name="category"
+          defaultValue={item?.category}
+          placeholder="카테고리 키 값"
+        />
+      )}
       <Label htmlFor={`${id}name`}>이름(한글)</Label>
       <Input
         id={`${id}name`}

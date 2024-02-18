@@ -51,7 +51,7 @@ export default function AdminSideBar() {
       </div>
       <label
         htmlFor="admin-sidebar"
-        className="absolute -top-10 -right-8 bg-slate-200 rounded-full peer-checked/check:rotate-180  hover:cursor-pointer transition-all invert"
+        className="absolute -top-10 -right-8 bg-slate-200 dark:bg-slate-800 rounded-full peer-checked/check:rotate-180  hover:cursor-pointer transition-all invert"
       >
         <TriangleLeftIcon width={30} height={30} />
       </label>

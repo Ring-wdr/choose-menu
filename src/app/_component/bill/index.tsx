@@ -18,7 +18,6 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { getOrderListGroupByNameSizeTemp } from '@/database/coffeebean/get';
-import { startSafeViewTransition } from '@/hooks/startSafeViewTransition';
 
 import styles from './index.module.css';
 
@@ -100,7 +99,7 @@ export default function BillTable({
         <TableBody onMouseLeave={onMouseLeave}>
           {(!orders || orders.length === 0) && <TableRow>No content</TableRow>}
           {orders.map((order) => (
-            <Fragment key={order.title}>
+            <Fragment key={order.title + order.decaf}>
               <TableRow
                 draggable={draggable}
                 data-index={order.id}

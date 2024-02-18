@@ -156,7 +156,11 @@
   position: absolute;
   padding: 1rem;
   width: 100%;
+  height: var(--footer-height);
   top: calc(100% - var(--footer-height));
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 @media (min-aspect-ratio: 6/5) and (min-height: 640px) {
