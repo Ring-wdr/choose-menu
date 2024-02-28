@@ -76,14 +76,13 @@ export const getOrderListGroupByUserNameAdmin = async () => {
         ({ userName }) => userName === order.userName,
       );
       if (findOrderByName) {
-        findOrderByName[order.sub === 'on' ? 'subMenuName' : 'menuName'] =
-          order.menuName;
+        findOrderByName[order.sub === 'on' ? 'subMenu' : 'mainMenu'] = order;
         return result;
       }
       if (order.sub === 'on') {
-        return [...result, { ...order, subMenuName: order.menuName }];
+        return [...result, { userName: order.userName, subMenu: order }];
       }
-      return [...result, order];
+      return [...result, { userName: order.userName, mainMenu: order }];
     },
     [],
   );

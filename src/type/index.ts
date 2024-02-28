@@ -55,8 +55,9 @@ export type OrderItem = {
   shot?: number;
 };
 
-export type OrderWithSubMenu = OrderItem & {
-  subMenuName?: string;
+export type OrderWithSubMenu = Pick<OrderItem, 'userName'> & {
+  mainMenu?: OrderItem;
+  subMenu?: OrderItem;
 };
 
 export type OrderBlock = {

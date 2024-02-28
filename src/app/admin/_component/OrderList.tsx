@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
@@ -43,10 +43,10 @@ export default function OrderList({
       (item) => item.userName === order.userName && item.sub,
     );
     return {
-      ...order,
+      userName: order.userName,
       isAbsence,
       isSub,
-      showMenuName: !isSub ? order.menuName : order.subMenuName,
+      showMenu: !isSub ? order.mainMenu : order.subMenu,
     };
   });
   const onToggleState =
@@ -88,11 +88,11 @@ export default function OrderList({
               try {
                 const aggregatedList = resultOrderList.map((order) => ({
                   userName: order.userName,
-                  menuName: order.showMenuName,
-                  size: order.size,
-                  shot: order.shot,
-                  temperature: order.temperature,
-                  decaf: order.decaf,
+                  menuName: order.showMenu?.menuName,
+                  size: order.showMenu?.size,
+                  shot: order.showMenu?.shot,
+                  temperature: order.showMenu?.temperature,
+                  decaf: order.showMenu?.decaf,
                 }));
                 await calculation(aggregatedList);
                 toast({
@@ -129,27 +129,48 @@ export default function OrderList({
           )}
           {resultOrderList &&
             resultOrderList.map((order) => (
-              <TableRow
-                key={order.userName}
-                {...(order.isAbsence && {
-                  'data-state': 'selected',
-                })}
-              >
-                <TableCell className="font-medium">{order.userName}</TableCell>
-                <TableCell>{order.showMenuName}</TableCell>
-                <TableCell>
-                  <Switch
-                    checked={order.isAbsence}
-                    onClick={onToggleState(order.userName, 'absence')}
-                  />
-                </TableCell>
-                <TableCell>
-                  <Switch
-                    checked={order.isSub}
-                    onClick={onToggleState(order.userName, 'sub')}
-                  />
-                </TableCell>
-              </TableRow>
+              <Fragment key={order.userName}>
+                <TableRow
+                  {...(order.isAbsence && {
+                    'data-state': 'selected',
+                  })}
+                >
+                  <TableCell className="font-medium" rowSpan={2}>
+                    {order.userName}
+                  </TableCell>
+                  <TableCell>
+                    {order.showMenu?.menuName ?? '(선택된 메뉴가 없습니다.)'}
+                  </TableCell>
+                  <TableCell rowSpan={2}>
+                    <Switch
+                      checked={order.isAbsence}
+                      onClick={onToggleState(order.userName, 'absence')}
+                    />
+                  </TableCell>
+                  <TableCell rowSpan={2}>
+                    <Switch
+                      checked={order.isSub}
+                      onClick={onToggleState(order.userName, 'sub')}
+                    />
+                  </TableCell>
+                </TableRow>
+                <TableRow
+                  {...(order.isAbsence && {
+                    'data-state': 'selected',
+                  })}
+                >
+                  <TableCell className="font-medium">
+                    {[
+                      order.showMenu?.decaf ? 'DECAF' : '',
+                      order.showMenu?.temperature,
+                      order.showMenu?.shot ? `${order.showMenu.shot} SHOT` : '',
+                      order.showMenu?.size,
+                    ]
+                      .filter(Boolean)
+                      .join(', ') || '(옵션 없음)'}
+                  </TableCell>
+                </TableRow>
+              </Fragment>
             ))}
         </TableBody>
       </Table>
