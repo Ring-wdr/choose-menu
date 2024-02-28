@@ -7,6 +7,7 @@ import {
   useRef,
   useState,
 } from 'react';
+import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -29,6 +30,7 @@ type BillTableProps = {
   data: AggTableProps[];
   draggable?: boolean;
   reset?: boolean;
+  isAdmin?: boolean;
 };
 
 const onDragOver = (e: DragEvent<HTMLTableRowElement>) => e.preventDefault();
@@ -37,6 +39,7 @@ export default function BillTable({
   data,
   draggable = true,
   reset = true,
+  isAdmin,
 }: BillTableProps) {
   // order state
   const [orders, setOrders] = useState(data);
@@ -88,6 +91,11 @@ export default function BillTable({
   return (
     <div className={styles.container}>
       {reset && <Button onClick={updateOrder}>계산서 재요청</Button>}
+      {isAdmin && (
+        <Button asChild>
+          <Link href={'/admin/user'}>유저 관리</Link>
+        </Button>
+      )}
       현재 인원: {orders.reduce((acc, { count }) => acc + count, 0) || 0}명
       <Table>
         <TableHeader>
