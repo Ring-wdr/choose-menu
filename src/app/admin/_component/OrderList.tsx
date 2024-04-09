@@ -1,8 +1,19 @@
 'use client';
 
 import { Fragment, useEffect, useState } from 'react';
+import { Fireworks } from '@fireworks-js/react';
+import { DialogClose } from '@radix-ui/react-dialog';
 
 import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import { Switch } from '@/components/ui/switch';
 import {
   Table,
@@ -17,7 +28,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { getOrderListGroupByUserNameAdmin } from '@/database/coffeebean/get';
 import { toggleUserState } from '@/database/coffeebean/patch';
 import useServerAction from '@/hooks/useServerAction';
-import { Absence, AwaitedReturn } from '@/type';
+import { Absence, AwaitedReturn, OrderItem } from '@/type';
 
 import { getAbsenceListAction } from './action';
 
@@ -35,20 +46,22 @@ export default function OrderList({
   const { toast } = useToast();
   const { state, loading, refetch } = useServerAction(getAbsenceListAction);
   const [absenceList, setAbsence] = useState<Absence[] | null>(null);
-  const resultOrderList = orderList.map((order) => {
-    const isAbsence = !!absenceList?.find(
-      (item) => item.userName === order.userName && item.absence,
-    );
-    const isSub = !!absenceList?.find(
-      (item) => item.userName === order.userName && item.sub,
-    );
-    return {
-      userName: order.userName,
-      isAbsence,
-      isSub,
-      showMenu: !isSub ? order.mainMenu : order.subMenu,
-    };
-  });
+  const resultOrderList = orderList.reduce<
+    Array<Absence & { showMenu?: OrderItem }>
+  >((acc, order) => {
+    const { absence, sub, leave } =
+      absenceList?.find((item) => item.userName === order.userName) ?? {};
+    if (leave) return acc;
+    return [
+      ...acc,
+      {
+        userName: order.userName,
+        absence: absence,
+        sub: sub,
+        showMenu: !sub ? order.mainMenu : order.subMenu,
+      },
+    ];
+  }, []);
   const onToggleState =
     (userName: string, key: 'absence' | 'sub') => async () => {
       try {
@@ -121,6 +134,7 @@ export default function OrderList({
             <TableHead>메뉴 이름</TableHead>
             <TableHead className="w-12">부재</TableHead>
             <TableHead className="w-20">부메뉴로</TableHead>
+            <TableHead className="w-12">퇴사</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -131,7 +145,7 @@ export default function OrderList({
             resultOrderList.map((order) => (
               <Fragment key={order.userName}>
                 <TableRow
-                  {...(order.isAbsence && {
+                  {...(order.absence && {
                     'data-state': 'selected',
                   })}
                 >
@@ -143,19 +157,25 @@ export default function OrderList({
                   </TableCell>
                   <TableCell rowSpan={2}>
                     <Switch
-                      checked={order.isAbsence}
+                      checked={order.absence}
                       onClick={onToggleState(order.userName, 'absence')}
                     />
                   </TableCell>
                   <TableCell rowSpan={2}>
                     <Switch
-                      checked={order.isSub}
+                      checked={order.sub}
                       onClick={onToggleState(order.userName, 'sub')}
+                    />
+                  </TableCell>
+                  <TableCell rowSpan={2}>
+                    <LeaveModal
+                      userName={order.userName}
+                      toggleUserState={toggleUserState}
                     />
                   </TableCell>
                 </TableRow>
                 <TableRow
-                  {...(order.isAbsence && {
+                  {...(order.absence && {
                     'data-state': 'selected',
                   })}
                 >
@@ -176,4 +196,81 @@ export default function OrderList({
       </Table>
     </div>
   );
+}
+
+type leaveModalState = '선택' | '완료';
+
+type LeaveModalState = {
+  userName: string;
+  toggleUserState: typeof toggleUserState;
+};
+
+const fireworksState = {
+  style: {
+    height: '100%',
+  },
+} as const;
+
+function LeaveModal({ userName, toggleUserState }: LeaveModalState) {
+  const [leaveState, setLeaveState] = useState<leaveModalState>('선택');
+  return (
+    <Dialog
+      onOpenChange={(open) => {
+        if (open === false && leaveState === '완료') {
+          toggleUserState(userName, 'leave', true);
+        }
+      }}
+    >
+      <DialogTrigger asChild>
+        <Button>퇴사</Button>
+      </DialogTrigger>
+      <DialogContent
+        renderOnOverlay={
+          leaveState === '완료' ? (
+            <Fireworks style={fireworksState.style} />
+          ) : undefined
+        }
+      >
+        <DialogHeader>
+          <DialogTitle>
+            {commentOnLeaveState({ userName, leaveState }).title}
+          </DialogTitle>
+          <DialogDescription>
+            {commentOnLeaveState({ userName, leaveState }).desc}
+          </DialogDescription>
+        </DialogHeader>
+        <DialogFooter className="sm:justify-start mt-6">
+          {leaveState === '선택' && (
+            <Button onClick={() => setLeaveState('완료')}>퇴사</Button>
+          )}
+          <DialogClose asChild>
+            <Button type="button" variant="secondary">
+              닫기
+            </Button>
+          </DialogClose>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function commentOnLeaveState({
+  userName,
+  leaveState,
+}: {
+  userName: string;
+  leaveState: leaveModalState;
+}) {
+  switch (leaveState) {
+    case '선택':
+      return {
+        title: `${userName}님 "퇴사" 하시겠습니까?`,
+        desc: `이 버튼은 취소할 수 없습니다. 유저 관리 페이지에서 영구적으로 제거되어 해당 유저는 더 이상 메뉴를 선택할 수 없습니다.`,
+      };
+    case '완료':
+      return {
+        title: `퇴사 완료!`,
+        desc: `${userName}님의 퇴사처리가 완료되었습니다.`,
+      };
+  }
 }
