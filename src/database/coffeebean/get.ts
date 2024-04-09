@@ -62,9 +62,21 @@ export const getOrderListGroupByUserName = async () => {
   }
   const db = (await clientPromise).db(COFFEEBEAN.DB_NAME);
   const orderCollection = db.collection<OrderItem>(COFFEEBEAN.COLLECTION.ORDER);
+  const absenceList = db.collection<Absence>(COFFEEBEAN.COLLECTION.ABSENCE);
+  const leaveList = (await absenceList.find({ leave: true }).toArray()).map(
+    (item) => item.userName,
+  );
   const orders = await orderCollection
-    .aggregate<OrderItem>([groupState, sortRecentFirstState, projState])
+    .aggregate<OrderItem>([
+      {
+        $match: { userName: { $nin: leaveList } },
+      },
+      groupState,
+      sortRecentFirstState,
+      projState,
+    ])
     .toArray();
+
   return orders;
 };
 

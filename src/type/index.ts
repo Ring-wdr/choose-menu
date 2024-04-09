@@ -74,6 +74,7 @@ export type Absence = {
   userName: string;
   absence?: boolean;
   sub?: boolean;
+  leave?: boolean;
 };
 
 export type AwaitedReturn<T> = T extends (...args: any) => Promise<any>

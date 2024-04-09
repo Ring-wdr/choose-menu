@@ -1,5 +1,7 @@
 'use server';
 
+import { revalidatePath } from 'next/cache';
+
 import { Absence, OrderBlock } from '@/type';
 
 import clientPromise, { idToString } from '..';
@@ -21,7 +23,8 @@ export async function toggleOrderBlock() {
 
 export async function toggleUserState(
   userName: string,
-  key: 'absence' | 'sub' = 'absence',
+  key: keyof Omit<Absence, 'userName'> = 'absence',
+  revalidate?: boolean,
 ) {
   const db = (await clientPromise).db(COFFEEBEAN.DB_NAME);
   const absence = db.collection<Absence>(COFFEEBEAN.COLLECTION.ABSENCE);
@@ -30,5 +33,6 @@ export async function toggleUserState(
     [{ $set: { [key]: { $not: `$${key}` } } }],
     { upsert: true },
   );
+  if (revalidate) revalidatePath('/admin/user');
   return response ? idToString(response) : null;
 }
