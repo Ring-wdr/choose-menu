@@ -7,13 +7,13 @@ import {
   useRef,
   useState,
 } from 'react';
-import { hangulIncludes } from '@toss/hangul';
 import clsx from 'clsx';
 
 import CustomBottomSheet from '@/components/BottomSheet/Custom';
 import { Button } from '@/components/ui/button';
 import { startSafeViewTransition } from '@/hooks/startSafeViewTransition';
 import { Category, MenuProps } from '@/type';
+import { hangulIncludes } from '@/util/hangul';
 
 import { postSelectedMenu } from '../action';
 

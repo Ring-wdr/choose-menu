@@ -2,8 +2,8 @@ import { cookies } from 'next/headers';
 
 const USERNAME_COOKIE_AGE = 60 * 60 * 24 * 365;
 
-export function setUserName(userName: string) {
-  cookies().set({
+export async function setUserName(userName: string) {
+  (await cookies()).set({
     name: 'userName',
     value: userName,
     httpOnly: true,
@@ -12,7 +12,8 @@ export function setUserName(userName: string) {
     path: '/',
   });
 }
-export function getUserName() {
-  const userName = cookies().get('userName');
+export async function getUserName() {
+  const cookieStore = await cookies();
+  const userName = cookieStore.get('userName');
   return userName;
 }

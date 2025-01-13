@@ -6,7 +6,7 @@ export const revalidate = 0;
 export const dynamic = 'force-dynamic';
 
 export default async function Page() {
-  const userCookie = cookies().get('userName');
+  const userCookie = (await cookies()).get('userName');
 
   try {
     const data = await getRecentMenuByUserName(userCookie!.value);

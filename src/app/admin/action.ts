@@ -20,16 +20,16 @@ type FormActionState = {
 };
 
 export default async function action(
-  prevState: FormActionState,
+  _: FormActionState,
   data: FormData,
 ): Promise<FormActionState> {
-  cookies().delete('admin');
+  (await cookies()).delete('admin');
   try {
     const { admin } = formSchema.parse(Object.fromEntries(data));
     if (admin !== process.env.ADMIN_PASSWORD) {
       throw new Error('admin incorrect');
     }
-    cookies().set('admin', encryptAdminCode(admin));
+    (await cookies()).set('admin', await encryptAdminCode(admin));
   } catch (e) {
     if (e instanceof z.ZodError === true) {
       return { message: e.issues[0].message, ok: false };

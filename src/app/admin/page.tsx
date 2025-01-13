@@ -1,6 +1,6 @@
 'use client';
-
-import { useFormState, useFormStatus } from 'react-dom';
+import { useActionState } from 'react';
+import { useFormStatus } from 'react-dom';
 import clsx from 'clsx';
 
 import { Button } from '@/components/ui/button';
@@ -15,7 +15,7 @@ function SubmitButton() {
 }
 
 export default function Page() {
-  const [state, formAction] = useFormState(action, { message: 'admin code' });
+  const [state, formAction] = useActionState(action, { message: 'admin code' });
   return (
     <form
       action={formAction}

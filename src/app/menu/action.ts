@@ -30,7 +30,8 @@ export async function postSelectedMenu(data: FormData) {
   if (isOrderBlock && isOrderBlock.status === true) {
     redirect('/orderblock');
   }
-  const userName = getUserName()?.value!;
+  const currentUserName = await getUserName();
+  const userName = currentUserName?.value!;
   const submitObj = Object.fromEntries(data);
   const submitData = orderSchema.parse({
     ...submitObj,
@@ -50,7 +51,7 @@ export async function getUserNameFromSession(_: string, data: FormData) {
   if (userName) {
     setUserName(userName);
   }
-  const currentUserName = getUserName();
+  const currentUserName = await getUserName();
   if (!currentUserName) {
     redirect('/');
   }

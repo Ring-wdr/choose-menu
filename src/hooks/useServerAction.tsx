@@ -1,7 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
-import { useFormState } from 'react-dom';
+import { useActionState, useEffect } from 'react';
 
 export type ServerActionState<T = any> =
   | {
@@ -44,7 +43,7 @@ export default function useServerAction<T>(
   callback: (prev: ServerActionState<T>) => Promise<ServerActionState<T>>,
   initData?: T,
 ): ServerActionReturnType<T> {
-  const [state, refetch] = useFormState<ServerActionState<T>>(callback, {
+  const [state, refetch] = useActionState<ServerActionState<T>>(callback, {
     status: initData ? 'success' : 'pending',
     data: initData,
   });

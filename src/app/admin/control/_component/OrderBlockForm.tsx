@@ -1,13 +1,12 @@
 'use client';
-
-import { useFormState } from 'react-dom';
+import { useActionState } from 'react';
 
 import { Button } from '@/components/ui/button';
 
 import { toggleOrderState } from '../action';
 
 export default function OrderBlockForm() {
-  const [orderState, orderAction] = useFormState(toggleOrderState, {
+  const [orderState, orderAction] = useActionState(toggleOrderState, {
     message: '',
   });
   return (

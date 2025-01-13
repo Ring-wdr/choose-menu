@@ -1,7 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useFormState } from 'react-dom';
+import { useActionState, useEffect, useState } from 'react';
 import Link from 'next/link';
 
 import CustomBottomSheet from '@/components/BottomSheet/Custom';
@@ -13,7 +12,7 @@ import { NameChangeForm } from './Form';
 
 export default function NameSection() {
   // user state
-  const [userName, formAction] = useFormState(getUserNameFromSession, '');
+  const [userName, formAction] = useActionState(getUserNameFromSession, '');
 
   // modal state
   const [isBSOpen, setBSOpen] = useState(false);

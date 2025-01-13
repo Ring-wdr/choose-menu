@@ -45,11 +45,10 @@ const transformValueToType = <T extends 'string' | 'number'>(
       return undefined;
   }
 };
-export default async function MenuAdminPage({
-  searchParams,
-}: {
-  searchParams: MenuSearchParam;
+export default async function MenuAdminPage(props: {
+  searchParams: Promise<MenuSearchParam>;
 }) {
+  const searchParams = await props.searchParams;
   const searchObject: Partial<{ slug: number } & Record<string, string>> = {};
   for (const [key, value] of Object.entries(searchParams)) {
     if (!menuSearchKeys.includes(key)) continue;

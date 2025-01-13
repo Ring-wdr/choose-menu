@@ -39,8 +39,8 @@ type BottomSheetProps = {
 
 type BottomSheetCtxProps = {
   onCloseAction: (e?: ReactMouseEvent<HTMLElement>) => void;
-  portalRef?: React.MutableRefObject<HTMLDivElement>;
-  dragRef?: React.RefObject<HTMLDivElement>;
+  portalRef?: React.RefObject<HTMLDivElement>;
+  dragRef?: React.RefObject<HTMLDivElement | null>;
   dragStateOn: () => void;
   dragStateOff: () => void;
   closeDragElement: () => void;
@@ -188,7 +188,7 @@ function getPosition(pos: number | `${number}%`, height: number) {
     : ~~((Number(pos.slice(0, -1)) * height) / 100);
 }
 
-function getBSPosition(bsRef: React.RefObject<HTMLDivElement>) {
+function getBSPosition(bsRef: React.RefObject<HTMLDivElement | null>) {
   return (
     bsRef.current?.style
       .getPropertyValue('--current-bs-position')
@@ -196,7 +196,7 @@ function getBSPosition(bsRef: React.RefObject<HTMLDivElement>) {
   );
 }
 function setBSPosition(
-  bsRef: React.RefObject<HTMLDivElement>,
+  bsRef: React.RefObject<HTMLDivElement | null>,
   position: string,
 ) {
   bsRef.current?.style.setProperty('--current-bs-position', position);
@@ -217,7 +217,11 @@ export type BottomSheetPortalProps = {
   closeWhenBackdropClick?: boolean;
 } & HTMLAttributes<HTMLDivElement>;
 
-export const BottomSheet = ({ children }: { children: React.ReactElement }) => {
+export const BottomSheet = ({
+  children,
+}: {
+  children: React.ReactElement<any>;
+}) => {
   const {
     portalRef,
     dragRef,

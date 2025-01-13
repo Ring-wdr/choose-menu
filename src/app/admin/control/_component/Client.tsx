@@ -1,7 +1,7 @@
 'use client';
 
-import { useId, useState } from 'react';
-import { useFormState, useFormStatus } from 'react-dom';
+import { useActionState, useId, useState } from 'react';
+import { useFormStatus } from 'react-dom';
 
 import { Button } from '@/components/ui/button';
 import { crawlAndSaveMenuByCategory } from '@/database/coffeebean/post';
@@ -24,7 +24,10 @@ type ControlClientProps = {
 export default function Client({
   crawlAndSaveMenuByCategory,
 }: ControlClientProps) {
-  const [sendState, formAction] = useFormState(crawlCategoriesFromExternal, '');
+  const [sendState, formAction] = useActionState(
+    crawlCategoriesFromExternal,
+    '',
+  );
   const [resultString, setResultString] = useState('');
   const masterKey = useId();
   return (
