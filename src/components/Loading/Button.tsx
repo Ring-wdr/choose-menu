@@ -1,6 +1,7 @@
 'use client';
 
 import { useFormStatus } from 'react-dom';
+import clsx from 'clsx';
 
 import LoadingImage from '@/components/Loading';
 import Modal from '@/components/Modal';
@@ -21,7 +22,7 @@ export default function LoadingButton({
   const { pending } = useFormStatus();
   return (
     <>
-      <Button className={'w-full ' + className} {...props}>
+      <Button className={clsx('w-full', className)} {...props}>
         {pending ? labelOnPending || '요청 중...' : label || '선택'}
       </Button>
       {pending && (

@@ -1,6 +1,5 @@
 'use client';
 import { useActionState } from 'react';
-import { useFormStatus } from 'react-dom';
 import clsx from 'clsx';
 
 import { Button } from '@/components/ui/button';
@@ -9,13 +8,10 @@ import { Label } from '@/components/ui/label';
 
 import action from './action';
 
-function SubmitButton() {
-  const { pending } = useFormStatus();
-  return <Button type="submit">{pending ? 'Sending' : 'Submit'}</Button>;
-}
-
 export default function Page() {
-  const [state, formAction] = useActionState(action, { message: 'admin code' });
+  const [state, formAction, pending] = useActionState(action, {
+    message: 'admin code',
+  });
   return (
     <form
       action={formAction}
@@ -31,7 +27,7 @@ export default function Page() {
       <span className={clsx(state.ok === false && 'text-red-500')}>
         {typeof state.ok !== 'undefined' && state.message}
       </span>
-      <SubmitButton />
+      <Button type="submit">{pending ? 'Sending' : 'Submit'}</Button>
     </form>
   );
 }
